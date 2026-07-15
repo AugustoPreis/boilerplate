@@ -1,9 +1,4 @@
-# Modo produção-like: builda as imagens finais e roda os binários de produção.
-# `docker compose -f docker-compose.yml up --build` ignora o override de dev.
-#
-# Sem flags (`docker compose up`), o docker-compose.override.yml é aplicado
-# automaticamente e este arquivo passa a rodar em modo dev com hot-reload —
-# ver esse arquivo para o que muda.
+# production-like mode: build final images and run the binaries.
 services:
   postgres:
     image: postgres:18
@@ -15,10 +10,6 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql
     ports:
-      # Porta publicada no HOST (para acessar via cliente externo) — DB_PORT
-      # é a porta interna que os containers usam para se conectar entre si e
-      # NUNCA deve mudar (é sempre 5432 dentro da rede do Docker). Se a porta
-      # padrão do host já estiver em uso, mude só DB_HOST_PORT no .env.
       - '${DB_HOST_PORT:-5432}:5432'
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U ${DB_USERNAME} -d ${DB_NAME}']
@@ -36,7 +27,6 @@ services:
     volumes:
       - redis_data:/data
     ports:
-      # Mesma lógica do Postgres acima: REDIS_HOST_PORT é só a porta no host.
       - '${REDIS_HOST_PORT:-6379}:6379'
     healthcheck:
       test: ['CMD', 'redis-cli', '--no-auth-warning', '-a', '${REDIS_PASSWORD}', 'ping']
@@ -47,8 +37,6 @@ services:
     networks:
       - boilerplate_network
 
-  # Roda migration:run + seed uma vez por `up` e finaliza — resolve "sobe com
-  # um único comando" sem depender de o dev lembrar de rodar isso manualmente.
   migrate:
     build:
       context: .
@@ -75,17 +63,12 @@ services:
     env_file:
       - .env
     ports:
-      # PORT é a porta interna em que a API escuta dentro do container;
-      # API_HOST_PORT é só a porta publicada no host.
       - '${API_HOST_PORT:-3000}:${PORT:-3000}'
     depends_on:
       migrate:
         condition: service_completed_successfully
     networks:
       - boilerplate_network
-
-  # apps/web entra aqui a partir da Fase 5 (bootstrap do frontend) — ainda não
-  # existe no repo, então não há serviço "web" até essa fase estar pronta.
 
 volumes:
   postgres_data:

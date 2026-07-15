@@ -1,7 +1,7 @@
 {
   "name": "@boilerplate/api",
   "version": "1.0.0",
-  "description": "Boilerplate NestJS — núcleo de infraestrutura",
+  "description": "NestJS Boilerplate",
   "private": true,
   "license": "UNLICENSED",
   "engines": {

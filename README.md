@@ -1,3 +1,3 @@
 # Boilerplate
 
-Ponto de partida para novos sistemas. Veja `docs/`.
+Entrypoint for new projects. See `docs/`.

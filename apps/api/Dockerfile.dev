@@ -1,23 +1,13 @@
-# Build context é a raiz do monorepo — usado automaticamente pelo
-# docker-compose.override.yml (modo dev, aplicado por padrão em `docker compose up`).
 FROM node:24-alpine AS dev
 
 RUN corepack enable
 WORKDIR /app
 
 COPY . .
+
 RUN corepack prepare --activate $(node -p "require('./package.json').packageManager")
-# Sem --frozen-lockfile: permite adicionar dependências durante o desenvolvimento
-# sem precisar rebuildar a imagem a cada `pnpm add`.
 RUN pnpm install
 
-# Roda como o usuário "node" (uid 1000, padrão da imagem oficial) em vez de
-# root — assim os arquivos gerados dentro dos diretórios bind-mounted (dist/,
-# node_modules de packages/shared) não ficam com dono root no host.
 USER node
 
-# packages/shared é bind-mounted em runtime (docker-compose.override.yml), então
-# seu dist/ construído aqui na imagem seria sobrescrito pelo estado do host (que,
-# num clone novo, nunca rodou build). Por isso o build roda de novo no start do
-# container, não só aqui — ver CMD abaixo.
 CMD ["sh", "-c", "pnpm --filter=@boilerplate/shared build && pnpm --filter=@boilerplate/api start:dev"]

@@ -1,15 +1,10 @@
-# Aplicado automaticamente pelo Docker Compose quando presente — é o modo
-# padrão de quem clona o repo para desenvolver. `docker compose up` (sem
-# flags) já sobe tudo em modo dev com hot-reload via bind mount do código.
-#
-# node_modules de cada pacote fica como volume anônimo (não bind-mounted),
-# para não sobrescrever o que foi instalado na imagem com o estado do host.
+# Applied automatically by Docker Compose when present — is the mode
+# default for those who clone the repo to develop. `docker compose up` (without
+# flags) already brings everything up in dev mode with hot-reload via bind mount of the code.
 services:
   migrate:
     build:
       dockerfile: apps/api/Dockerfile.dev
-      # Sobrescreve o target: deps da imagem de produção (base) — o
-      # Dockerfile.dev não tem esse estágio, só "dev".
       target: dev
     volumes:
       - .:/app
