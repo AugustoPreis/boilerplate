@@ -60,6 +60,7 @@ export class AuditLogsRepository {
 
   async create(data: Partial<AuditLogEntity>): Promise<void> {
     const entity = this.repo.create(data);
+
     await this.repo.save(entity);
   }
 }

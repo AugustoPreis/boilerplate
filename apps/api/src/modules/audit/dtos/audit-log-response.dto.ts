@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import { AuditLogEntity } from '../entities/audit-log.entity';
 
-export class AuditLogResponseDto {
+export class AuditLogResponseDTO {
   @ApiProperty()
   uuid!: string;
 
@@ -27,8 +27,8 @@ export class AuditLogResponseDto {
   @ApiProperty()
   createdAt!: Date;
 
-  static from(entity: AuditLogEntity): AuditLogResponseDto {
-    const dto = new AuditLogResponseDto();
+  static from(entity: AuditLogEntity): AuditLogResponseDTO {
+    const dto = new AuditLogResponseDTO();
 
     dto.uuid = entity.uuid;
     dto.userId = entity.userId;
