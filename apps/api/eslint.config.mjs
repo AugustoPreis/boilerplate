@@ -38,7 +38,11 @@ export default tseslint.config(
         },
         { selector: 'typeAlias', format: ['PascalCase'] },
         { selector: 'class', format: ['PascalCase'] },
-        { selector: 'enum', format: ['PascalCase'] },
+        {
+          selector: 'enum',
+          format: ['PascalCase'],
+          custom: { regex: '^E[A-Z]', match: true },
+        },
         {
           selector: 'variable',
           format: ['camelCase', 'UPPER_CASE', 'PascalCase'],
@@ -69,10 +73,6 @@ export default tseslint.config(
     },
   },
   {
-    // Regra "zero string solta": nenhuma exceção pode carregar uma mensagem
-    // literal para o usuário — sempre uma chave de i18n via AppException.from().
-    // Só se aplica a código de aplicação (módulos/infra), nunca a testes (que
-    // podem simular erros de bibliotecas de terceiros) nem a core/i18n.
     files: ['src/modules/**/*.ts', 'src/shared/**/*.ts'],
     ignores: ['**/*.spec.ts'],
     rules: {
@@ -82,7 +82,7 @@ export default tseslint.config(
           selector:
             "NewExpression[callee.name!='AppException'][callee.name=/^(Error|.*Exception)$/][arguments.0.type='Literal']",
           message:
-            "Não instancie exceções com string literal — lance AppException.from('<namespace>.<CHAVE>', status) e adicione a chave em core/i18n/locales/pt-BR.",
+            "Do not instantiate exceptions with string literals. Instead, throw `AppException.from('<namespace>.<KEY>', status)` and add the key to `core/i18n/locales`",
         },
       ],
     },
