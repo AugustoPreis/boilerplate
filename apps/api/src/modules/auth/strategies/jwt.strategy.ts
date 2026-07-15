@@ -12,10 +12,9 @@ import { IJwtPayload } from '../interfaces/jwt-payload.interface';
 export class JwtStrategy extends PassportStrategy(Strategy, JWT_STRATEGY) {
   constructor(config: ConfigService) {
     super({
-      // O access token nunca chega via header Authorization: sempre via
-      // cookie httpOnly `access_token`, setado pelo backend no login/refresh.
+      // access token never comes via Authorization header, always httpOnly.
       jwtFromRequest: ExtractJwt.fromExtractors([
-        (req: Request): string | null => (req?.cookies?.access_token as string | undefined) ?? null,
+        (req: Request): string | null => req?.cookies?.access_token ?? null,
       ]),
       ignoreExpiration: false,
       secretOrKey: config.get<string>('auth.jwtSecret') ?? '',

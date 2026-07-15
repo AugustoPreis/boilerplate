@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-export class MeResponseDto {
+export class MeResponseDTO {
   @ApiProperty()
   uuid!: string;
 

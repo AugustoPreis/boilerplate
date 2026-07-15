@@ -17,11 +17,10 @@ import { Request, Response } from 'express';
 import { CurrentUser } from '@shared/decorators/current-user.decorator';
 import { Public } from '@shared/decorators/public.decorator';
 import { SkipCsrf } from '@shared/decorators/skip-csrf.decorator';
-import { AppException } from '@shared/exceptions';
 import { UuidService } from '@shared/services/uuid.service';
 
-import { LoginDto } from '../dtos/login.dto';
-import { MeResponseDto } from '../dtos/me-response.dto';
+import { LoginDTO } from '../dtos/login.dto';
+import { MeResponseDTO } from '../dtos/me-response.dto';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { IAuthUser } from '../interfaces/auth-user.interface';
 import { IJwtPayload } from '../interfaces/jwt-payload.interface';
@@ -51,10 +50,10 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Login with email and password' })
   async login(
-    @Body() _dto: LoginDto,
+    @Body() _dto: LoginDTO,
     @CurrentUser() user: IAuthUser,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<{ user: MeResponseDto }> {
+  ): Promise<{ user: MeResponseDTO }> {
     const result = await this.loginUseCase.execute(user);
 
     setAuthCookies(res, this.config, result, this.uuidService.generate('v4'));
@@ -70,16 +69,8 @@ export class AuthController {
   async refresh(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<{ user: MeResponseDto }> {
-    const refreshToken = (req.cookies as Record<string, string> | undefined)?.[
-      REFRESH_TOKEN_COOKIE
-    ];
-
-    if (!refreshToken) {
-      throw AppException.from('auth.REFRESH_TOKEN_NOT_FOUND', HttpStatus.UNAUTHORIZED);
-    }
-
-    const result = await this.refreshTokenUseCase.execute(refreshToken);
+  ): Promise<{ user: MeResponseDTO }> {
+    const result = await this.refreshTokenUseCase.execute(req.cookies[REFRESH_TOKEN_COOKIE]);
 
     setAuthCookies(res, this.config, result, this.uuidService.generate('v4'));
 
@@ -94,12 +85,13 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
     await this.logoutUseCase.execute(user.sub);
+
     clearAuthCookies(res, this.config);
   }
 
   @Get('me')
   @ApiOperation({ summary: 'Get current authenticated user' })
-  me(@CurrentUser() user: IJwtPayload): Promise<MeResponseDto> {
+  me(@CurrentUser() user: IJwtPayload): Promise<MeResponseDTO> {
     return this.getMeUseCase.execute(user.sub);
   }
 }

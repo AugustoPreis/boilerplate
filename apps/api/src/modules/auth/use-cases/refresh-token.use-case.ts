@@ -9,7 +9,7 @@ import { REDIS_CLIENT } from '@core/redis/redis.constants';
 
 import { AppException } from '@shared/exceptions';
 
-import { UserStatus } from '../../users/entities/user.entity';
+import { EUserStatus } from '../../users/enums/user-status.enum';
 import { UsersRepository } from '../../users/repositories/users.repository';
 import { ILoginResult } from '../interfaces/login-result.interface';
 
@@ -29,12 +29,13 @@ export class RefreshTokenUseCase {
     const payload = this.verifyToken(refreshToken);
 
     const storedHash = await this.getStoredHash(payload.sub);
+
     this.validateIncomingHash(refreshToken, storedHash);
 
     const user = await this.usersRepository.findByUuid(payload.sub);
 
-    if (!user || user.status !== UserStatus.ACTIVE) {
-      throw AppException.from('auth.INVALID_CREDENTIALS', HttpStatus.UNAUTHORIZED);
+    if (!user || user.status !== EUserStatus.ACTIVE) {
+      throw AppException.from('auth.invalidCredentials', HttpStatus.UNAUTHORIZED);
     }
 
     return this.loginUseCase.execute({
@@ -49,12 +50,16 @@ export class RefreshTokenUseCase {
   }
 
   private verifyToken(refreshToken: string): { sub: string } {
+    if (!refreshToken) {
+      throw AppException.from('auth.refreshTokenNotFound', HttpStatus.UNAUTHORIZED);
+    }
+
     try {
       return this.jwtService.verify<{ sub: string }>(refreshToken, {
         secret: this.config.get<string>('auth.jwtRefreshSecret'),
       });
     } catch {
-      throw AppException.from('auth.REFRESH_TOKEN_INVALID', HttpStatus.UNAUTHORIZED);
+      throw AppException.from('auth.refreshTokenInvalid', HttpStatus.UNAUTHORIZED);
     }
   }
 
@@ -62,7 +67,7 @@ export class RefreshTokenUseCase {
     const storedHash = await this.redis.get(`auth:refresh:${sub}`);
 
     if (!storedHash) {
-      throw AppException.from('auth.REFRESH_TOKEN_NOT_FOUND', HttpStatus.UNAUTHORIZED);
+      throw AppException.from('auth.refreshTokenNotFound', HttpStatus.UNAUTHORIZED);
     }
 
     return storedHash;
@@ -72,7 +77,7 @@ export class RefreshTokenUseCase {
     const incomingHash = createHash('sha256').update(refreshToken).digest('hex');
 
     if (storedHash !== incomingHash) {
-      throw AppException.from('auth.REFRESH_TOKEN_INVALID', HttpStatus.UNAUTHORIZED);
+      throw AppException.from('auth.refreshTokenInvalid', HttpStatus.UNAUTHORIZED);
     }
   }
 }

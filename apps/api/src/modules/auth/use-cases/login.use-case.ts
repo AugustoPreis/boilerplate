@@ -45,6 +45,7 @@ export class LoginUseCase {
     );
 
     const hash = createHash('sha256').update(refreshToken).digest('hex');
+
     await this.redis.set(`auth:refresh:${user.uuid}`, hash, 'EX', refreshExpiresInSeconds);
 
     return {

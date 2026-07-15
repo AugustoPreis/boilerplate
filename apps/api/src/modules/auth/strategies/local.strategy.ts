@@ -10,7 +10,7 @@ import { LOCAL_STRATEGY } from '@shared/constants';
 import { AppException } from '@shared/exceptions';
 import { HashService } from '@shared/services/hash.service';
 
-import { UserStatus } from '../../users/entities/user.entity';
+import { EUserStatus } from '../../users/enums/user-status.enum';
 import { UsersRepository } from '../../users/repositories/users.repository';
 import { IAuthUser } from '../interfaces/auth-user.interface';
 
@@ -37,7 +37,8 @@ export class LocalStrategy extends PassportStrategy(Strategy, LOCAL_STRATEGY) {
 
     if (!user || !isValid) {
       await this.registerFailedAttempt(ip);
-      throw AppException.from('auth.INVALID_CREDENTIALS', HttpStatus.UNAUTHORIZED);
+
+      throw AppException.from('auth.invalidCredentials', HttpStatus.UNAUTHORIZED);
     }
 
     await this.clearAttempts(ip);
@@ -65,7 +66,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, LOCAL_STRATEGY) {
     const attempts = await this.redis.get(this.getRateLimitKey(ip));
 
     if (attempts && Number(attempts) >= MAX_ATTEMPTS) {
-      throw AppException.from('auth.TOO_MANY_ATTEMPTS', HttpStatus.TOO_MANY_REQUESTS);
+      throw AppException.from('auth.tooManyAttempts', HttpStatus.TOO_MANY_REQUESTS);
     }
   }
 
@@ -89,6 +90,6 @@ export class LocalStrategy extends PassportStrategy(Strategy, LOCAL_STRATEGY) {
 
     const passwordMatch = await this.hashService.compare(password, user.passwordHash);
 
-    return passwordMatch && user.status === UserStatus.ACTIVE;
+    return passwordMatch && user.status === EUserStatus.ACTIVE;
   }
 }

@@ -8,9 +8,8 @@ import { ILoginResult } from '../interfaces/login-result.interface';
 export const ACCESS_TOKEN_COOKIE = 'access_token';
 export const REFRESH_TOKEN_COOKIE = 'refresh_token';
 
-// Escopo do cookie de refresh restrito à própria rota de refresh — reduz a
-// superfície de roubo do token via outros endpoints (ele nunca é enviado
-// automaticamente pelo browser em nenhuma outra chamada).
+// Refresh cookie restricted to the refresh endpoint path, to reduce the risk of CSRF attacks.
+// The access token cookie is available to all paths, but it is httpOnly and cannot be read by the frontend.
 export function getRefreshCookiePath(config: ConfigService): string {
   const prefix = config.get<string>('app.prefix', 'api');
 
@@ -24,7 +23,6 @@ export function setAuthCookies(
   xsrfToken: string,
 ): void {
   const secure = config.get<boolean>('auth.cookieSecure', false);
-  const refreshPath = getRefreshCookiePath(config);
 
   res.cookie(ACCESS_TOKEN_COOKIE, result.accessToken, {
     httpOnly: true,
@@ -38,12 +36,12 @@ export function setAuthCookies(
     httpOnly: true,
     secure,
     sameSite: 'lax',
-    path: refreshPath,
+    path: getRefreshCookiePath(config),
     maxAge: result.refreshExpiresInSeconds * 1000,
   });
 
-  // Não-httpOnly de propósito: o frontend lê esse valor para ecoar no header
-  // X-XSRF-TOKEN (double-submit). Nunca contém informação de sessão.
+  // Not httpOnly on purpose: the frontend reads this value to echo in the header
+  // X-XSRF-TOKEN (double-submit). Never contains session information.
   res.cookie(XSRF_COOKIE_NAME, xsrfToken, {
     httpOnly: false,
     secure,
@@ -55,11 +53,10 @@ export function setAuthCookies(
 
 export function clearAuthCookies(res: Response, config: ConfigService): void {
   const secure = config.get<boolean>('auth.cookieSecure', false);
-  const refreshPath = getRefreshCookiePath(config);
 
   res.clearCookie(ACCESS_TOKEN_COOKIE, { path: '/', httpOnly: true, secure, sameSite: 'lax' });
   res.clearCookie(REFRESH_TOKEN_COOKIE, {
-    path: refreshPath,
+    path: getRefreshCookiePath(config),
     httpOnly: true,
     secure,
     sameSite: 'lax',
