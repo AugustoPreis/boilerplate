@@ -19,8 +19,8 @@ export class IsCpfConstraint implements ValidatorConstraintInterface {
   }
 }
 
-export function IsCpf(options?: ValidationOptions) {
-  return (object: object, propertyName: string) => {
+export function IsCpf(options?: ValidationOptions): (object: object, propertyName: string) => void {
+  return (object: object, propertyName: string): void => {
     registerDecorator({
       target: object.constructor,
       propertyName,
