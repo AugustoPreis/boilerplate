@@ -4,9 +4,9 @@ import { AppException } from '@shared/exceptions';
 import { HashService } from '@shared/services/hash.service';
 import { UuidService } from '@shared/services/uuid.service';
 
-import { CreateUserDto } from '../dtos/create-user.dto';
-import { UserResponseDto } from '../dtos/user-response.dto';
-import { UserStatus } from '../entities/user.entity';
+import { CreateUserDTO } from '../dtos/create-user.dto';
+import { UserResponseDTO } from '../dtos/user-response.dto';
+import { EUserStatus } from '../enums/user-status.enum';
 import { UsersRepository } from '../repositories/users.repository';
 
 @Injectable()
@@ -17,13 +17,13 @@ export class CreateUserUseCase {
     private readonly uuidService: UuidService,
   ) {}
 
-  async execute(dto: CreateUserDto): Promise<UserResponseDto> {
+  async execute(dto: CreateUserDTO): Promise<UserResponseDTO> {
     const email = dto.email.toLowerCase();
 
     const existing = await this.usersRepository.findByEmail(email);
 
     if (existing) {
-      throw AppException.from('users.EMAIL_TAKEN', HttpStatus.CONFLICT, { args: { email } });
+      throw AppException.from('users.emailTaken', HttpStatus.CONFLICT, { args: { email } });
     }
 
     const passwordHash = await this.hashService.hash(dto.password);
@@ -34,9 +34,9 @@ export class CreateUserUseCase {
       name: dto.name,
       avatarUrl: dto.avatarUrl ?? null,
       passwordHash,
-      status: UserStatus.ACTIVE,
+      status: EUserStatus.ACTIVE,
     });
 
-    return UserResponseDto.from(user);
+    return UserResponseDTO.from(user);
   }
 }

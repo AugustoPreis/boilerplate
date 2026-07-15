@@ -3,16 +3,16 @@ import { IsEmail, IsEnum, IsOptional } from 'class-validator';
 
 import { PaginationQueryDTO } from '@shared/dtos/pagination-query.dto';
 
-import { UserStatus } from '../entities/user.entity';
+import { EUserStatus } from '../enums/user-status.enum';
 
-export class UserQueryDto extends PaginationQueryDTO {
+export class UserQueryDTO extends PaginationQueryDTO {
   @ApiPropertyOptional()
   @IsOptional()
   @IsEmail()
   email?: string;
 
-  @ApiPropertyOptional({ enum: UserStatus })
+  @ApiPropertyOptional({ enum: EUserStatus })
   @IsOptional()
-  @IsEnum(UserStatus)
-  status?: UserStatus;
+  @IsEnum(EUserStatus)
+  status?: EUserStatus;
 }

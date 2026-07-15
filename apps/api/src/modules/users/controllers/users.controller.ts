@@ -17,12 +17,12 @@ import { ROLE_ADMIN } from '@shared/constants';
 import { Roles } from '@shared/decorators/roles.decorator';
 import { ParseUuidPipe } from '@shared/pipes/parse-uuid.pipe';
 
-import { AssignRolesDto } from '../dtos/assign-roles.dto';
-import { CreateUserDto } from '../dtos/create-user.dto';
-import { UpdateUserStatusDto } from '../dtos/update-user-status.dto';
-import { UpdateUserDto } from '../dtos/update-user.dto';
-import { UserQueryDto } from '../dtos/user-query.dto';
-import { UserResponseDto } from '../dtos/user-response.dto';
+import { AssignRolesDTO } from '../dtos/assign-roles.dto';
+import { CreateUserDTO } from '../dtos/create-user.dto';
+import { UpdateUserStatusDTO } from '../dtos/update-user-status.dto';
+import { UpdateUserDTO } from '../dtos/update-user.dto';
+import { UserQueryDTO } from '../dtos/user-query.dto';
+import { UserResponseDTO } from '../dtos/user-response.dto';
 import { AssignRolesUseCase } from '../use-cases/assign-roles.use-case';
 import { CreateUserUseCase } from '../use-cases/create-user.use-case';
 import { DeleteUserUseCase } from '../use-cases/delete-user.use-case';
@@ -48,20 +48,20 @@ export class UsersController {
 
   @Get()
   @ApiOperation({ summary: 'List users' })
-  findAll(@Query() query: UserQueryDto): ReturnType<ListUsersUseCase['execute']> {
+  findAll(@Query() query: UserQueryDTO): ReturnType<ListUsersUseCase['execute']> {
     return this.listUsersUseCase.execute(query);
   }
 
   @Get(':uuid')
   @ApiOperation({ summary: 'Get user by UUID' })
-  findOne(@Param('uuid', ParseUuidPipe) uuid: string): Promise<UserResponseDto> {
+  findOne(@Param('uuid', ParseUuidPipe) uuid: string): Promise<UserResponseDTO> {
     return this.findUserUseCase.execute(uuid);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new user' })
-  create(@Body() dto: CreateUserDto): Promise<UserResponseDto> {
+  create(@Body() dto: CreateUserDTO): Promise<UserResponseDTO> {
     return this.createUserUseCase.execute(dto);
   }
 
@@ -69,8 +69,8 @@ export class UsersController {
   @ApiOperation({ summary: 'Update user' })
   update(
     @Param('uuid', ParseUuidPipe) uuid: string,
-    @Body() dto: UpdateUserDto,
-  ): Promise<UserResponseDto> {
+    @Body() dto: UpdateUserDTO,
+  ): Promise<UserResponseDTO> {
     return this.updateUserUseCase.execute(uuid, dto);
   }
 
@@ -78,8 +78,8 @@ export class UsersController {
   @ApiOperation({ summary: 'Update user status' })
   updateStatus(
     @Param('uuid', ParseUuidPipe) uuid: string,
-    @Body() dto: UpdateUserStatusDto,
-  ): Promise<UserResponseDto> {
+    @Body() dto: UpdateUserStatusDTO,
+  ): Promise<UserResponseDTO> {
     return this.updateUserStatusUseCase.execute(uuid, dto);
   }
 
@@ -94,8 +94,8 @@ export class UsersController {
   @ApiOperation({ summary: 'Replace user roles' })
   assignRoles(
     @Param('uuid', ParseUuidPipe) uuid: string,
-    @Body() dto: AssignRolesDto,
-  ): Promise<UserResponseDto> {
+    @Body() dto: AssignRolesDTO,
+  ): Promise<UserResponseDTO> {
     return this.assignRolesUseCase.execute(uuid, dto);
   }
 }

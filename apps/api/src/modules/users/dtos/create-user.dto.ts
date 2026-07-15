@@ -12,7 +12,7 @@ import { i18nValidationMessage } from 'nestjs-i18n';
 
 export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/;
 
-export class CreateUserDto {
+export class CreateUserDTO {
   @ApiProperty()
   @IsEmail()
   @MaxLength(255)

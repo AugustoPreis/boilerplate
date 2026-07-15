@@ -6,7 +6,8 @@ import { IPaginatedResult } from '@shared/interfaces';
 import { buildPaginatedResult, buildSkip } from '@shared/utils/pagination.util';
 
 import { UserRoleEntity } from '../entities/user-role.entity';
-import { UserEntity, UserStatus } from '../entities/user.entity';
+import { UserEntity } from '../entities/user.entity';
+import { EUserStatus } from '../enums/user-status.enum';
 
 const USER_RELATIONS = { userRoles: { role: true } } as const;
 
@@ -51,7 +52,7 @@ export class UsersRepository {
   async search(
     page: number,
     perPage: number,
-    filters: { email?: string; status?: UserStatus },
+    filters: { email?: string; status?: EUserStatus },
   ): Promise<IPaginatedResult<UserEntity>> {
     const where: Record<string, unknown> = { deletedAt: IsNull() };
 
@@ -76,6 +77,7 @@ export class UsersRepository {
 
   async create(data: Partial<UserEntity>): Promise<UserEntity> {
     const entity = this.repo.create(data);
+
     const saved = await this.repo.save(entity);
 
     return this.findByUuid(saved.uuid) as Promise<UserEntity>;

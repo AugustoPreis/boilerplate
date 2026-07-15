@@ -1,8 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-import { UserEntity, UserStatus } from '../entities/user.entity';
+import { UserEntity } from '../entities/user.entity';
+import { EUserStatus } from '../enums/user-status.enum';
 
-export class UserResponseDto {
+export class UserResponseDTO {
   @ApiProperty()
   uuid!: string;
 
@@ -15,8 +16,8 @@ export class UserResponseDto {
   @ApiPropertyOptional({ nullable: true })
   avatarUrl!: string | null;
 
-  @ApiProperty({ enum: UserStatus })
-  status!: UserStatus;
+  @ApiProperty({ enum: EUserStatus })
+  status!: EUserStatus;
 
   @ApiProperty({ type: [String] })
   roles!: string[];
@@ -24,8 +25,8 @@ export class UserResponseDto {
   @ApiProperty()
   createdAt!: Date;
 
-  static from(entity: UserEntity): UserResponseDto {
-    const dto = new UserResponseDto();
+  static from(entity: UserEntity): UserResponseDTO {
+    const dto = new UserResponseDTO();
 
     dto.uuid = entity.uuid;
     dto.email = entity.email;

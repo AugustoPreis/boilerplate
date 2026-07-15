@@ -2,13 +2,9 @@ import { Column, Entity, OneToMany } from 'typeorm';
 
 import { BaseEntity } from '@shared/entities/base.entity';
 
-import { UserRoleEntity } from './user-role.entity';
+import { EUserStatus } from '../enums/user-status.enum';
 
-export enum UserStatus {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
-  PENDING = 'pending',
-}
+import { UserRoleEntity } from './user-role.entity';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -24,8 +20,8 @@ export class UserEntity extends BaseEntity {
   @Column({ name: 'avatar_url', type: 'text', nullable: true })
   avatarUrl!: string | null;
 
-  @Column({ type: 'enum', enum: UserStatus, enumName: 'user_status', default: UserStatus.ACTIVE })
-  status!: UserStatus;
+  @Column({ type: 'enum', enum: EUserStatus, enumName: 'user_status', default: EUserStatus.ACTIVE })
+  status!: EUserStatus;
 
   @OneToMany(() => UserRoleEntity, (ur) => ur.user, { eager: true })
   userRoles!: UserRoleEntity[];

@@ -6,8 +6,8 @@ import { AppException } from '@shared/exceptions';
 
 import { RoleEntity } from '@modules/roles/entities/role.entity';
 
-import { AssignRolesDto } from '../dtos/assign-roles.dto';
-import { UserResponseDto } from '../dtos/user-response.dto';
+import { AssignRolesDTO } from '../dtos/assign-roles.dto';
+import { UserResponseDTO } from '../dtos/user-response.dto';
 import { UsersRepository } from '../repositories/users.repository';
 
 @Injectable()
@@ -18,11 +18,11 @@ export class AssignRolesUseCase {
     private readonly roleRepo: Repository<RoleEntity>,
   ) {}
 
-  async execute(uuid: string, dto: AssignRolesDto): Promise<UserResponseDto> {
+  async execute(uuid: string, dto: AssignRolesDTO): Promise<UserResponseDTO> {
     const user = await this.usersRepository.findByUuid(uuid);
 
     if (!user) {
-      throw AppException.from('users.NOT_FOUND', HttpStatus.NOT_FOUND);
+      throw AppException.from('users.notFound', HttpStatus.NOT_FOUND);
     }
 
     const roles = await Promise.all(
@@ -30,7 +30,7 @@ export class AssignRolesUseCase {
         const role = await this.roleRepo.findOne({ where: { uuid: roleUuid } });
 
         if (!role) {
-          throw AppException.from('roles.NOT_FOUND', HttpStatus.NOT_FOUND, {
+          throw AppException.from('roles.notFound', HttpStatus.NOT_FOUND, {
             args: { uuid: roleUuid },
           });
         }
@@ -46,6 +46,6 @@ export class AssignRolesUseCase {
 
     const updated = await this.usersRepository.findByUuid(uuid);
 
-    return UserResponseDto.from(updated!);
+    return UserResponseDTO.from(updated!);
   }
 }
