@@ -5,6 +5,7 @@ import {
   registerDecorator,
 } from 'class-validator';
 import { validateBr } from 'js-brasil';
+import { i18nValidationMessage } from 'nestjs-i18n';
 
 @ValidatorConstraint({ name: 'isCpf', async: false })
 export class IsCpfConstraint implements ValidatorConstraintInterface {
@@ -13,10 +14,6 @@ export class IsCpfConstraint implements ValidatorConstraintInterface {
 
     return validateBr.cpf(cpf);
   }
-
-  defaultMessage(): string {
-    return 'CPF inválido';
-  }
 }
 
 export function IsCpf(options?: ValidationOptions): (object: object, propertyName: string) => void {
@@ -24,7 +21,7 @@ export function IsCpf(options?: ValidationOptions): (object: object, propertyNam
     registerDecorator({
       target: object.constructor,
       propertyName,
-      options,
+      options: { message: i18nValidationMessage('validation.cpfInvalid'), ...options },
       constraints: [],
       validator: IsCpfConstraint,
     });
