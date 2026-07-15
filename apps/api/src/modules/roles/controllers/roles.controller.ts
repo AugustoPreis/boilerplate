@@ -18,10 +18,10 @@ import { Roles } from '@shared/decorators/roles.decorator';
 import { PaginationQueryDTO } from '@shared/dtos/pagination-query.dto';
 import { ParseUuidPipe } from '@shared/pipes/parse-uuid.pipe';
 
-import { CreateRoleDto } from '../dtos/create-role.dto';
-import { RoleResponseDto } from '../dtos/role-response.dto';
-import { UpdateRolePermissionsDto } from '../dtos/update-role-permissions.dto';
-import { UpdateRoleDto } from '../dtos/update-role.dto';
+import { CreateRoleDTO } from '../dtos/create-role.dto';
+import { RoleResponseDTO } from '../dtos/role-response.dto';
+import { UpdateRolePermissionsDTO } from '../dtos/update-role-permissions.dto';
+import { UpdateRoleDTO } from '../dtos/update-role.dto';
 import { CreateRoleUseCase } from '../use-cases/roles/create-role.use-case';
 import { DeleteRoleUseCase } from '../use-cases/roles/delete-role.use-case';
 import { FindRoleUseCase } from '../use-cases/roles/find-role.use-case';
@@ -51,14 +51,14 @@ export class RolesController {
 
   @Get(':uuid')
   @ApiOperation({ summary: 'Get role by UUID' })
-  findOne(@Param('uuid', ParseUuidPipe) uuid: string): Promise<RoleResponseDto> {
+  findOne(@Param('uuid', ParseUuidPipe) uuid: string): Promise<RoleResponseDTO> {
     return this.findRoleUseCase.execute(uuid);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new role' })
-  create(@Body() dto: CreateRoleDto): Promise<RoleResponseDto> {
+  create(@Body() dto: CreateRoleDTO): Promise<RoleResponseDTO> {
     return this.createRoleUseCase.execute(dto);
   }
 
@@ -66,8 +66,8 @@ export class RolesController {
   @ApiOperation({ summary: 'Update role' })
   update(
     @Param('uuid', ParseUuidPipe) uuid: string,
-    @Body() dto: UpdateRoleDto,
-  ): Promise<RoleResponseDto> {
+    @Body() dto: UpdateRoleDTO,
+  ): Promise<RoleResponseDTO> {
     return this.updateRoleUseCase.execute(uuid, dto);
   }
 
@@ -82,8 +82,8 @@ export class RolesController {
   @ApiOperation({ summary: 'Replace role permissions' })
   updatePermissions(
     @Param('uuid', ParseUuidPipe) uuid: string,
-    @Body() dto: UpdateRolePermissionsDto,
-  ): Promise<RoleResponseDto> {
+    @Body() dto: UpdateRolePermissionsDTO,
+  ): Promise<RoleResponseDTO> {
     return this.updateRolePermissionsUseCase.execute(uuid, dto);
   }
 }

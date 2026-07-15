@@ -17,9 +17,9 @@ import { Roles } from '@shared/decorators/roles.decorator';
 import { PaginationQueryDTO } from '@shared/dtos/pagination-query.dto';
 import { ParseUuidPipe } from '@shared/pipes/parse-uuid.pipe';
 
-import { CreatePermissionDto } from '../dtos/create-permission.dto';
-import { PermissionResponseDto } from '../dtos/permission-response.dto';
-import { UpdatePermissionDto } from '../dtos/update-permission.dto';
+import { CreatePermissionDTO } from '../dtos/create-permission.dto';
+import { PermissionResponseDTO } from '../dtos/permission-response.dto';
+import { UpdatePermissionDTO } from '../dtos/update-permission.dto';
 import { CreatePermissionUseCase } from '../use-cases/permissions/create-permission.use-case';
 import { DeletePermissionUseCase } from '../use-cases/permissions/delete-permission.use-case';
 import { FindPermissionUseCase } from '../use-cases/permissions/find-permission.use-case';
@@ -47,14 +47,14 @@ export class PermissionsController {
 
   @Get(':uuid')
   @ApiOperation({ summary: 'Get permission by UUID' })
-  findOne(@Param('uuid', ParseUuidPipe) uuid: string): Promise<PermissionResponseDto> {
+  findOne(@Param('uuid', ParseUuidPipe) uuid: string): Promise<PermissionResponseDTO> {
     return this.findPermissionUseCase.execute(uuid);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new permission' })
-  create(@Body() dto: CreatePermissionDto): Promise<PermissionResponseDto> {
+  create(@Body() dto: CreatePermissionDTO): Promise<PermissionResponseDTO> {
     return this.createPermissionUseCase.execute(dto);
   }
 
@@ -62,8 +62,8 @@ export class PermissionsController {
   @ApiOperation({ summary: 'Update permission' })
   update(
     @Param('uuid', ParseUuidPipe) uuid: string,
-    @Body() dto: UpdatePermissionDto,
-  ): Promise<PermissionResponseDto> {
+    @Body() dto: UpdatePermissionDTO,
+  ): Promise<PermissionResponseDTO> {
     return this.updatePermissionUseCase.execute(uuid, dto);
   }
 

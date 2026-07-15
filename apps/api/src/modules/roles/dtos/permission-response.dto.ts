@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import { PermissionEntity } from '../entities/permission.entity';
 
-export class PermissionResponseDto {
+export class PermissionResponseDTO {
   @ApiProperty()
   uuid!: string;
 
@@ -12,8 +12,8 @@ export class PermissionResponseDto {
   @ApiPropertyOptional({ nullable: true })
   description!: string | null;
 
-  static from(entity: PermissionEntity): PermissionResponseDto {
-    const dto = new PermissionResponseDto();
+  static from(entity: PermissionEntity): PermissionResponseDTO {
+    const dto = new PermissionResponseDTO();
 
     dto.uuid = entity.uuid;
     dto.key = entity.key;

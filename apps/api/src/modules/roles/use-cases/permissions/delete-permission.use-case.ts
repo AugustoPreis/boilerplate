@@ -12,7 +12,7 @@ export class DeletePermissionUseCase {
     const permission = await this.permissionsRepository.findByUuid(uuid);
 
     if (!permission) {
-      throw AppException.from('roles.PERMISSION_NOT_FOUND_BY_UUID', HttpStatus.NOT_FOUND);
+      throw AppException.from('roles.permissionNotFoundByUuid', HttpStatus.NOT_FOUND);
     }
 
     await this.permissionsRepository.delete(permission.id);

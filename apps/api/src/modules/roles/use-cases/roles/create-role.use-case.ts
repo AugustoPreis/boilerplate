@@ -3,8 +3,8 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { AppException } from '@shared/exceptions';
 import { UuidService } from '@shared/services/uuid.service';
 
-import { CreateRoleDto } from '../../dtos/create-role.dto';
-import { RoleResponseDto } from '../../dtos/role-response.dto';
+import { CreateRoleDTO } from '../../dtos/create-role.dto';
+import { RoleResponseDTO } from '../../dtos/role-response.dto';
 import { RolesRepository } from '../../repositories/roles.repository';
 
 @Injectable()
@@ -14,11 +14,11 @@ export class CreateRoleUseCase {
     private readonly uuidService: UuidService,
   ) {}
 
-  async execute(dto: CreateRoleDto): Promise<RoleResponseDto> {
+  async execute(dto: CreateRoleDTO): Promise<RoleResponseDTO> {
     const existing = await this.rolesRepository.findByName(dto.name);
 
     if (existing) {
-      throw AppException.from('roles.NAME_TAKEN', HttpStatus.CONFLICT, {
+      throw AppException.from('roles.nameTaken', HttpStatus.CONFLICT, {
         args: { name: dto.name },
       });
     }
@@ -29,6 +29,6 @@ export class CreateRoleUseCase {
       description: dto.description ?? null,
     });
 
-    return RoleResponseDto.from(role);
+    return RoleResponseDTO.from(role);
   }
 }

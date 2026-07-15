@@ -3,8 +3,8 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { AppException } from '@shared/exceptions';
 import { UuidService } from '@shared/services/uuid.service';
 
-import { CreatePermissionDto } from '../../dtos/create-permission.dto';
-import { PermissionResponseDto } from '../../dtos/permission-response.dto';
+import { CreatePermissionDTO } from '../../dtos/create-permission.dto';
+import { PermissionResponseDTO } from '../../dtos/permission-response.dto';
 import { PermissionsRepository } from '../../repositories/permissions.repository';
 
 @Injectable()
@@ -14,11 +14,11 @@ export class CreatePermissionUseCase {
     private readonly uuidService: UuidService,
   ) {}
 
-  async execute(dto: CreatePermissionDto): Promise<PermissionResponseDto> {
+  async execute(dto: CreatePermissionDTO): Promise<PermissionResponseDTO> {
     const existing = await this.permissionsRepository.findByKey(dto.key);
 
     if (existing) {
-      throw AppException.from('roles.PERMISSION_KEY_TAKEN', HttpStatus.CONFLICT, {
+      throw AppException.from('roles.permissionKeyTaken', HttpStatus.CONFLICT, {
         args: { key: dto.key },
       });
     }
@@ -29,6 +29,6 @@ export class CreatePermissionUseCase {
       description: dto.description ?? null,
     });
 
-    return PermissionResponseDto.from(permission);
+    return PermissionResponseDTO.from(permission);
   }
 }

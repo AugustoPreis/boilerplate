@@ -2,9 +2,9 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import { RoleEntity } from '../entities/role.entity';
 
-import { PermissionResponseDto } from './permission-response.dto';
+import { PermissionResponseDTO } from './permission-response.dto';
 
-export class RoleResponseDto {
+export class RoleResponseDTO {
   @ApiProperty()
   uuid!: string;
 
@@ -14,16 +14,16 @@ export class RoleResponseDto {
   @ApiPropertyOptional({ nullable: true })
   description!: string | null;
 
-  @ApiProperty({ type: [PermissionResponseDto] })
-  permissions!: PermissionResponseDto[];
+  @ApiProperty({ type: [PermissionResponseDTO] })
+  permissions!: PermissionResponseDTO[];
 
-  static from(entity: RoleEntity): RoleResponseDto {
-    const dto = new RoleResponseDto();
+  static from(entity: RoleEntity): RoleResponseDTO {
+    const dto = new RoleResponseDTO();
 
     dto.uuid = entity.uuid;
     dto.name = entity.name;
     dto.description = entity.description;
-    dto.permissions = entity.permissions?.map((p) => PermissionResponseDto.from(p)) ?? [];
+    dto.permissions = entity.permissions?.map((p) => PermissionResponseDTO.from(p)) ?? [];
 
     return dto;
   }

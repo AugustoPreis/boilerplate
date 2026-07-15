@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsString } from 'class-validator';
 
-export class UpdateRolePermissionsDto {
-  @ApiProperty({ type: [String], description: 'Chaves das permissões a atribuir ao papel' })
+export class UpdateRolePermissionsDTO {
+  @ApiProperty({ type: [String], description: 'Permission keys to assign to the role' })
   @IsArray()
   @IsString({ each: true })
   permissionKeys!: string[];
