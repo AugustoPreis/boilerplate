@@ -1,0 +1,8 @@
+{
+  "NOT_FOUND": "Recurso não encontrado.",
+  "BAD_REQUEST": "Requisição inválida.",
+  "UNAUTHORIZED": "Não autorizado.",
+  "FORBIDDEN": "Acesso negado.",
+  "CONFLICT": "Conflito ao processar a requisição.",
+  "INTERNAL_ERROR": "Ocorreu um erro interno. Tente novamente mais tarde."
+}

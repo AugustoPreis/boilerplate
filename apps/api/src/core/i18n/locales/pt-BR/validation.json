@@ -1,0 +1,8 @@
+{
+  "IS_NOT_EMPTY": "O campo não pode estar vazio.",
+  "IS_EMAIL": "Deve ser um e-mail válido.",
+  "IS_STRING": "Deve ser um texto.",
+  "IS_INT": "Deve ser um número inteiro.",
+  "MIN": "O valor mínimo permitido não foi atingido.",
+  "MAX": "O valor máximo permitido foi excedido."
+}
