@@ -1,0 +1,16 @@
+{
+  "name": "@boilerplate/eslint-config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./base.mjs",
+  "exports": {
+    ".": "./base.mjs"
+  },
+  "dependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.6.0",
+    "eslint-config-prettier": "^10.1.8",
+    "typescript-eslint": "^8.60.1"
+  }
+}
