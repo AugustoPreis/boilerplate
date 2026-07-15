@@ -85,10 +85,8 @@ import { SharedModule } from './shared/shared.module';
     AuthModule,
   ],
   providers: [
+    // Be careful with the order of the guards, as they are executed in the order they are provided.
     { provide: APP_GUARD, useClass: ThrottlerGuard },
-    // Ordem importa: autenticar (Jwt) antes de autorizar (Roles), e validar
-    // CSRF só depois de já se saber quem é o usuário (embora o CsrfGuard não
-    // dependa disso hoje, mantém a leitura "autentica → autoriza → valida").
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
     { provide: APP_GUARD, useClass: CsrfGuard },

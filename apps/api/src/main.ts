@@ -23,8 +23,6 @@ async function bootstrap(): Promise<void> {
   app.use(compression());
   app.use(cookieParser());
 
-  // Cookies httpOnly de sessão exigem credentials: true no CORS, o que o
-  // navegador não aceita combinado com origin: '*' — precisa ser explícito.
   app.enableCors({
     origin: configService.get<string>('app.corsOrigin', 'http://localhost:5173'),
     credentials: true,
@@ -46,8 +44,8 @@ async function bootstrap(): Promise<void> {
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Boilerplate API')
-    .setDescription('Núcleo de infraestrutura NestJS — Documentação da API')
-    .setVersion('1.0')
+    .setDescription('API Documentation')
+    .setVersion(process.env.npm_package_version ?? '1.0.0')
     .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' })
     .build();
 

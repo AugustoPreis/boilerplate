@@ -27,7 +27,7 @@ export class RolesSeeder {
 
     const inserted = await this.dataSource.query<IIdRow[]>(
       `INSERT INTO roles (uuid, name, description) VALUES ($1, $2, $3) RETURNING id`,
-      [uuidv7(), ROLE_ADMIN, 'Papel reservado com acesso total à plataforma.'],
+      [uuidv7(), ROLE_ADMIN, 'Reserved role with full access to the platform.'],
     );
 
     return inserted[0].id;

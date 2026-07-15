@@ -1,8 +1,6 @@
 import { DataSource } from 'typeorm';
 import { v7 as uuidv7 } from 'uuid';
 
-// Lista mínima para o RBAC funcionar de ponta a ponta — sem nada de negócio.
-// Qualquer módulo novo adiciona suas próprias chaves aqui ou via migration própria.
 const DEFAULT_PERMISSIONS = ['users:read', 'users:write', 'roles:read', 'roles:write'];
 
 export class PermissionsSeeder {

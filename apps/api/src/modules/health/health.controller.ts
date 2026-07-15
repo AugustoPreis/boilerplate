@@ -33,6 +33,7 @@ export class HealthController {
 
     try {
       await this.dataSource.query('SELECT 1');
+
       checks.database = 'ok';
     } catch {
       checks.database = 'error';
@@ -40,6 +41,7 @@ export class HealthController {
 
     try {
       await this.redis.ping();
+
       checks.redis = 'ok';
     } catch {
       checks.redis = 'error';

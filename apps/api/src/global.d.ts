@@ -7,6 +7,7 @@ declare module 'js-brasil' {
 declare namespace Express {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   interface Request {
+    cookies: Record<string, string>;
     auditContext?: {
       oldData?: Record<string, unknown> | null;
     };

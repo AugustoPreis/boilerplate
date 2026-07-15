@@ -6,6 +6,7 @@ import { RolesSeeder } from './roles.seeder';
 
 async function runSeeds(): Promise<void> {
   console.log('Initializing database connection...');
+
   await AppDataSource.initialize();
 
   console.log('Running seeds...');
@@ -15,6 +16,7 @@ async function runSeeds(): Promise<void> {
   await new AdminSeeder(AppDataSource).run();
 
   console.log('All seeds completed successfully.');
+
   await AppDataSource.destroy();
 }
 
