@@ -1,7 +1,7 @@
 {
   "extends": "@boilerplate/typescript-config/base.json",
   "compilerOptions": {
-    "rootDir": "./",
+    "rootDir": "./src",
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
