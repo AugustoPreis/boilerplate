@@ -1,3 +1,4 @@
+import { ROLE_ADMIN } from '@boilerplate/shared';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
@@ -17,6 +18,9 @@ export class RolesGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest<{ user: { roles: string[] } }>();
     const userRoles: string[] = request.user?.roles ?? [];
+
+    // ROLE_ADMIN é um bypass total — não é preciso listá-lo em cada @Roles().
+    if (userRoles.includes(ROLE_ADMIN)) return true;
 
     return requiredRoles.some((role) => userRoles.includes(role));
   }

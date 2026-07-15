@@ -9,4 +9,5 @@ export const LOCAL_STRATEGY = 'local';
 export const AUDIT_SCHEMA = 'audit';
 export const PUBLIC_SCHEMA = 'public';
 
-export { ERoles, RoleType } from '../types/role.type';
+export { RoleType } from '../types/role.type';
+export { ROLE_ADMIN } from '@boilerplate/shared';

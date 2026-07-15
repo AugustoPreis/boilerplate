@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags, ApiPropertyOptional } from '@nest
 import { Type } from 'class-transformer';
 import { IsDateString, IsInt, IsOptional, IsString, IsUUID, Min } from 'class-validator';
 
-import { ERoles } from '@shared/constants';
+import { ROLE_ADMIN } from '@shared/constants';
 import { Roles } from '@shared/decorators/roles.decorator';
 import { IPaginatedResult } from '@shared/interfaces';
 import { ParseUuidPipe } from '@shared/pipes/parse-uuid.pipe';
@@ -59,7 +59,7 @@ export class AuditController {
   constructor(private readonly auditLogsRepository: AuditLogsRepository) {}
 
   @Get()
-  @Roles(ERoles.ADMIN)
+  @Roles(ROLE_ADMIN)
   @ApiOperation({ summary: 'List audit logs' })
   async findAll(@Query() query: AuditLogQueryDto): Promise<IPaginatedResult<AuditLogResponseDto>> {
     const result = await this.auditLogsRepository.search(query.page ?? 1, query.perPage ?? 50, {
@@ -74,7 +74,7 @@ export class AuditController {
   }
 
   @Get(':uuid')
-  @Roles(ERoles.ADMIN)
+  @Roles(ROLE_ADMIN)
   @ApiOperation({ summary: 'Get audit log by UUID' })
   async findOne(@Param('uuid', ParseUuidPipe) uuid: string): Promise<AuditLogResponseDto | null> {
     const log = await this.auditLogsRepository.findByUuid(uuid);

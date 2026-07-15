@@ -5,14 +5,20 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
 
-import { appConfig, databaseConfig } from './core/config';
+import { appConfig, authConfig, databaseConfig } from './core/config';
 import { validateConfig } from './core/config/config.validation';
 import { TypeOrmConfigModule } from './core/database/typeorm.module';
 import { I18nModule } from './core/i18n/i18n.module';
 import { RedisModule } from './core/redis/redis.module';
 import { AuditModule } from './modules/audit/audit.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { HealthModule } from './modules/health/health.module';
+import { RolesModule } from './modules/roles/roles.module';
+import { UsersModule } from './modules/users/users.module';
 import { AppCacheModule } from './shared/cache/cache.module';
+import { CsrfGuard } from './shared/guards/csrf.guard';
+import { JwtAuthGuard } from './shared/guards/jwt-auth.guard';
+import { RolesGuard } from './shared/guards/roles.guard';
 import { AuditInterceptor } from './shared/interceptors/audit.interceptor';
 import { LoggingInterceptor } from './shared/interceptors/logging.interceptor';
 import { ResponseInterceptor } from './shared/interceptors/response.interceptor';
@@ -23,7 +29,7 @@ import { SharedModule } from './shared/shared.module';
     ConfigModule.forRoot({
       isGlobal: true,
       validate: validateConfig,
-      load: [appConfig, databaseConfig],
+      load: [appConfig, authConfig, databaseConfig],
       envFilePath: ['../../.env.local', '../../.env', '.env.local', '.env'],
     }),
     LoggerModule.forRootAsync({
@@ -74,13 +80,18 @@ import { SharedModule } from './shared/shared.module';
     SharedModule,
     HealthModule,
     AuditModule,
+    UsersModule,
+    RolesModule,
+    AuthModule,
   ],
   providers: [
-    // JwtAuthGuard/RolesGuard não são registrados globalmente ainda: dependem
-    // da estratégia Passport 'jwt' que só existe a partir do AuthModule (Fase 2).
-    // Os guards já existem em @shared/guards como infraestrutura, mas ativá-los
-    // aqui sem uma estratégia registrada quebraria toda rota não pública.
     { provide: APP_GUARD, useClass: ThrottlerGuard },
+    // Ordem importa: autenticar (Jwt) antes de autorizar (Roles), e validar
+    // CSRF só depois de já se saber quem é o usuário (embora o CsrfGuard não
+    // dependa disso hoje, mantém a leitura "autentica → autoriza → valida").
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
+    { provide: APP_GUARD, useClass: CsrfGuard },
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
     { provide: APP_INTERCEPTOR, useClass: AuditInterceptor },
     { provide: APP_INTERCEPTOR, useClass: ResponseInterceptor },

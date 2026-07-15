@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import compression from 'compression';
+import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
 import { Logger } from 'nestjs-pino';
@@ -20,9 +21,12 @@ async function bootstrap(): Promise<void> {
   app.useLogger(app.get(Logger));
   app.use(helmet());
   app.use(compression());
+  app.use(cookieParser());
 
+  // Cookies httpOnly de sessão exigem credentials: true no CORS, o que o
+  // navegador não aceita combinado com origin: '*' — precisa ser explícito.
   app.enableCors({
-    origin: configService.get<string>('app.corsOrigin', '*'),
+    origin: configService.get<string>('app.corsOrigin', 'http://localhost:5173'),
     credentials: true,
   });
 

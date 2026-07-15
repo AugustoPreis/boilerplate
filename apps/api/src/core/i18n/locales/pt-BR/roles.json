@@ -1,0 +1,8 @@
+{
+  "NOT_FOUND": "Papel não encontrado.",
+  "NAME_TAKEN": "Já existe um papel com o nome '{name}'.",
+  "CANNOT_DELETE_RESERVED": "O papel reservado da plataforma não pode ser removido.",
+  "PERMISSION_NOT_FOUND": "Permissão(ões) não encontrada(s): {keys}.",
+  "PERMISSION_NOT_FOUND_BY_UUID": "Permissão não encontrada.",
+  "PERMISSION_KEY_TAKEN": "Já existe uma permissão com a chave '{key}'."
+}

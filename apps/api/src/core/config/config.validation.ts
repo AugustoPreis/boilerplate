@@ -17,6 +17,10 @@ export function validateConfig(config: Record<string, unknown>): Record<string, 
     if (jwtRefreshSecret.length < 32) {
       errors.push('JWT_REFRESH_SECRET must have at least 32 characters in production');
     }
+
+    if (config.COOKIE_SECURE !== 'true') {
+      errors.push('COOKIE_SECURE must be "true" in production (cookies require HTTPS)');
+    }
   }
 
   const bcryptRounds = parseInt((config.BCRYPT_ROUNDS as string) || '12', 10);

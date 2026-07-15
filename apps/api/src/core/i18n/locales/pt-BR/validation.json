@@ -4,5 +4,6 @@
   "IS_STRING": "Deve ser um texto.",
   "IS_INT": "Deve ser um número inteiro.",
   "MIN": "O valor mínimo permitido não foi atingido.",
-  "MAX": "O valor máximo permitido foi excedido."
+  "MAX": "O valor máximo permitido foi excedido.",
+  "PASSWORD_TOO_WEAK": "A senha deve ter ao menos 8 caracteres, incluindo maiúscula, minúscula, número e caractere especial."
 }

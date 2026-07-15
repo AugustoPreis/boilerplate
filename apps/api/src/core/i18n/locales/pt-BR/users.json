@@ -1,0 +1,4 @@
+{
+  "NOT_FOUND": "Usuário não encontrado.",
+  "EMAIL_TAKEN": "O e-mail '{email}' já está em uso."
+}

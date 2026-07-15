@@ -10,11 +10,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 import { AuditService } from '../../modules/audit/services/audit.service';
-
-// TODO(fase-2): trocar por IAuthUser de @modules/auth quando o módulo de auth existir.
-interface IRequestUser {
-  uuid?: string;
-}
+import { IJwtPayload } from '../../modules/auth/interfaces/jwt-payload.interface';
 
 const AUDITABLE_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
 
@@ -29,7 +25,7 @@ export class AuditInterceptor implements NestInterceptor {
       return next.handle();
     }
 
-    const userId = (request as Request & { user?: IRequestUser }).user?.uuid ?? null;
+    const userId = (request as Request & { user?: IJwtPayload }).user?.sub ?? null;
     const entityName = this.auditService.extractEntityName(request.url);
     const contextOldData = request.auditContext?.oldData ?? null;
 
