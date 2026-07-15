@@ -28,7 +28,7 @@ export class JwtAuthGuard extends AuthGuard(JWT_STRATEGY) {
 
   override handleRequest<TUser>(err: unknown, user: TUser): TUser {
     if (err || !user) {
-      throw (err as Error) || AppException.from('errors.UNAUTHORIZED', HttpStatus.UNAUTHORIZED);
+      throw (err as Error) || AppException.from('errors.unauthorized', HttpStatus.UNAUTHORIZED);
     }
     return user;
   }

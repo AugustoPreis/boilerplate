@@ -6,16 +6,10 @@ import { SKIP_CSRF_KEY } from '../decorators/skip-csrf.decorator';
 import { AppException } from '../exceptions';
 
 const MUTATING_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
+
 export const XSRF_COOKIE_NAME = 'XSRF-TOKEN';
 export const XSRF_HEADER_NAME = 'x-xsrf-token';
 
-/**
- * Double-submit cookie: o backend seta um cookie XSRF-TOKEN legível por
- * JavaScript (não é o token de sessão) no login/refresh. Toda rota mutante
- * exige que o mesmo valor volte no header X-XSRF-TOKEN — um atacante que só
- * consegue disparar o cookie automaticamente (CSRF cross-site) não consegue
- * ler o cookie para replicar o header.
- */
 @Injectable()
 export class CsrfGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
@@ -36,7 +30,7 @@ export class CsrfGuard implements CanActivate {
     const headerToken = request.headers[XSRF_HEADER_NAME];
 
     if (!cookieToken || !headerToken || cookieToken !== headerToken) {
-      throw AppException.from('auth.CSRF_INVALID', HttpStatus.FORBIDDEN);
+      throw AppException.from('auth.csrfInvalid', HttpStatus.FORBIDDEN);
     }
 
     return true;

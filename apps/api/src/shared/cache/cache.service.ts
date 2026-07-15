@@ -28,7 +28,7 @@ export class CacheService {
     try {
       await this.cacheManager.set(key, value, ttl);
     } catch (err) {
-      this.logger.warn(`Cache set failed for key '${key}': ${(err as Error).message}`);
+      this.logger.warn(`Cache set failed for key '${key}': ${this.getError(err)}`);
     }
   }
 
@@ -36,7 +36,7 @@ export class CacheService {
     try {
       await this.cacheManager.del(key);
     } catch (err) {
-      this.logger.warn(`Cache del failed for key '${key}': ${(err as Error).message}`);
+      this.logger.warn(`Cache del failed for key '${key}': ${this.getError(err)}`);
     }
   }
 
@@ -44,5 +44,13 @@ export class CacheService {
     // In-memory cache manager doesn't support pattern deletion natively
     // This is a no-op for the memory store; Redis-backed implementation would use SCAN
     this.logger.debug(`Cache pattern invalidation requested: ${_pattern}`);
+  }
+
+  private getError(err: unknown): string {
+    if (err instanceof Error) {
+      return err.message;
+    }
+
+    return String(err);
   }
 }

@@ -5,11 +5,6 @@ export interface IAppExceptionOptions {
   code?: string;
 }
 
-/**
- * Exceção de aplicação cuja mensagem final é resolvida a partir de uma chave
- * de i18n (ex. 'errors.NOT_FOUND') pelo HttpExceptionFilter, no idioma da
- * requisição. Nunca construa com uma string de mensagem literal.
- */
 export class AppException extends HttpException {
   public readonly i18nKey: string;
   public readonly args?: Record<string, unknown>;

@@ -19,7 +19,7 @@ export class RolesGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<{ user: { roles: string[] } }>();
     const userRoles: string[] = request.user?.roles ?? [];
 
-    // ROLE_ADMIN é um bypass total — não é preciso listá-lo em cada @Roles().
+    // Total bypass for ROLE_ADMIN
     if (userRoles.includes(ROLE_ADMIN)) return true;
 
     return requiredRoles.some((role) => userRoles.includes(role));

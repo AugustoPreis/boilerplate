@@ -1,8 +1,9 @@
 {
-  "NOT_FOUND": "Recurso não encontrado.",
-  "BAD_REQUEST": "Requisição inválida.",
-  "UNAUTHORIZED": "Não autorizado.",
-  "FORBIDDEN": "Acesso negado.",
-  "CONFLICT": "Conflito ao processar a requisição.",
-  "INTERNAL_ERROR": "Ocorreu um erro interno. Tente novamente mais tarde."
+  "notFound": "Recurso não encontrado.",
+  "badRequest": "Requisição inválida.",
+  "unauthorized": "Não autorizado.",
+  "forbidden": "Acesso negado.",
+  "conflict": "Conflito ao processar a requisição.",
+  "internalError": "Ocorreu um erro interno. Tente novamente mais tarde.",
+  "invalidUuid": "'{value}' não é um identificador válido."
 }

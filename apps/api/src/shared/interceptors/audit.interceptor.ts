@@ -25,7 +25,7 @@ export class AuditInterceptor implements NestInterceptor {
       return next.handle();
     }
 
-    const userId = (request as Request & { user?: IJwtPayload }).user?.sub ?? null;
+    const userId = (request.user as IJwtPayload)?.sub ?? null;
     const entityName = this.auditService.extractEntityName(request.url);
     const contextOldData = request.auditContext?.oldData ?? null;
 
