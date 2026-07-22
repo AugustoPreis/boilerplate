@@ -10,6 +10,7 @@ import { validateConfig } from './core/config/config.validation';
 import { TypeOrmConfigModule } from './core/database/typeorm.module';
 import { I18nModule } from './core/i18n/i18n.module';
 import { RedisModule } from './core/redis/redis.module';
+import { AuditModule } from './modules/audit/audit.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { HealthModule } from './modules/health/health.module';
 import { RolesModule } from './modules/roles/roles.module';
@@ -80,6 +81,7 @@ import { SharedModule } from './shared/shared.module';
     UsersModule,
     RolesModule,
     AuthModule,
+    AuditModule,
   ],
   providers: [
     // Be careful with the order of the guards, as they are executed in the order they are provided.
