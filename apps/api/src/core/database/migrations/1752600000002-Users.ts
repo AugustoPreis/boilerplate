@@ -10,7 +10,7 @@ export class Users1752600000002 implements MigrationInterface {
         password_hash TEXT NOT NULL,
         name VARCHAR(255) NOT NULL,
         avatar_url TEXT,
-        status user_status NOT NULL DEFAULT 'active',
+        status user_status NOT NULL DEFAULT 'ACTIVE',
         created_at TIMESTAMP NOT NULL DEFAULT NOW(),
         updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
         deleted_at TIMESTAMP NULL

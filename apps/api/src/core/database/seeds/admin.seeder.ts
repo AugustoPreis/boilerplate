@@ -32,7 +32,7 @@ export class AdminSeeder {
 
     const userRows = await this.dataSource.query<IIdRow[]>(
       `INSERT INTO users (uuid, email, password_hash, name, status, created_at, updated_at)
-       VALUES ($1, $2, $3, $4, 'active', NOW(), NOW())
+       VALUES ($1, $2, $3, $4, 'ACTIVE', NOW(), NOW())
        RETURNING id`,
       [uuidv7(), adminEmail, passwordHash, 'Administrador'],
     );

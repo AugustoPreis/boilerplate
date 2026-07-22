@@ -14,9 +14,9 @@
         },
         "enums": {
           "status": {
-            "active": "Ativo",
-            "inactive": "Inativo",
-            "pending": "Pendente"
+            "ACTIVE": "Ativo",
+            "INACTIVE": "Inativo",
+            "PENDING": "Pendente"
           }
         }
       }

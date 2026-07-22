@@ -6,7 +6,7 @@ export class ExtensionsAndEnums1752600000000 implements MigrationInterface {
 
     await queryRunner.query(`
       DO $$ BEGIN
-        CREATE TYPE user_status AS ENUM ('active', 'inactive', 'pending');
+        CREATE TYPE user_status AS ENUM ('ACTIVE', 'INACTIVE', 'PENDING');
       EXCEPTION WHEN duplicate_object THEN NULL;
       END $$
     `);
