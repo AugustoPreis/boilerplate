@@ -10,7 +10,6 @@ import { validateConfig } from './core/config/config.validation';
 import { TypeOrmConfigModule } from './core/database/typeorm.module';
 import { I18nModule } from './core/i18n/i18n.module';
 import { RedisModule } from './core/redis/redis.module';
-import { AuditModule } from './modules/audit/audit.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { HealthModule } from './modules/health/health.module';
 import { RolesModule } from './modules/roles/roles.module';
@@ -19,7 +18,6 @@ import { AppCacheModule } from './shared/cache/cache.module';
 import { CsrfGuard } from './shared/guards/csrf.guard';
 import { JwtAuthGuard } from './shared/guards/jwt-auth.guard';
 import { RolesGuard } from './shared/guards/roles.guard';
-import { AuditInterceptor } from './shared/interceptors/audit.interceptor';
 import { LoggingInterceptor } from './shared/interceptors/logging.interceptor';
 import { ResponseInterceptor } from './shared/interceptors/response.interceptor';
 import { SharedModule } from './shared/shared.module';
@@ -79,7 +77,6 @@ import { SharedModule } from './shared/shared.module';
     AppCacheModule,
     SharedModule,
     HealthModule,
-    AuditModule,
     UsersModule,
     RolesModule,
     AuthModule,
@@ -91,7 +88,6 @@ import { SharedModule } from './shared/shared.module';
     { provide: APP_GUARD, useClass: RolesGuard },
     { provide: APP_GUARD, useClass: CsrfGuard },
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
-    { provide: APP_INTERCEPTOR, useClass: AuditInterceptor },
     { provide: APP_INTERCEPTOR, useClass: ResponseInterceptor },
   ],
 })

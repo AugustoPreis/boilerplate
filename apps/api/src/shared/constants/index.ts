@@ -6,7 +6,6 @@ export const MAX_PAGE_SIZE = 100;
 export const JWT_STRATEGY = 'jwt';
 export const LOCAL_STRATEGY = 'local';
 
-export const AUDIT_SCHEMA = 'audit';
 export const PUBLIC_SCHEMA = 'public';
 
 export { RoleType } from '../types/role.type';
