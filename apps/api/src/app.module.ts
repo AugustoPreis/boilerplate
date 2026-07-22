@@ -2,7 +2,7 @@ import { Module, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
 
 import { appConfig, authConfig, databaseConfig } from './core/config';
@@ -20,6 +20,7 @@ import { RequestContextInterceptor } from './shared/context/request-context.inte
 import { CsrfGuard } from './shared/guards/csrf.guard';
 import { JwtAuthGuard } from './shared/guards/jwt-auth.guard';
 import { RolesGuard } from './shared/guards/roles.guard';
+import { AppThrottlerGuard } from './shared/guards/throttler.guard';
 import { LoggingInterceptor } from './shared/interceptors/logging.interceptor';
 import { ResponseInterceptor } from './shared/interceptors/response.interceptor';
 import { SharedModule } from './shared/shared.module';
@@ -86,7 +87,7 @@ import { SharedModule } from './shared/shared.module';
   ],
   providers: [
     // Be careful with the order of the guards, as they are executed in the order they are provided.
-    { provide: APP_GUARD, useClass: ThrottlerGuard },
+    { provide: APP_GUARD, useClass: AppThrottlerGuard },
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
     { provide: APP_GUARD, useClass: CsrfGuard },
