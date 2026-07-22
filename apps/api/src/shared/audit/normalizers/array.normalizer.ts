@@ -4,8 +4,14 @@ import { IAuditNormalizer } from '../interfaces';
 
 /**
  * Normalizes arrays so that order never affects the diff: each item is
- * reduced to a comparable primitive (its `uuid`/`id` when it's an object,
- * or the raw value otherwise) and the resulting list is sorted.
+ * reduced to a comparable primitive (its `id`/`uuid` when it's an object, or
+ * the raw value otherwise) and the resulting list is sorted.
+ *
+ * `id` is prioritized over `uuid`: TypeORM only loads the "before" snapshot
+ * of a to-many relation via `loadRelationIds` (entities shaped as `{ id }`,
+ * no `uuid`), while the "after" snapshot assigned in memory before `save()`
+ * carries full entities (with both `id` and `uuid`). Preferring `id`, when
+ * present on either side, keeps both snapshots comparable by the same key.
  */
 @Injectable()
 export class ArrayNormalizer implements IAuditNormalizer<unknown> {
@@ -27,12 +33,12 @@ export class ArrayNormalizer implements IAuditNormalizer<unknown> {
     if (item !== null && typeof item === 'object') {
       const record = item as Record<string, unknown>;
 
-      if ('uuid' in record) {
-        return record.uuid;
-      }
-
       if ('id' in record) {
         return record.id;
+      }
+
+      if ('uuid' in record) {
+        return record.uuid;
       }
 
       return JSON.stringify(record);
