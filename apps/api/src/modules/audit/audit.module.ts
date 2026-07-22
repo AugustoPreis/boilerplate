@@ -9,6 +9,7 @@ import { AuditLogEntity } from './entities/audit-log.entity';
 import { AuditChangeListener } from './listeners/audit-change.listener';
 import { AuditLogResponseMapper } from './mappers/audit-log-response.mapper';
 import { AuditLogsRepository } from './repositories/audit-logs.repository';
+import { AuditSubscriber } from './subscribers/audit.subscriber';
 import { FindAuditLogUseCase } from './use-cases/find-audit-log.use-case';
 import { ListAuditLogsUseCase } from './use-cases/list-audit-logs.use-case';
 import { RecordAuditLogUseCase } from './use-cases/record-audit-log.use-case';
@@ -29,6 +30,7 @@ import { RecordAuditLogUseCase } from './use-cases/record-audit-log.use-case';
     ListAuditLogsUseCase,
     FindAuditLogUseCase,
     AuditChangeListener,
+    AuditSubscriber,
   ],
   exports: [RecordAuditLogUseCase],
 })

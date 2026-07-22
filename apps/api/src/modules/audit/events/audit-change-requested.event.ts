@@ -7,8 +7,7 @@ export const AUDIT_CHANGE_REQUESTED_EVENT = 'audit.change.requested';
  * audited. Mirrors `IAuditPipelineInput` (`@shared/audit`) so it can be
  * handed off to `AuditPipelineService.recordChange` unchanged.
  *
- * This is the integration point a future TypeORM `EntitySubscriberInterface`
- * will emit from, once entities start being decorated with `@AuditEntity()`.
+ * Emitted by `AuditSubscriber` for every `@AuditEntity()`-decorated entity.
  */
 export interface IAuditChangeRequestedEvent {
   entityName: string;
