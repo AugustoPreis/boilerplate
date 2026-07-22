@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, IsNull, Repository } from 'typeorm';
 
 import { IPaginatedResult } from '@shared/interfaces';
+import { assignDefined } from '@shared/utils/object.util';
 import { buildPaginatedResult, buildSkip } from '@shared/utils/pagination.util';
 
 import { UserRoleEntity } from '../entities/user-role.entity';
@@ -84,13 +85,26 @@ export class UsersRepository {
   }
 
   async update(id: number, data: Partial<UserEntity>): Promise<UserEntity> {
-    await this.repo.update(id, data);
+    const entity = await this.repo.findOneOrFail({ where: { id }, relations: USER_RELATIONS });
 
-    return this.repo.findOneOrFail({ where: { id }, relations: USER_RELATIONS });
+    assignDefined(entity, data);
+
+    // Loaded (rather than QueryBuilder-updated) and saved via `save()` so the
+    // TypeORM subscriber driving the audit trail gets a populated
+    // `event.databaseEntity` — `repo.update()` never loads a "before" state.
+    return this.repo.save(entity);
   }
 
   async softDelete(id: number): Promise<void> {
-    await this.repo.softDelete(id);
+    const entity = await this.repo.findOneBy({ id });
+
+    if (!entity) {
+      return;
+    }
+
+    // `softRemove()` (not `softDelete()`) for the same subscriber reason as
+    // `update()` above.
+    await this.repo.softRemove(entity);
   }
 
   async setRoles(userId: number, roleIds: number[]): Promise<void> {

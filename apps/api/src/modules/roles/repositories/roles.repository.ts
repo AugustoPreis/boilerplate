@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 
 import { IPaginatedResult } from '@shared/interfaces';
+import { assignDefined } from '@shared/utils/object.util';
 import { buildPaginatedResult, buildSkip } from '@shared/utils/pagination.util';
 
 import { PermissionEntity } from '../entities/permission.entity';
@@ -46,13 +47,26 @@ export class RolesRepository {
   }
 
   async update(id: number, data: Partial<RoleEntity>): Promise<RoleEntity> {
-    await this.repo.update(id, data);
+    const entity = await this.repo.findOneOrFail({ where: { id } });
 
-    return this.repo.findOneOrFail({ where: { id } });
+    assignDefined(entity, data);
+
+    // `save()` (not `update()`) so the TypeORM subscriber driving the audit
+    // trail gets a populated `event.databaseEntity` — `repo.update()` never
+    // loads a "before" state.
+    return this.repo.save(entity);
   }
 
   async delete(id: number): Promise<void> {
-    await this.repo.delete(id);
+    const entity = await this.repo.findOneBy({ id });
+
+    if (!entity) {
+      return;
+    }
+
+    // `remove()` (not `delete()`) for the same subscriber reason as
+    // `update()` above.
+    await this.repo.remove(entity);
   }
 
   async setPermissions(roleId: number, permissionIds: number[]): Promise<void> {
