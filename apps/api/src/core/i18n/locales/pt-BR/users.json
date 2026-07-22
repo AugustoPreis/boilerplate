@@ -1,4 +1,25 @@
 {
   "notFound": "Usuário não encontrado.",
-  "emailTaken": "O e-mail '{email}' já está em uso."
+  "emailTaken": "O e-mail '{email}' já está em uso.",
+
+  "audit": {
+    "entities": {
+      "user": {
+        "label": "Usuário",
+        "fields": {
+          "name": "Nome",
+          "email": "E-mail",
+          "avatarUrl": "Avatar",
+          "status": "Status"
+        },
+        "enums": {
+          "status": {
+            "active": "Ativo",
+            "inactive": "Inativo",
+            "pending": "Pendente"
+          }
+        }
+      }
+    }
+  }
 }

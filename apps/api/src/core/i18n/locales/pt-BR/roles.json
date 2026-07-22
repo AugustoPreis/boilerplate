@@ -4,5 +4,24 @@
   "cannotDeleteReserved": "O papel reservado da plataforma não pode ser removido.",
   "permissionNotFound": "Permissão(ões) não encontrada(s): {keys}.",
   "permissionNotFoundByUuid": "Permissão não encontrada.",
-  "permissionKeyTaken": "Já existe uma permissão com a chave '{key}'."
+  "permissionKeyTaken": "Já existe uma permissão com a chave '{key}'.",
+
+  "audit": {
+    "entities": {
+      "role": {
+        "label": "Papel",
+        "fields": {
+          "name": "Nome",
+          "description": "Descrição"
+        }
+      },
+      "permission": {
+        "label": "Permissão",
+        "fields": {
+          "key": "Chave",
+          "description": "Descrição"
+        }
+      }
+    }
+  }
 }

@@ -1,4 +1,6 @@
 {
   "appName": "Boilerplate",
-  "welcome": "Bem-vindo(a)."
+  "welcome": "Bem-vindo(a).",
+  "yes": "Sim",
+  "no": "Não"
 }
