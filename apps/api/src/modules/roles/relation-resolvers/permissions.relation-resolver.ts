@@ -26,7 +26,9 @@ export class PermissionsRelationResolver implements IAuditRelationResolver<unkno
       return value;
     }
 
-    return permissions.map((permission) => permission.key).join(', ');
+    return permissions
+      .map((permission) => `${permission.resource}:${permission.action}`)
+      .join(', ');
   }
 
   private toIdList(value: unknown): number[] {

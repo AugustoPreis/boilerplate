@@ -17,18 +17,25 @@ export class UpdatePermissionUseCase {
       throw AppException.from('roles.permissionNotFoundByUuid', HttpStatus.NOT_FOUND);
     }
 
-    if (dto.key && dto.key !== permission.key) {
-      const existing = await this.permissionsRepository.findByKey(dto.key);
+    const nextResource = dto.resource ?? permission.resource;
+    const nextAction = dto.action ?? permission.action;
+
+    if (nextResource !== permission.resource || nextAction !== permission.action) {
+      const existing = await this.permissionsRepository.findByResourceAction(
+        nextResource,
+        nextAction,
+      );
 
       if (existing) {
-        throw AppException.from('roles.permissionKeyTaken', HttpStatus.CONFLICT, {
-          args: { key: dto.key },
+        throw AppException.from('roles.permissionExists', HttpStatus.CONFLICT, {
+          args: { resource: nextResource, action: nextAction },
         });
       }
     }
 
     const updated = await this.permissionsRepository.update(permission.id, {
-      key: dto.key,
+      resource: dto.resource,
+      action: dto.action,
       description: dto.description,
     });
 

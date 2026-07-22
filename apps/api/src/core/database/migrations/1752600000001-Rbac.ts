@@ -15,7 +15,8 @@ export class Rbac1752600000001 implements MigrationInterface {
       CREATE TABLE IF NOT EXISTS permissions (
         id BIGSERIAL PRIMARY KEY,
         uuid UUID NOT NULL,
-        key VARCHAR(150) NOT NULL UNIQUE,
+        resource VARCHAR(100) NOT NULL,
+        action VARCHAR(50) NOT NULL,
         description TEXT
       )
     `);
@@ -31,6 +32,9 @@ export class Rbac1752600000001 implements MigrationInterface {
     await queryRunner.query(`CREATE UNIQUE INDEX IF NOT EXISTS ux_roles_uuid ON roles(uuid)`);
     await queryRunner.query(
       `CREATE UNIQUE INDEX IF NOT EXISTS ux_permissions_uuid ON permissions(uuid)`,
+    );
+    await queryRunner.query(
+      `CREATE UNIQUE INDEX IF NOT EXISTS ux_permissions_resource_action ON permissions(resource, action)`,
     );
   }
 

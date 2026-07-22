@@ -7,7 +7,10 @@ export class PermissionResponseDTO {
   uuid!: string;
 
   @ApiProperty()
-  key!: string;
+  resource!: string;
+
+  @ApiProperty()
+  action!: string;
 
   @ApiPropertyOptional({ nullable: true })
   description!: string | null;
@@ -16,7 +19,8 @@ export class PermissionResponseDTO {
     const dto = new PermissionResponseDTO();
 
     dto.uuid = entity.uuid;
-    dto.key = entity.key;
+    dto.resource = entity.resource;
+    dto.action = entity.action;
     dto.description = entity.description;
 
     return dto;

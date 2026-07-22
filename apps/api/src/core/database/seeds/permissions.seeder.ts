@@ -1,23 +1,30 @@
 import { DataSource } from 'typeorm';
 import { v7 as uuidv7 } from 'uuid';
 
-const DEFAULT_PERMISSIONS = ['users:read', 'users:write', 'roles:read', 'roles:write'];
+import { PermissionEntity } from '@modules/roles/entities/permission.entity';
+
+const DEFAULT_RESOURCES = ['users', 'roles'];
+const DEFAULT_ACTIONS = ['create', 'read', 'update', 'delete'];
 
 export class PermissionsSeeder {
   constructor(private readonly dataSource: DataSource) {}
 
   async run(): Promise<void> {
-    for (const key of DEFAULT_PERMISSIONS) {
-      const existing = await this.dataSource.query<unknown[]>(
-        'SELECT id FROM permissions WHERE key = $1',
-        [key],
-      );
+    const repository = this.dataSource.getRepository(PermissionEntity);
 
-      if (!existing.length) {
-        await this.dataSource.query('INSERT INTO permissions (uuid, key) VALUES ($1, $2)', [
-          uuidv7(),
-          key,
-        ]);
+    for (const resource of DEFAULT_RESOURCES) {
+      for (const action of DEFAULT_ACTIONS) {
+        const exists = await repository.exists({
+          where: { resource, action },
+        });
+
+        if (!exists) {
+          await repository.save({
+            uuid: uuidv7(),
+            resource,
+            action,
+          });
+        }
       }
     }
 

@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Audit, AuditEntity } from '@shared/audit/decorators';
 
@@ -6,6 +6,7 @@ import type { RoleEntity } from './role.entity';
 
 @AuditEntity({ name: 'permission', module: 'roles' })
 @Entity('permissions')
+@Index(['resource', 'action'], { unique: true })
 export class PermissionEntity {
   @PrimaryGeneratedColumn('increment')
   id!: number;
@@ -14,8 +15,12 @@ export class PermissionEntity {
   uuid!: string;
 
   @Audit()
-  @Column({ length: 150, unique: true })
-  key!: string;
+  @Column({ length: 100 })
+  resource!: string;
+
+  @Audit()
+  @Column({ length: 50 })
+  action!: string;
 
   @Audit()
   @Column({ type: 'text', nullable: true })

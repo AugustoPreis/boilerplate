@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { Brackets, In, Repository } from 'typeorm';
 
 import { IPaginatedResult } from '@shared/interfaces';
 import { assignDefined } from '@shared/utils/object.util';
@@ -23,14 +23,30 @@ export class PermissionsRepository {
     return this.repo.findOne({ where: { uuid } });
   }
 
-  findByKey(key: string): Promise<PermissionEntity | null> {
-    return this.repo.findOne({ where: { key } });
+  findByResourceAction(resource: string, action: string): Promise<PermissionEntity | null> {
+    return this.repo.findOne({ where: { resource, action } });
   }
 
-  findByKeys(keys: string[]): Promise<PermissionEntity[]> {
-    if (!keys.length) return Promise.resolve([]);
+  findByResourceActionPairs(
+    pairs: { resource: string; action: string }[],
+  ): Promise<PermissionEntity[]> {
+    if (!pairs.length) return Promise.resolve([]);
 
-    return this.repo.findBy({ key: In(keys) });
+    return this.repo
+      .createQueryBuilder('permission')
+      .where(
+        new Brackets((qb) => {
+          pairs.forEach((pair, index) => {
+            const method = index === 0 ? 'where' : 'orWhere';
+
+            qb[method](
+              `permission.resource = :resource${index} AND permission.action = :action${index}`,
+              { [`resource${index}`]: pair.resource, [`action${index}`]: pair.action },
+            );
+          });
+        }),
+      )
+      .getMany();
   }
 
   /**
@@ -47,7 +63,7 @@ export class PermissionsRepository {
     const [data, total] = await this.repo.findAndCount({
       skip: buildSkip(page, perPage),
       take: perPage,
-      order: { key: 'ASC' },
+      order: { resource: 'ASC', action: 'ASC' },
     });
 
     return buildPaginatedResult(data, total, page, perPage);

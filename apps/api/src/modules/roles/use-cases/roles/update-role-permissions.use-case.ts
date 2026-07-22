@@ -21,14 +21,16 @@ export class UpdateRolePermissionsUseCase {
       throw AppException.from('roles.notFound', HttpStatus.NOT_FOUND);
     }
 
-    const permissions = await this.permissionsRepository.findByKeys(dto.permissionKeys);
+    const permissions = await this.permissionsRepository.findByResourceActionPairs(dto.permissions);
 
-    if (permissions.length !== dto.permissionKeys.length) {
-      const found = new Set(permissions.map((p) => p.key));
-      const missing = dto.permissionKeys.filter((key) => !found.has(key));
+    if (permissions.length !== dto.permissions.length) {
+      const found = new Set(permissions.map((p) => `${p.resource}:${p.action}`));
+      const missing = dto.permissions
+        .filter((pair) => !found.has(`${pair.resource}:${pair.action}`))
+        .map((pair) => `${pair.resource}:${pair.action}`);
 
       throw AppException.from('roles.permissionNotFound', HttpStatus.NOT_FOUND, {
-        args: { keys: missing.join(', ') },
+        args: { pairs: missing.join(', ') },
       });
     }
 

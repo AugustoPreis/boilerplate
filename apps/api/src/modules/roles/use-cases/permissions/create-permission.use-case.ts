@@ -15,17 +15,21 @@ export class CreatePermissionUseCase {
   ) {}
 
   async execute(dto: CreatePermissionDTO): Promise<PermissionResponseDTO> {
-    const existing = await this.permissionsRepository.findByKey(dto.key);
+    const existing = await this.permissionsRepository.findByResourceAction(
+      dto.resource,
+      dto.action,
+    );
 
     if (existing) {
-      throw AppException.from('roles.permissionKeyTaken', HttpStatus.CONFLICT, {
-        args: { key: dto.key },
+      throw AppException.from('roles.permissionExists', HttpStatus.CONFLICT, {
+        args: { resource: dto.resource, action: dto.action },
       });
     }
 
     const permission = await this.permissionsRepository.create({
       uuid: this.uuidService.generate(),
-      key: dto.key,
+      resource: dto.resource,
+      action: dto.action,
       description: dto.description ?? null,
     });
 
