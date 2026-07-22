@@ -12,7 +12,8 @@
         "label": "Papel",
         "fields": {
           "name": "Nome",
-          "description": "Descrição"
+          "description": "Descrição",
+          "permissions": "Permissões"
         }
       },
       "permission": {

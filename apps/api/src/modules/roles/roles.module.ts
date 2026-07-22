@@ -7,6 +7,7 @@ import { PermissionsController } from './controllers/permissions.controller';
 import { RolesController } from './controllers/roles.controller';
 import { PermissionEntity } from './entities/permission.entity';
 import { RoleEntity } from './entities/role.entity';
+import { PermissionsRelationResolver } from './relation-resolvers/permissions.relation-resolver';
 import { PermissionsRepository } from './repositories/permissions.repository';
 import { RolesRepository } from './repositories/roles.repository';
 import { CreatePermissionUseCase } from './use-cases/permissions/create-permission.use-case';
@@ -38,6 +39,7 @@ import { UpdateRoleUseCase } from './use-cases/roles/update-role.use-case';
     CreatePermissionUseCase,
     UpdatePermissionUseCase,
     DeletePermissionUseCase,
+    PermissionsRelationResolver,
   ],
   exports: [RolesRepository, PermissionsRepository],
 })
