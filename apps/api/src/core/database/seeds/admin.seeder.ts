@@ -3,9 +3,9 @@ import * as bcrypt from 'bcrypt';
 import { DataSource } from 'typeorm';
 import { v7 as uuidv7 } from 'uuid';
 
-interface IIdRow {
-  id: number;
-}
+import { RoleEntity } from '@modules/roles/entities/role.entity';
+import { UserEntity } from '@modules/users/entities/user.entity';
+import { EUserStatus } from '@modules/users/enums/user-status.enum';
 
 const DEFAULT_ADMIN_EMAIL = 'admin@boilerplate.local';
 const DEFAULT_ADMIN_PASSWORD = 'Admin@123';
@@ -15,40 +15,39 @@ export class AdminSeeder {
   constructor(private readonly dataSource: DataSource) {}
 
   async run(): Promise<void> {
+    const userRepository = this.dataSource.getRepository(UserEntity);
+    const roleRepository = this.dataSource.getRepository(RoleEntity);
+
     const adminEmail = process.env.ADMIN_EMAIL ?? DEFAULT_ADMIN_EMAIL;
 
-    const existing = await this.dataSource.query<IIdRow[]>(
-      'SELECT id FROM users WHERE email = $1 AND deleted_at IS NULL',
-      [adminEmail],
-    );
+    const existing = await userRepository.findOne({
+      where: { email: adminEmail },
+    });
 
-    if (existing.length) {
+    if (existing) {
       console.log('AdminSeeder: admin user already exists, skipping');
       return;
     }
 
-    const adminPassword = process.env.ADMIN_PASSWORD ?? DEFAULT_ADMIN_PASSWORD;
-    const passwordHash = await bcrypt.hash(adminPassword, BCRYPT_ROUNDS);
+    const adminRole = await roleRepository.findOneBy({
+      name: ROLE_ADMIN,
+    });
 
-    const userRows = await this.dataSource.query<IIdRow[]>(
-      `INSERT INTO users (uuid, email, password_hash, name, status, created_at, updated_at)
-       VALUES ($1, $2, $3, $4, 'ACTIVE', NOW(), NOW())
-       RETURNING id`,
-      [uuidv7(), adminEmail, passwordHash, 'Administrador'],
-    );
-    const userId = userRows[0].id;
-
-    const roleRows = await this.dataSource.query<IIdRow[]>(
-      'SELECT id FROM roles WHERE name = $1 LIMIT 1',
-      [ROLE_ADMIN],
+    const passwordHash = await bcrypt.hash(
+      process.env.ADMIN_PASSWORD ?? DEFAULT_ADMIN_PASSWORD,
+      BCRYPT_ROUNDS,
     );
 
-    if (roleRows.length) {
-      await this.dataSource.query('INSERT INTO user_roles (user_id, role_id) VALUES ($1, $2)', [
-        userId,
-        roleRows[0].id,
-      ]);
-    }
+    const user = userRepository.create({
+      uuid: uuidv7(),
+      email: adminEmail,
+      passwordHash,
+      name: 'Administrador',
+      status: EUserStatus.ACTIVE,
+      userRoles: adminRole ? [{ roleId: adminRole.id }] : [],
+    });
+
+    await userRepository.save(user);
 
     console.log(`AdminSeeder: admin user created — ${adminEmail}`);
   }
