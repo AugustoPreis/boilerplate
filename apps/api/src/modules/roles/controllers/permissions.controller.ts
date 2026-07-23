@@ -14,10 +14,11 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { ROLE_ADMIN } from '@shared/constants';
 import { Roles } from '@shared/decorators/roles.decorator';
-import { PaginationQueryDTO } from '@shared/dtos/pagination-query.dto';
+import { IPaginatedResult } from '@shared/interfaces';
 import { ParseUuidPipe } from '@shared/pipes/parse-uuid.pipe';
 
 import { CreatePermissionDTO } from '../dtos/create-permission.dto';
+import { ListPermissionDTO } from '../dtos/list-permission.dto';
 import { PermissionResponseDTO } from '../dtos/permission-response.dto';
 import { UpdatePermissionDTO } from '../dtos/update-permission.dto';
 import { CreatePermissionUseCase } from '../use-cases/permissions/create-permission.use-case';
@@ -41,8 +42,8 @@ export class PermissionsController {
 
   @Get()
   @ApiOperation({ summary: 'List permissions' })
-  findAll(@Query() query: PaginationQueryDTO): ReturnType<ListPermissionsUseCase['execute']> {
-    return this.listPermissionsUseCase.execute(query.page, query.perPage);
+  findAll(@Query() query: ListPermissionDTO): Promise<IPaginatedResult<PermissionResponseDTO>> {
+    return this.listPermissionsUseCase.execute(query);
   }
 
   @Get(':uuid')

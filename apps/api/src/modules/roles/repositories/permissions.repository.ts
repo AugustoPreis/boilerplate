@@ -6,6 +6,7 @@ import { IPaginatedResult } from '@shared/interfaces';
 import { assignDefined } from '@shared/utils/object.util';
 import { buildPaginatedResult, buildSkip } from '@shared/utils/pagination.util';
 
+import { ListPermissionDTO } from '../dtos/list-permission.dto';
 import { PermissionEntity } from '../entities/permission.entity';
 
 @Injectable()
@@ -59,14 +60,15 @@ export class PermissionsRepository {
     return this.repo.findBy({ id: In(ids) });
   }
 
-  async findAll(page: number, perPage: number): Promise<IPaginatedResult<PermissionEntity>> {
+  async findAll(query: ListPermissionDTO): Promise<IPaginatedResult<PermissionEntity>> {
     const [data, total] = await this.repo.findAndCount({
-      skip: buildSkip(page, perPage),
-      take: perPage,
+      skip: buildSkip(query.page, query.perPage),
+      take: query.perPage,
+      where: query.resource ? { resource: query.resource } : undefined,
       order: { resource: 'ASC', action: 'ASC' },
     });
 
-    return buildPaginatedResult(data, total, page, perPage);
+    return buildPaginatedResult(data, total, query.page, query.perPage);
   }
 
   create(data: Partial<PermissionEntity>): Promise<PermissionEntity> {
