@@ -15,10 +15,10 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { ROLE_ADMIN } from '@shared/constants';
 import { Roles } from '@shared/decorators/roles.decorator';
-import { PaginationQueryDTO } from '@shared/dtos/pagination-query.dto';
 import { ParseUuidPipe } from '@shared/pipes/parse-uuid.pipe';
 
 import { CreateRoleDTO } from '../dtos/create-role.dto';
+import { ListRoleDTO } from '../dtos/list-role.dto';
 import { RoleResponseDTO } from '../dtos/role-response.dto';
 import { UpdateRolePermissionsDTO } from '../dtos/update-role-permissions.dto';
 import { UpdateRoleDTO } from '../dtos/update-role.dto';
@@ -45,8 +45,8 @@ export class RolesController {
 
   @Get()
   @ApiOperation({ summary: 'List roles' })
-  findAll(@Query() query: PaginationQueryDTO): ReturnType<ListRolesUseCase['execute']> {
-    return this.listRolesUseCase.execute(query.page, query.perPage);
+  findAll(@Query() query: ListRoleDTO): ReturnType<ListRolesUseCase['execute']> {
+    return this.listRolesUseCase.execute(query);
   }
 
   @Get(':uuid')

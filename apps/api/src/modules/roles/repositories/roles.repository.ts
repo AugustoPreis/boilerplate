@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { ILike, In, Repository } from 'typeorm';
 
 import { IPaginatedResult } from '@shared/interfaces';
 import { assignDefined } from '@shared/utils/object.util';
 import { buildPaginatedResult, buildSkip } from '@shared/utils/pagination.util';
 
+import { ListRoleDTO } from '../dtos/list-role.dto';
 import { PermissionEntity } from '../entities/permission.entity';
 import { RoleEntity } from '../entities/role.entity';
 
@@ -30,14 +31,15 @@ export class RolesRepository {
     return this.repo.findOne({ where: { name } });
   }
 
-  async findAll(page: number, perPage: number): Promise<IPaginatedResult<RoleEntity>> {
+  async findAll(query: ListRoleDTO): Promise<IPaginatedResult<RoleEntity>> {
     const [data, total] = await this.repo.findAndCount({
-      skip: buildSkip(page, perPage),
-      take: perPage,
+      skip: buildSkip(query.page, query.perPage),
+      take: query.perPage,
+      where: { name: ILike(`%${query.search?.trim() ?? ''}%`) },
       order: { name: 'ASC' },
     });
 
-    return buildPaginatedResult(data, total, page, perPage);
+    return buildPaginatedResult(data, total, query.page, query.perPage);
   }
 
   create(data: Partial<RoleEntity>): Promise<RoleEntity> {
