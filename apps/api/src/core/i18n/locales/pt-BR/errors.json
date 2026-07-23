@@ -5,6 +5,6 @@
   "forbidden": "Acesso negado.",
   "conflict": "Conflito ao processar a requisição.",
   "internalError": "Ocorreu um erro interno. Tente novamente mais tarde.",
-  "invalidUuid": "'{value}' não é um identificador válido.",
+  "invalidUuid": "Identificador inválido.",
   "tooManyRequests": "Muitas solicitações. Tente novamente em instantes."
 }
