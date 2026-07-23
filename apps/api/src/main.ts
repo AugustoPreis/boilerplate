@@ -34,7 +34,6 @@ async function bootstrap(): Promise<void> {
   app.useGlobalPipes(
     new I18nValidationPipe({
       whitelist: true,
-      forbidNonWhitelisted: true,
       transform: true,
       transformOptions: { enableImplicitConversion: true },
     }),
