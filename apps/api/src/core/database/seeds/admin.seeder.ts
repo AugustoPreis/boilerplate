@@ -4,6 +4,7 @@ import { DataSource } from 'typeorm';
 import { v7 as uuidv7 } from 'uuid';
 
 import { RoleEntity } from '@modules/roles/entities/role.entity';
+import { UserRoleEntity } from '@modules/users/entities/user-role.entity';
 import { UserEntity } from '@modules/users/entities/user.entity';
 import { EUserStatus } from '@modules/users/enums/user-status.enum';
 
@@ -17,6 +18,7 @@ export class AdminSeeder {
   async run(): Promise<void> {
     const userRepository = this.dataSource.getRepository(UserEntity);
     const roleRepository = this.dataSource.getRepository(RoleEntity);
+    const userRoleRepository = this.dataSource.getRepository(UserRoleEntity);
 
     const adminEmail = process.env.ADMIN_EMAIL ?? DEFAULT_ADMIN_EMAIL;
 
@@ -44,10 +46,18 @@ export class AdminSeeder {
       passwordHash,
       name: 'Administrador',
       status: EUserStatus.ACTIVE,
-      userRoles: adminRole ? [{ roleId: adminRole.id }] : [],
     });
 
     await userRepository.save(user);
+
+    if (adminRole) {
+      const userRole = userRoleRepository.create({
+        role: adminRole,
+        user,
+      });
+
+      await userRoleRepository.save(userRole);
+    }
 
     console.log(`AdminSeeder: admin user created — ${adminEmail}`);
   }
