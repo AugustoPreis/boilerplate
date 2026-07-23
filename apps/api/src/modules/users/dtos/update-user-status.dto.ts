@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum } from 'class-validator';
+
+import { IsEnum } from '@shared/validators';
 
 import { EUserStatus } from '../enums/user-status.enum';
 

@@ -1,12 +1,13 @@
-import { VersioningType } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
-import { I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
 import { Logger } from 'nestjs-pino';
+
+import { i18nFieldValidationExceptionFactory } from '@shared/pipes';
 
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
@@ -32,14 +33,15 @@ async function bootstrap(): Promise<void> {
   app.enableVersioning({ type: VersioningType.URI });
 
   app.useGlobalPipes(
-    new I18nValidationPipe({
+    new ValidationPipe({
       whitelist: true,
       transform: true,
       transformOptions: { enableImplicitConversion: true },
+      exceptionFactory: i18nFieldValidationExceptionFactory,
     }),
   );
 
-  app.useGlobalFilters(new I18nValidationExceptionFilter(), new HttpExceptionFilter());
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Boilerplate API')

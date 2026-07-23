@@ -1,5 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString, Length, Matches } from 'class-validator';
+import { IsOptional } from 'class-validator';
+import { i18nValidationMessage } from 'nestjs-i18n';
+
+import { IsNotEmpty, IsString, Length, Matches } from '@shared/validators';
 
 export class CreatePermissionDTO {
   @ApiProperty({
@@ -9,7 +12,7 @@ export class CreatePermissionDTO {
   @IsString()
   @IsNotEmpty()
   @Length(1, 100)
-  @Matches(/^[a-z_]+$/, { message: 'resource must contain only lowercase letters and underscores' })
+  @Matches(/^[a-z_]+$/, { message: i18nValidationMessage('validation.resourceFormat') })
   resource!: string;
 
   @ApiProperty({
@@ -19,7 +22,7 @@ export class CreatePermissionDTO {
   @IsString()
   @IsNotEmpty()
   @Length(1, 50)
-  @Matches(/^[a-z_]+$/, { message: 'action must contain only lowercase letters and underscores' })
+  @Matches(/^[a-z_]+$/, { message: i18nValidationMessage('validation.actionFormat') })
   action!: string;
 
   @ApiPropertyOptional()

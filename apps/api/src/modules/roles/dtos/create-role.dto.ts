@@ -1,5 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
+import { IsOptional } from 'class-validator';
+
+import { IsNotEmpty, IsString, Length } from '@shared/validators';
 
 export class CreateRoleDTO {
   @ApiProperty({ example: 'editor' })

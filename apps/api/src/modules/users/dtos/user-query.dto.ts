@@ -1,7 +1,8 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsOptional } from 'class-validator';
+import { IsOptional } from 'class-validator';
 
 import { PaginationQueryDTO } from '@shared/dtos/pagination-query.dto';
+import { IsEmail, IsEnum } from '@shared/validators';
 
 import { EUserStatus } from '../enums/user-status.enum';
 

@@ -1,14 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  IsEmail,
-  IsOptional,
-  IsString,
-  IsUrl,
-  Matches,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsOptional } from 'class-validator';
 import { i18nValidationMessage } from 'nestjs-i18n';
+
+import { IsEmail, IsString, IsUrl, Matches, MaxLength, MinLength } from '@shared/validators';
 
 export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/;
 
@@ -26,7 +20,7 @@ export class CreateUserDTO {
   @ApiProperty({ minLength: 8 })
   @IsString()
   @MinLength(8)
-  @Matches(PASSWORD_REGEX, { message: i18nValidationMessage('validation.PASSWORD_TOO_WEAK') })
+  @Matches(PASSWORD_REGEX, { message: i18nValidationMessage('validation.passwordTooWeak') })
   password!: string;
 
   @ApiPropertyOptional()

@@ -1,7 +1,8 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsOptional } from 'class-validator';
 
 import { PaginationQueryDTO } from '@shared/dtos/pagination-query.dto';
+import { IsEnum, IsString, IsUUID } from '@shared/validators';
 
 import { EAuditAction } from '../enums/audit-action.enum';
 

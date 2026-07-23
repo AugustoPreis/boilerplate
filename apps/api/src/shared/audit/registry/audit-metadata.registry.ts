@@ -53,6 +53,10 @@ export class AuditMetadataRegistry {
     return this.byName.get(name);
   }
 
+  static getAllNames(): string[] {
+    return Array.from(this.byName.keys());
+  }
+
   /**
    * Test-only helper: clears all registered metadata.
    */

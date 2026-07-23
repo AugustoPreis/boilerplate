@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsArray, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { ValidateNested } from 'class-validator';
+
+import { IsArray, IsNotEmpty, IsString } from '@shared/validators';
 
 export class PermissionKeyDTO {
   @ApiProperty()

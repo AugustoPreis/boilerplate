@@ -8,6 +8,7 @@ import { AcceptLanguageResolver, I18nJsonLoader, I18nModule as NestI18nModule } 
     NestI18nModule.forRootAsync({
       useFactory: () => ({
         fallbackLanguage: 'pt-BR',
+        useICU: true,
         loaderOptions: {
           path: path.join(__dirname, 'locales'),
           watch: process.env.NODE_ENV !== 'production',
