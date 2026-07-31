@@ -39,6 +39,17 @@ export class UsersRepository {
     });
   }
 
+  findByUuidWithPassword(uuid: string): Promise<UserEntity | null> {
+    return this.repo
+      .createQueryBuilder('user')
+      .addSelect('user.passwordHash')
+      .leftJoinAndSelect('user.userRoles', 'userRole')
+      .leftJoinAndSelect('userRole.role', 'role')
+      .where('user.uuid = :uuid', { uuid })
+      .andWhere('user.deletedAt IS NULL')
+      .getOne();
+  }
+
   findByEmailWithPassword(email: string): Promise<UserEntity | null> {
     return this.repo
       .createQueryBuilder('user')

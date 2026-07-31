@@ -14,6 +14,7 @@ import { CreateUserUseCase } from './use-cases/create-user.use-case';
 import { DeleteUserUseCase } from './use-cases/delete-user.use-case';
 import { FindUserUseCase } from './use-cases/find-user.use-case';
 import { ListUsersUseCase } from './use-cases/list-users.use-case';
+import { UpdateUserPasswordUseCase } from './use-cases/update-user-password.use-case';
 import { UpdateUserStatusUseCase } from './use-cases/update-user-status.use-case';
 import { UpdateUserUseCase } from './use-cases/update-user.use-case';
 
@@ -29,6 +30,7 @@ import { UpdateUserUseCase } from './use-cases/update-user.use-case';
     UpdateUserStatusUseCase,
     DeleteUserUseCase,
     AssignRolesUseCase,
+    UpdateUserPasswordUseCase,
   ],
   exports: [UsersRepository],
 })

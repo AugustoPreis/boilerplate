@@ -14,11 +14,13 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { ROLE_ADMIN } from '@shared/constants';
+import { CurrentUser } from '@shared/decorators';
 import { Roles } from '@shared/decorators/roles.decorator';
 import { ParseUuidPipe } from '@shared/pipes/parse-uuid.pipe';
 
 import { AssignRolesDTO } from '../dtos/assign-roles.dto';
 import { CreateUserDTO } from '../dtos/create-user.dto';
+import { UpdateUserPasswordDTO } from '../dtos/update-user-password.dto';
 import { UpdateUserStatusDTO } from '../dtos/update-user-status.dto';
 import { UpdateUserDTO } from '../dtos/update-user.dto';
 import { UserQueryDTO } from '../dtos/user-query.dto';
@@ -28,6 +30,7 @@ import { CreateUserUseCase } from '../use-cases/create-user.use-case';
 import { DeleteUserUseCase } from '../use-cases/delete-user.use-case';
 import { FindUserUseCase } from '../use-cases/find-user.use-case';
 import { ListUsersUseCase } from '../use-cases/list-users.use-case';
+import { UpdateUserPasswordUseCase } from '../use-cases/update-user-password.use-case';
 import { UpdateUserStatusUseCase } from '../use-cases/update-user-status.use-case';
 import { UpdateUserUseCase } from '../use-cases/update-user.use-case';
 
@@ -44,6 +47,7 @@ export class UsersController {
     private readonly updateUserStatusUseCase: UpdateUserStatusUseCase,
     private readonly deleteUserUseCase: DeleteUserUseCase,
     private readonly assignRolesUseCase: AssignRolesUseCase,
+    private readonly updateUserPasswordUseCase: UpdateUserPasswordUseCase,
   ) {}
 
   @Get()
@@ -97,5 +101,15 @@ export class UsersController {
     @Body() dto: AssignRolesDTO,
   ): Promise<UserResponseDTO> {
     return this.assignRolesUseCase.execute(uuid, dto);
+  }
+
+  @Put('me/password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Update user password' })
+  updatePassword(
+    @CurrentUser('uuid') uuid: string,
+    @Body() dto: UpdateUserPasswordDTO,
+  ): Promise<void> {
+    return this.updateUserPasswordUseCase.execute(uuid, dto);
   }
 }
