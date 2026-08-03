@@ -35,7 +35,7 @@ export class RefreshTokenUseCase {
     const user = await this.usersRepository.findByUuid(payload.sub);
 
     if (!user || user.status !== EUserStatus.ACTIVE) {
-      throw AppException.from('auth.invalidCredentials', HttpStatus.UNAUTHORIZED);
+      throw AppException.from('auth.errors.invalidCredentials', HttpStatus.UNAUTHORIZED);
     }
 
     return this.loginUseCase.execute({
@@ -51,7 +51,7 @@ export class RefreshTokenUseCase {
 
   private verifyToken(refreshToken: string): { sub: string } {
     if (!refreshToken) {
-      throw AppException.from('auth.refreshTokenNotFound', HttpStatus.UNAUTHORIZED);
+      throw AppException.from('auth.errors.refreshTokenNotFound', HttpStatus.UNAUTHORIZED);
     }
 
     try {
@@ -59,7 +59,7 @@ export class RefreshTokenUseCase {
         secret: this.config.get<string>('auth.jwtRefreshSecret'),
       });
     } catch {
-      throw AppException.from('auth.refreshTokenInvalid', HttpStatus.UNAUTHORIZED);
+      throw AppException.from('auth.errors.refreshTokenInvalid', HttpStatus.UNAUTHORIZED);
     }
   }
 
@@ -67,7 +67,7 @@ export class RefreshTokenUseCase {
     const storedHash = await this.redis.get(`auth:refresh:${sub}`);
 
     if (!storedHash) {
-      throw AppException.from('auth.refreshTokenNotFound', HttpStatus.UNAUTHORIZED);
+      throw AppException.from('auth.errors.refreshTokenNotFound', HttpStatus.UNAUTHORIZED);
     }
 
     return storedHash;
@@ -77,7 +77,7 @@ export class RefreshTokenUseCase {
     const incomingHash = createHash('sha256').update(refreshToken).digest('hex');
 
     if (storedHash !== incomingHash) {
-      throw AppException.from('auth.refreshTokenInvalid', HttpStatus.UNAUTHORIZED);
+      throw AppException.from('auth.errors.refreshTokenInvalid', HttpStatus.UNAUTHORIZED);
     }
   }
 }

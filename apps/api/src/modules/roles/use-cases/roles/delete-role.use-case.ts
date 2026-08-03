@@ -12,11 +12,11 @@ export class DeleteRoleUseCase {
     const role = await this.rolesRepository.findByUuid(uuid);
 
     if (!role) {
-      throw AppException.from('roles.notFound', HttpStatus.NOT_FOUND);
+      throw AppException.from('roles.errors.notFound', HttpStatus.NOT_FOUND);
     }
 
     if (role.isReserved) {
-      throw AppException.from('roles.cannotDeleteReserved', HttpStatus.FORBIDDEN);
+      throw AppException.from('roles.errors.cannotDeleteReserved', HttpStatus.FORBIDDEN);
     }
 
     await this.rolesRepository.delete(role.id);

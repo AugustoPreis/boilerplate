@@ -19,7 +19,7 @@ export class LoadMetadataStage {
       // decorated with @AuditEntity(). Surfaced as a 500 so it's logged and
       // fixed, but caught by the event listener so it never crashes the
       // emitting transaction.
-      throw AppException.from('audit.metadataNotFound', HttpStatus.INTERNAL_SERVER_ERROR, {
+      throw AppException.from('audit.errors.metadataNotFound', HttpStatus.INTERNAL_SERVER_ERROR, {
         args: { entityName: context.input.entityName },
       });
     }

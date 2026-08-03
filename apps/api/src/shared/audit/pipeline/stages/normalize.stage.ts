@@ -20,7 +20,7 @@ export class NormalizeStage {
 
   execute(context: IAuditRecordContext): IAuditRecordContext {
     if (!context.metadata) {
-      throw AppException.from('audit.pipelineMisuse', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw AppException.from('audit.errors.pipelineMisuse', HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     const normalizedBefore: Record<string, unknown> = {};

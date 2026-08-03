@@ -14,7 +14,7 @@ export class UpdateUserStatusUseCase {
     const user = await this.usersRepository.findByUuid(uuid);
 
     if (!user) {
-      throw AppException.from('users.notFound', HttpStatus.NOT_FOUND);
+      throw AppException.from('users.errors.notFound', HttpStatus.NOT_FOUND);
     }
 
     const updated = await this.usersRepository.update(user.id, { status: dto.status });

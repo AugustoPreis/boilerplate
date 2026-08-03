@@ -22,7 +22,7 @@ export class AssignRolesUseCase {
     const user = await this.usersRepository.findByUuid(uuid);
 
     if (!user) {
-      throw AppException.from('users.notFound', HttpStatus.NOT_FOUND);
+      throw AppException.from('users.errors.notFound', HttpStatus.NOT_FOUND);
     }
 
     const roles = await Promise.all(
@@ -30,7 +30,7 @@ export class AssignRolesUseCase {
         const role = await this.roleRepo.findOne({ where: { uuid: roleUuid } });
 
         if (!role) {
-          throw AppException.from('roles.notFound', HttpStatus.NOT_FOUND, {
+          throw AppException.from('roles.errors.notFound', HttpStatus.NOT_FOUND, {
             args: { uuid: roleUuid },
           });
         }

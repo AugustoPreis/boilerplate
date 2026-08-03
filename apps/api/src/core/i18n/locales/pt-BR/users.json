@@ -1,9 +1,11 @@
 {
-  "notFound": "Usuário não encontrado.",
-  "passwordsMustBeDifferent": "A nova senha deve ser diferente da senha atual.",
-  "passwordsMustMatch": "As senhas não coincidem.",
-  "invalidCurrentPassword": "A senha atual está incorreta.",
-  "emailTaken": "O e-mail \"{email}\" já está em uso.",
+  "errors": {
+    "notFound": "Usuário não encontrado.",
+    "passwordsMustBeDifferent": "A nova senha deve ser diferente da senha atual.",
+    "passwordsMustMatch": "As senhas não coincidem.",
+    "invalidCurrentPassword": "A senha atual está incorreta.",
+    "emailTaken": "O e-mail \"{email}\" já está em uso."
+  },
 
   "audit": {
     "entities": {

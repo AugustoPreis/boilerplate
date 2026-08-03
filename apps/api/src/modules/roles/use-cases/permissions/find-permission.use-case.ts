@@ -13,7 +13,7 @@ export class FindPermissionUseCase {
     const permission = await this.permissionsRepository.findByUuid(uuid);
 
     if (!permission) {
-      throw AppException.from('roles.permissionNotFoundByUuid', HttpStatus.NOT_FOUND);
+      throw AppException.from('roles.errors.permissionNotFoundByUuid', HttpStatus.NOT_FOUND);
     }
 
     return PermissionResponseDTO.from(permission);

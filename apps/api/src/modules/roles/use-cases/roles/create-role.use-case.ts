@@ -18,7 +18,7 @@ export class CreateRoleUseCase {
     const existing = await this.rolesRepository.findByName(dto.name);
 
     if (existing) {
-      throw AppException.from('roles.nameTaken', HttpStatus.CONFLICT, {
+      throw AppException.from('roles.errors.nameTaken', HttpStatus.CONFLICT, {
         args: { name: dto.name },
       });
     }

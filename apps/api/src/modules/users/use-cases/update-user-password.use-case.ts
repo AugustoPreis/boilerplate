@@ -17,7 +17,7 @@ export class UpdateUserPasswordUseCase {
     const user = await this.usersRepository.findByUuidWithPassword(currentUserUuid);
 
     if (!user) {
-      throw AppException.from('users.notFound', HttpStatus.NOT_FOUND);
+      throw AppException.from('users.errors.notFound', HttpStatus.NOT_FOUND);
     }
 
     this.ensureNewPasswordIsDifferent(dto);
@@ -31,13 +31,13 @@ export class UpdateUserPasswordUseCase {
 
   private ensureNewPasswordIsDifferent(dto: UpdateUserPasswordDTO): void {
     if (dto.currentPassword === dto.newPassword) {
-      throw AppException.from('users.passwordsMustBeDifferent', HttpStatus.BAD_REQUEST);
+      throw AppException.from('users.errors.passwordsMustBeDifferent', HttpStatus.BAD_REQUEST);
     }
   }
 
   private ensureNewPasswordMatchesConfirmation(dto: UpdateUserPasswordDTO): void {
     if (dto.newPassword !== dto.confirmNewPassword) {
-      throw AppException.from('users.passwordsMustMatch', HttpStatus.BAD_REQUEST);
+      throw AppException.from('users.errors.passwordsMustMatch', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -51,7 +51,7 @@ export class UpdateUserPasswordUseCase {
     );
 
     if (!isCurrentPasswordCorrect) {
-      throw AppException.from('users.invalidCurrentPassword', HttpStatus.BAD_REQUEST);
+      throw AppException.from('users.errors.invalidCurrentPassword', HttpStatus.BAD_REQUEST);
     }
   }
 }

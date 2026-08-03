@@ -17,7 +17,7 @@ export class FindAuditLogUseCase {
     const log = await this.auditLogsRepository.findByUuid(uuid);
 
     if (!log) {
-      throw AppException.from('audit.notFound', HttpStatus.NOT_FOUND);
+      throw AppException.from('audit.errors.notFound', HttpStatus.NOT_FOUND);
     }
 
     return this.auditLogResponseMapper.toResponseDTO(log, locale);

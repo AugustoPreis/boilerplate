@@ -13,7 +13,7 @@ export class FindRoleUseCase {
     const role = await this.rolesRepository.findByUuid(uuid);
 
     if (!role) {
-      throw AppException.from('roles.notFound', HttpStatus.NOT_FOUND);
+      throw AppException.from('roles.errors.notFound', HttpStatus.NOT_FOUND);
     }
 
     return RoleResponseDTO.from(role);

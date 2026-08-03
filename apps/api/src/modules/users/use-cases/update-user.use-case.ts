@@ -14,14 +14,14 @@ export class UpdateUserUseCase {
     const user = await this.usersRepository.findByUuid(uuid);
 
     if (!user) {
-      throw AppException.from('users.notFound', HttpStatus.NOT_FOUND);
+      throw AppException.from('users.errors.notFound', HttpStatus.NOT_FOUND);
     }
 
     if (dto.email && dto.email.toLowerCase() !== user.email) {
       const existing = await this.usersRepository.findByEmail(dto.email.toLowerCase());
 
       if (existing) {
-        throw AppException.from('users.emailTaken', HttpStatus.CONFLICT, {
+        throw AppException.from('users.errors.emailTaken', HttpStatus.CONFLICT, {
           args: { email: dto.email },
         });
       }

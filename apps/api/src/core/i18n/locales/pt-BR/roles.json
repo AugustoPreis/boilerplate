@@ -1,10 +1,12 @@
 {
-  "notFound": "Papel não encontrado.",
-  "nameTaken": "Já existe um papel com o nome \"{name}\".",
-  "cannotDeleteReserved": "O papel reservado da plataforma não pode ser removido.",
-  "permissionNotFound": "Permissão(ões) não encontrada(s): {pairs}.",
-  "permissionNotFoundByUuid": "Permissão não encontrada.",
-  "permissionExists": "Já existe uma permissão para o recurso \"{resource}\" e ação \"{action}\".",
+  "errors": {
+    "notFound": "Papel não encontrado.",
+    "nameTaken": "Já existe um papel com o nome \"{name}\".",
+    "cannotDeleteReserved": "O papel reservado da plataforma não pode ser removido.",
+    "permissionNotFound": "Permissão(ões) não encontrada(s): {pairs}.",
+    "permissionNotFoundByUuid": "Permissão não encontrada.",
+    "permissionExists": "Já existe uma permissão para o recurso \"{resource}\" e ação \"{action}\"."
+  },
 
   "audit": {
     "entities": {

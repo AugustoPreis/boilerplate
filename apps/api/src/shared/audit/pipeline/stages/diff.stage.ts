@@ -13,7 +13,7 @@ import { IAuditRecordContext } from '../../interfaces';
 export class DiffStage {
   execute(context: IAuditRecordContext): IAuditRecordContext {
     if (!context.metadata || !context.normalizedBefore || !context.normalizedAfter) {
-      throw AppException.from('audit.pipelineMisuse', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw AppException.from('audit.errors.pipelineMisuse', HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     const fields = [...context.metadata.fields.entries()]

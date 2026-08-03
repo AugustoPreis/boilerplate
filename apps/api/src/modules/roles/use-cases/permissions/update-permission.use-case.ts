@@ -14,7 +14,7 @@ export class UpdatePermissionUseCase {
     const permission = await this.permissionsRepository.findByUuid(uuid);
 
     if (!permission) {
-      throw AppException.from('roles.permissionNotFoundByUuid', HttpStatus.NOT_FOUND);
+      throw AppException.from('roles.errors.permissionNotFoundByUuid', HttpStatus.NOT_FOUND);
     }
 
     const nextResource = dto.resource ?? permission.resource;
@@ -27,7 +27,7 @@ export class UpdatePermissionUseCase {
       );
 
       if (existing) {
-        throw AppException.from('roles.permissionExists', HttpStatus.CONFLICT, {
+        throw AppException.from('roles.errors.permissionExists', HttpStatus.CONFLICT, {
           args: { resource: nextResource, action: nextAction },
         });
       }

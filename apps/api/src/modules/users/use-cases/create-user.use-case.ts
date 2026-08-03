@@ -23,7 +23,7 @@ export class CreateUserUseCase {
     const existing = await this.usersRepository.findByEmail(email);
 
     if (existing) {
-      throw AppException.from('users.emailTaken', HttpStatus.CONFLICT, { args: { email } });
+      throw AppException.from('users.errors.emailTaken', HttpStatus.CONFLICT, { args: { email } });
     }
 
     const passwordHash = await this.hashService.hash(dto.password);

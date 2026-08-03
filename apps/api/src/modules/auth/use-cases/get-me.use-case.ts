@@ -13,7 +13,7 @@ export class GetMeUseCase {
     const user = await this.usersRepository.findByUuid(uuid);
 
     if (!user) {
-      throw AppException.from('users.notFound', HttpStatus.NOT_FOUND);
+      throw AppException.from('users.errors.notFound', HttpStatus.NOT_FOUND);
     }
 
     return {

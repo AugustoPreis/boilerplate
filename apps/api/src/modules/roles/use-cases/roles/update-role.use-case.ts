@@ -14,14 +14,14 @@ export class UpdateRoleUseCase {
     const role = await this.rolesRepository.findByUuid(uuid);
 
     if (!role) {
-      throw AppException.from('roles.notFound', HttpStatus.NOT_FOUND);
+      throw AppException.from('roles.errors.notFound', HttpStatus.NOT_FOUND);
     }
 
     if (dto.name && dto.name !== role.name) {
       const existing = await this.rolesRepository.findByName(dto.name);
 
       if (existing) {
-        throw AppException.from('roles.nameTaken', HttpStatus.CONFLICT, {
+        throw AppException.from('roles.errors.nameTaken', HttpStatus.CONFLICT, {
           args: { name: dto.name },
         });
       }

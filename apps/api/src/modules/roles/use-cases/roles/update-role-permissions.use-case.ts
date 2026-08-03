@@ -18,7 +18,7 @@ export class UpdateRolePermissionsUseCase {
     const role = await this.rolesRepository.findByUuid(roleUuid);
 
     if (!role) {
-      throw AppException.from('roles.notFound', HttpStatus.NOT_FOUND);
+      throw AppException.from('roles.errors.notFound', HttpStatus.NOT_FOUND);
     }
 
     const permissions = await this.permissionsRepository.findByResourceActionPairs(dto.permissions);
@@ -29,7 +29,7 @@ export class UpdateRolePermissionsUseCase {
         .filter((pair) => !found.has(`${pair.resource}:${pair.action}`))
         .map((pair) => `${pair.resource}:${pair.action}`);
 
-      throw AppException.from('roles.permissionNotFound', HttpStatus.NOT_FOUND, {
+      throw AppException.from('roles.errors.permissionNotFound', HttpStatus.NOT_FOUND, {
         args: { pairs: missing.join(', ') },
       });
     }

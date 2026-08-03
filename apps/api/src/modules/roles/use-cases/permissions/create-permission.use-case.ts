@@ -21,7 +21,7 @@ export class CreatePermissionUseCase {
     );
 
     if (existing) {
-      throw AppException.from('roles.permissionExists', HttpStatus.CONFLICT, {
+      throw AppException.from('roles.errors.permissionExists', HttpStatus.CONFLICT, {
         args: { resource: dto.resource, action: dto.action },
       });
     }
