@@ -2,8 +2,7 @@ import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { I18nLang } from 'nestjs-i18n';
 
-import { ROLE_ADMIN } from '@shared/constants';
-import { Roles } from '@shared/decorators/roles.decorator';
+import { RequirePermission } from '@shared/decorators';
 import { IPaginatedResult } from '@shared/interfaces';
 import { ParseUuidPipe } from '@shared/pipes/parse-uuid.pipe';
 
@@ -14,7 +13,6 @@ import { ListAuditLogsUseCase } from '../use-cases/list-audit-logs.use-case';
 
 @ApiTags('Audit Logs')
 @ApiBearerAuth()
-@Roles(ROLE_ADMIN)
 @Controller({ path: 'audit-logs', version: '1' })
 export class AuditController {
   constructor(
@@ -23,6 +21,7 @@ export class AuditController {
   ) {}
 
   @Get()
+  @RequirePermission('audit', 'read')
   @ApiOperation({ summary: 'List audit logs' })
   findAll(
     @Query() query: AuditLogQueryDTO,
@@ -32,6 +31,7 @@ export class AuditController {
   }
 
   @Get(':uuid')
+  @RequirePermission('audit', 'read')
   @ApiOperation({ summary: 'Get audit log by UUID' })
   findOne(
     @Param('uuid', ParseUuidPipe) uuid: string,

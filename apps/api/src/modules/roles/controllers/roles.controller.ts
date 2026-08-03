@@ -13,8 +13,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { ROLE_ADMIN } from '@shared/constants';
-import { Roles } from '@shared/decorators/roles.decorator';
+import { RequirePermission } from '@shared/decorators';
 import { ParseUuidPipe } from '@shared/pipes/parse-uuid.pipe';
 
 import { CreateRoleDTO } from '../dtos/create-role.dto';
@@ -31,7 +30,6 @@ import { UpdateRoleUseCase } from '../use-cases/roles/update-role.use-case';
 
 @ApiTags('Roles')
 @ApiBearerAuth()
-@Roles(ROLE_ADMIN)
 @Controller({ path: 'roles', version: '1' })
 export class RolesController {
   constructor(
@@ -44,18 +42,21 @@ export class RolesController {
   ) {}
 
   @Get()
+  @RequirePermission('roles', 'read')
   @ApiOperation({ summary: 'List roles' })
   findAll(@Query() query: ListRoleDTO): ReturnType<ListRolesUseCase['execute']> {
     return this.listRolesUseCase.execute(query);
   }
 
   @Get(':uuid')
+  @RequirePermission('roles', 'read')
   @ApiOperation({ summary: 'Get role by UUID' })
   findOne(@Param('uuid', ParseUuidPipe) uuid: string): Promise<RoleResponseDTO> {
     return this.findRoleUseCase.execute(uuid);
   }
 
   @Post()
+  @RequirePermission('roles', 'create')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new role' })
   create(@Body() dto: CreateRoleDTO): Promise<RoleResponseDTO> {
@@ -63,6 +64,7 @@ export class RolesController {
   }
 
   @Patch(':uuid')
+  @RequirePermission('roles', 'update')
   @ApiOperation({ summary: 'Update role' })
   update(
     @Param('uuid', ParseUuidPipe) uuid: string,
@@ -72,6 +74,7 @@ export class RolesController {
   }
 
   @Delete(':uuid')
+  @RequirePermission('roles', 'delete')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete a role' })
   remove(@Param('uuid', ParseUuidPipe) uuid: string): Promise<void> {
@@ -79,6 +82,7 @@ export class RolesController {
   }
 
   @Put(':uuid/permissions')
+  @RequirePermission('roles', 'update')
   @ApiOperation({ summary: 'Replace role permissions' })
   updatePermissions(
     @Param('uuid', ParseUuidPipe) uuid: string,

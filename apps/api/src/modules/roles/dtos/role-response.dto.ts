@@ -14,6 +14,9 @@ export class RoleResponseDTO {
   @ApiPropertyOptional({ nullable: true })
   description!: string | null;
 
+  @ApiProperty()
+  isReserved!: boolean;
+
   @ApiProperty({ type: [PermissionResponseDTO] })
   permissions!: PermissionResponseDTO[];
 
@@ -23,6 +26,7 @@ export class RoleResponseDTO {
     dto.uuid = entity.uuid;
     dto.name = entity.name;
     dto.description = entity.description;
+    dto.isReserved = entity.isReserved;
     dto.permissions = entity.permissions?.map((p) => PermissionResponseDTO.from(p)) ?? [];
 
     return dto;

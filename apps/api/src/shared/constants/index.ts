@@ -8,5 +8,4 @@ export const LOCAL_STRATEGY = 'local';
 
 export const PUBLIC_SCHEMA = 'public';
 
-export { RoleType } from '../types/role.type';
 export { ROLE_ADMIN } from '@boilerplate/shared';

@@ -12,8 +12,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { ROLE_ADMIN } from '@shared/constants';
-import { Roles } from '@shared/decorators/roles.decorator';
+import { RequirePermission } from '@shared/decorators';
 import { IPaginatedResult } from '@shared/interfaces';
 import { ParseUuidPipe } from '@shared/pipes/parse-uuid.pipe';
 
@@ -29,7 +28,6 @@ import { UpdatePermissionUseCase } from '../use-cases/permissions/update-permiss
 
 @ApiTags('Permissions')
 @ApiBearerAuth()
-@Roles(ROLE_ADMIN)
 @Controller({ path: 'permissions', version: '1' })
 export class PermissionsController {
   constructor(
@@ -41,18 +39,21 @@ export class PermissionsController {
   ) {}
 
   @Get()
+  @RequirePermission('permissions', 'read')
   @ApiOperation({ summary: 'List permissions' })
   findAll(@Query() query: ListPermissionDTO): Promise<IPaginatedResult<PermissionResponseDTO>> {
     return this.listPermissionsUseCase.execute(query);
   }
 
   @Get(':uuid')
+  @RequirePermission('permissions', 'read')
   @ApiOperation({ summary: 'Get permission by UUID' })
   findOne(@Param('uuid', ParseUuidPipe) uuid: string): Promise<PermissionResponseDTO> {
     return this.findPermissionUseCase.execute(uuid);
   }
 
   @Post()
+  @RequirePermission('permissions', 'create')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new permission' })
   create(@Body() dto: CreatePermissionDTO): Promise<PermissionResponseDTO> {
@@ -60,6 +61,7 @@ export class PermissionsController {
   }
 
   @Patch(':uuid')
+  @RequirePermission('permissions', 'update')
   @ApiOperation({ summary: 'Update permission' })
   update(
     @Param('uuid', ParseUuidPipe) uuid: string,
@@ -69,6 +71,7 @@ export class PermissionsController {
   }
 
   @Delete(':uuid')
+  @RequirePermission('permissions', 'delete')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete a permission' })
   remove(@Param('uuid', ParseUuidPipe) uuid: string): Promise<void> {

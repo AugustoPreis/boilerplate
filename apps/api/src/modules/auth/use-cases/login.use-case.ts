@@ -22,7 +22,7 @@ export class LoginUseCase {
   ) {}
 
   async execute(user: IAuthUser): Promise<ILoginResult> {
-    const payload: IJwtPayload = { sub: user.uuid, email: user.email, roles: user.roles };
+    const payload: IJwtPayload = { sub: user.uuid, email: user.email };
 
     const accessExpiresInSeconds = TimeUnitHelper.durationToSeconds(
       this.config.get<string>('auth.jwtExpiresIn', '15m'),

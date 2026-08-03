@@ -19,7 +19,7 @@ import { AppCacheModule } from './shared/cache/cache.module';
 import { RequestContextInterceptor } from './shared/context/request-context.interceptor';
 import { CsrfGuard } from './shared/guards/csrf.guard';
 import { JwtAuthGuard } from './shared/guards/jwt-auth.guard';
-import { RolesGuard } from './shared/guards/roles.guard';
+import { PermissionsGuard } from './shared/guards/permissions.guard';
 import { AppThrottlerGuard } from './shared/guards/throttler.guard';
 import { LoggingInterceptor } from './shared/interceptors/logging.interceptor';
 import { ResponseInterceptor } from './shared/interceptors/response.interceptor';
@@ -89,7 +89,7 @@ import { SharedModule } from './shared/shared.module';
     // Be careful with the order of the guards, as they are executed in the order they are provided.
     { provide: APP_GUARD, useClass: AppThrottlerGuard },
     { provide: APP_GUARD, useClass: JwtAuthGuard },
-    { provide: APP_GUARD, useClass: RolesGuard },
+    { provide: APP_GUARD, useClass: PermissionsGuard },
     { provide: APP_GUARD, useClass: CsrfGuard },
     { provide: APP_INTERCEPTOR, useClass: RequestContextInterceptor },
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },

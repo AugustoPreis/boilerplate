@@ -32,6 +32,7 @@ export class RolesSeeder {
     const permissions = await permissionRepository.find();
 
     role.permissions = permissions;
+    role.isReserved = true;
 
     await roleRepository.save(role);
 

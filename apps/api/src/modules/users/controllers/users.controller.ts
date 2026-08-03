@@ -13,9 +13,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { ROLE_ADMIN } from '@shared/constants';
-import { CurrentUser } from '@shared/decorators';
-import { Roles } from '@shared/decorators/roles.decorator';
+import { CurrentUser, RequirePermission } from '@shared/decorators';
 import { ParseUuidPipe } from '@shared/pipes/parse-uuid.pipe';
 
 import { AssignRolesDTO } from '../dtos/assign-roles.dto';
@@ -36,7 +34,6 @@ import { UpdateUserUseCase } from '../use-cases/update-user.use-case';
 
 @ApiTags('Users')
 @ApiBearerAuth()
-@Roles(ROLE_ADMIN)
 @Controller({ path: 'users', version: '1' })
 export class UsersController {
   constructor(
@@ -51,18 +48,21 @@ export class UsersController {
   ) {}
 
   @Get()
+  @RequirePermission('users', 'read')
   @ApiOperation({ summary: 'List users' })
   findAll(@Query() query: UserQueryDTO): ReturnType<ListUsersUseCase['execute']> {
     return this.listUsersUseCase.execute(query);
   }
 
   @Get(':uuid')
+  @RequirePermission('users', 'read')
   @ApiOperation({ summary: 'Get user by UUID' })
   findOne(@Param('uuid', ParseUuidPipe) uuid: string): Promise<UserResponseDTO> {
     return this.findUserUseCase.execute(uuid);
   }
 
   @Post()
+  @RequirePermission('users', 'create')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new user' })
   create(@Body() dto: CreateUserDTO): Promise<UserResponseDTO> {
@@ -70,6 +70,7 @@ export class UsersController {
   }
 
   @Patch(':uuid')
+  @RequirePermission('users', 'update')
   @ApiOperation({ summary: 'Update user' })
   update(
     @Param('uuid', ParseUuidPipe) uuid: string,
@@ -79,6 +80,7 @@ export class UsersController {
   }
 
   @Patch(':uuid/status')
+  @RequirePermission('users', 'update')
   @ApiOperation({ summary: 'Update user status' })
   updateStatus(
     @Param('uuid', ParseUuidPipe) uuid: string,
@@ -88,6 +90,7 @@ export class UsersController {
   }
 
   @Delete(':uuid')
+  @RequirePermission('users', 'delete')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Soft delete user' })
   remove(@Param('uuid', ParseUuidPipe) uuid: string): Promise<void> {
@@ -95,6 +98,7 @@ export class UsersController {
   }
 
   @Put(':uuid/roles')
+  @RequirePermission('users', 'update')
   @ApiOperation({ summary: 'Replace user roles' })
   assignRoles(
     @Param('uuid', ParseUuidPipe) uuid: string,
@@ -103,6 +107,7 @@ export class UsersController {
     return this.assignRolesUseCase.execute(uuid, dto);
   }
 
+  // No @RequirePermission: any authenticated user may change their own password.
   @Put('me/password')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Update user password' })

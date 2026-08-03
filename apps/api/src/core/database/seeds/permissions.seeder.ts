@@ -3,7 +3,7 @@ import { v7 as uuidv7 } from 'uuid';
 
 import { PermissionEntity } from '@modules/roles/entities/permission.entity';
 
-const DEFAULT_RESOURCES = ['users', 'roles'];
+const DEFAULT_RESOURCES = ['users', 'roles', 'permissions', 'audit'];
 const DEFAULT_ACTIONS = ['create', 'read', 'update', 'delete'];
 
 export class PermissionsSeeder {

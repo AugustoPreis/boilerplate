@@ -1,4 +1,3 @@
-import { ROLE_ADMIN } from '@boilerplate/shared';
 import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { AppException } from '@shared/exceptions';
@@ -16,7 +15,7 @@ export class DeleteRoleUseCase {
       throw AppException.from('roles.notFound', HttpStatus.NOT_FOUND);
     }
 
-    if (role.name === ROLE_ADMIN) {
+    if (role.isReserved) {
       throw AppException.from('roles.cannotDeleteReserved', HttpStatus.FORBIDDEN);
     }
 
