@@ -14,6 +14,7 @@ import { EUserStatus } from '../../users/enums/user-status.enum';
 import { UsersRepository } from '../../users/repositories/users.repository';
 import { getEffectivePermissions } from '../../users/utils/effective-permissions.util';
 import { ILoginResult } from '../interfaces/login-result.interface';
+import { getRefreshTokenRedisKey } from '../utils/redis-keys.util';
 
 import { LoginUseCase } from './login.use-case';
 
@@ -67,7 +68,7 @@ export class RefreshTokenUseCase {
   }
 
   private async getStoredHash(sub: string): Promise<string> {
-    const storedHash = await this.redis.get(`auth:refresh:${sub}`);
+    const storedHash = await this.redis.get(getRefreshTokenRedisKey(sub));
 
     if (!storedHash) {
       throw AppException.from('auth.errors.refreshTokenNotFound', HttpStatus.UNAUTHORIZED);

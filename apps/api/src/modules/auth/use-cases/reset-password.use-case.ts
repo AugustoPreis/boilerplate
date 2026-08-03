@@ -12,6 +12,7 @@ import { HashService } from '@shared/services/hash.service';
 
 import { UsersRepository } from '../../users/repositories/users.repository';
 import { ResetPasswordDTO } from '../dtos/reset-password.dto';
+import { getPasswordResetRedisKey, getRefreshTokenRedisKey } from '../utils/redis-keys.util';
 
 @Injectable()
 export class ResetPasswordUseCase {
@@ -41,7 +42,11 @@ export class ResetPasswordUseCase {
       passwordHash: await this.hashService.hash(dto.newPassword),
     });
 
-    await this.redis.del(`auth:password-reset:${payload.sub}`);
+    // The reset token is single-use, and any session that predates the
+    // reset is revoked too — the whole point of resetting is that it may
+    // have been someone else who was logged in.
+    await this.redis.del(getPasswordResetRedisKey(payload.sub));
+    await this.redis.del(getRefreshTokenRedisKey(payload.sub));
   }
 
   private ensurePasswordsMatch(dto: ResetPasswordDTO): void {
@@ -61,7 +66,7 @@ export class ResetPasswordUseCase {
   }
 
   private async getStoredHash(sub: string): Promise<string> {
-    const storedHash = await this.redis.get(`auth:password-reset:${sub}`);
+    const storedHash = await this.redis.get(getPasswordResetRedisKey(sub));
 
     if (!storedHash) {
       throw AppException.from('auth.errors.passwordResetTokenInvalid', HttpStatus.UNAUTHORIZED);

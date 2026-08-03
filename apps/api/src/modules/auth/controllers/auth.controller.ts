@@ -13,6 +13,7 @@ import { ConfigService } from '@nestjs/config';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { Request, Response } from 'express';
+import { I18nLang } from 'nestjs-i18n';
 
 import { CurrentUser } from '@shared/decorators/current-user.decorator';
 import { Public } from '@shared/decorators/public.decorator';
@@ -107,8 +108,8 @@ export class AuthController {
   @Throttle({ default: { limit: 5, ttl: 900000 } })
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Request a password reset e-mail' })
-  forgotPassword(@Body() dto: ForgotPasswordDTO): Promise<void> {
-    return this.forgotPasswordUseCase.execute(dto.email);
+  forgotPassword(@Body() dto: ForgotPasswordDTO, @I18nLang() locale: string): Promise<void> {
+    return this.forgotPasswordUseCase.execute(dto.email, locale);
   }
 
   @Post('reset-password')

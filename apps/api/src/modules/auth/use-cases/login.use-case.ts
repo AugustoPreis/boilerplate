@@ -12,6 +12,7 @@ import { TimeUnitHelper } from '@shared/helpers';
 import { IAuthUser } from '../interfaces/auth-user.interface';
 import { IJwtPayload } from '../interfaces/jwt-payload.interface';
 import { ILoginResult } from '../interfaces/login-result.interface';
+import { getRefreshTokenRedisKey } from '../utils/redis-keys.util';
 
 @Injectable()
 export class LoginUseCase {
@@ -46,7 +47,7 @@ export class LoginUseCase {
 
     const hash = createHash('sha256').update(refreshToken).digest('hex');
 
-    await this.redis.set(`auth:refresh:${user.uuid}`, hash, 'EX', refreshExpiresInSeconds);
+    await this.redis.set(getRefreshTokenRedisKey(user.uuid), hash, 'EX', refreshExpiresInSeconds);
 
     return {
       accessToken,

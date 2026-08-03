@@ -4,6 +4,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import Redis from 'ioredis';
+import { I18nService } from 'nestjs-i18n';
 
 import { MailService } from '@core/mail/mail.service';
 import { REDIS_CLIENT } from '@core/redis/redis.constants';
@@ -12,6 +13,7 @@ import { TimeUnitHelper } from '@shared/helpers';
 
 import { EUserStatus } from '../../users/enums/user-status.enum';
 import { UsersRepository } from '../../users/repositories/users.repository';
+import { getPasswordResetRedisKey } from '../utils/redis-keys.util';
 
 @Injectable()
 export class ForgotPasswordUseCase {
@@ -20,10 +22,11 @@ export class ForgotPasswordUseCase {
     private readonly mailService: MailService,
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
+    private readonly i18n: I18nService,
     @Inject(REDIS_CLIENT) private readonly redis: Redis,
   ) {}
 
-  async execute(email: string): Promise<void> {
+  async execute(email: string, locale: string): Promise<void> {
     const user = await this.usersRepository.findByEmail(email.toLowerCase());
 
     // Same response regardless of whether the e-mail is registered, so this
@@ -46,23 +49,23 @@ export class ForgotPasswordUseCase {
 
     const hash = createHash('sha256').update(token).digest('hex');
 
-    await this.redis.set(`auth:password-reset:${user.uuid}`, hash, 'EX', expiresInSeconds);
+    await this.redis.set(getPasswordResetRedisKey(user.uuid), hash, 'EX', expiresInSeconds);
 
     await this.mailService.send({
       to: user.email,
-      subject: 'Redefinição de senha',
-      html: this.buildEmailHtml(user.name, token),
+      subject: this.i18n.translate('auth.mail.passwordReset.subject', { lang: locale }),
+      html: this.buildEmailHtml(user.name, token, locale),
     });
   }
 
-  private buildEmailHtml(name: string, token: string): string {
+  private buildEmailHtml(name: string, token: string, locale: string): string {
     const resetUrl = `${this.config.get<string>('app.frontendUrl')}/reset-password?token=${token}`;
 
     return [
-      `<p>Olá, ${name}.</p>`,
-      '<p>Recebemos uma solicitação para redefinir sua senha. Clique no link abaixo para continuar:</p>',
+      `<p>${this.i18n.translate('auth.mail.passwordReset.greeting', { lang: locale, args: { name } })}</p>`,
+      `<p>${this.i18n.translate('auth.mail.passwordReset.body', { lang: locale })}</p>`,
       `<p><a href="${resetUrl}">${resetUrl}</a></p>`,
-      '<p>Se você não solicitou isso, ignore este e-mail — sua senha permanece a mesma.</p>',
+      `<p>${this.i18n.translate('auth.mail.passwordReset.footer', { lang: locale })}</p>`,
     ].join('\n');
   }
 }

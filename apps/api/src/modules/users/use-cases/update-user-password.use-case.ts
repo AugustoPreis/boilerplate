@@ -1,8 +1,12 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import Redis from 'ioredis';
+
+import { REDIS_CLIENT } from '@core/redis/redis.constants';
 
 import { AppException } from '@shared/exceptions';
 import { HashService } from '@shared/services/hash.service';
 
+import { getRefreshTokenRedisKey } from '../../auth/utils/redis-keys.util';
 import { UpdateUserPasswordDTO } from '../dtos/update-user-password.dto';
 import { UsersRepository } from '../repositories/users.repository';
 
@@ -11,6 +15,7 @@ export class UpdateUserPasswordUseCase {
   constructor(
     private readonly usersRepository: UsersRepository,
     private readonly hashService: HashService,
+    @Inject(REDIS_CLIENT) private readonly redis: Redis,
   ) {}
 
   async execute(currentUserUuid: string, dto: UpdateUserPasswordDTO): Promise<void> {
@@ -27,6 +32,11 @@ export class UpdateUserPasswordUseCase {
     await this.usersRepository.update(user.id, {
       passwordHash: await this.hashService.hash(dto.newPassword),
     });
+
+    // Revokes the refresh token so any other session gets logged out on its
+    // next refresh — the current one keeps working until its access token
+    // (short-lived) naturally expires.
+    await this.redis.del(getRefreshTokenRedisKey(currentUserUuid));
   }
 
   private ensureNewPasswordIsDifferent(dto: UpdateUserPasswordDTO): void {
