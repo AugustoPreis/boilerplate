@@ -64,7 +64,7 @@ export class UsersRepository {
   async search(
     page: number,
     perPage: number,
-    filters: { email?: string; status?: EUserStatus },
+    filters: { email?: string; status?: EUserStatus; roleUuid?: string },
   ): Promise<IPaginatedResult<UserEntity>> {
     const where: Record<string, unknown> = { deletedAt: IsNull() };
 
@@ -74,6 +74,10 @@ export class UsersRepository {
 
     if (filters.status) {
       where.status = filters.status;
+    }
+
+    if (filters.roleUuid) {
+      where.userRoles = { role: { uuid: filters.roleUuid } };
     }
 
     const [data, total] = await this.repo.findAndCount({

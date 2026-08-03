@@ -14,6 +14,7 @@ export class ListUsersUseCase {
     const result = await this.usersRepository.search(query.page, query.perPage, {
       email: query.email,
       status: query.status,
+      roleUuid: query.roleUuid,
     });
 
     return {

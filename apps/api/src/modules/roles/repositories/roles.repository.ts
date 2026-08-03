@@ -43,7 +43,7 @@ export class RolesRepository {
   }
 
   create(data: Partial<RoleEntity>): Promise<RoleEntity> {
-    const entity = this.repo.create({ ...data, permissions: [] });
+    const entity = this.repo.create({ ...data, permissions: data.permissions ?? [] });
 
     return this.repo.save(entity);
   }

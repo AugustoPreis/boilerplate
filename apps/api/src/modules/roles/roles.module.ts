@@ -15,6 +15,7 @@ import { DeletePermissionUseCase } from './use-cases/permissions/delete-permissi
 import { FindPermissionUseCase } from './use-cases/permissions/find-permission.use-case';
 import { ListPermissionsUseCase } from './use-cases/permissions/list-permissions.use-case';
 import { UpdatePermissionUseCase } from './use-cases/permissions/update-permission.use-case';
+import { CloneRoleUseCase } from './use-cases/roles/clone-role.use-case';
 import { CreateRoleUseCase } from './use-cases/roles/create-role.use-case';
 import { DeleteRoleUseCase } from './use-cases/roles/delete-role.use-case';
 import { FindRoleUseCase } from './use-cases/roles/find-role.use-case';
@@ -34,6 +35,7 @@ import { UpdateRoleUseCase } from './use-cases/roles/update-role.use-case';
     UpdateRoleUseCase,
     DeleteRoleUseCase,
     UpdateRolePermissionsUseCase,
+    CloneRoleUseCase,
     ListPermissionsUseCase,
     FindPermissionUseCase,
     CreatePermissionUseCase,

@@ -21,6 +21,7 @@ import { ListRoleDTO } from '../dtos/list-role.dto';
 import { RoleResponseDTO } from '../dtos/role-response.dto';
 import { UpdateRolePermissionsDTO } from '../dtos/update-role-permissions.dto';
 import { UpdateRoleDTO } from '../dtos/update-role.dto';
+import { CloneRoleUseCase } from '../use-cases/roles/clone-role.use-case';
 import { CreateRoleUseCase } from '../use-cases/roles/create-role.use-case';
 import { DeleteRoleUseCase } from '../use-cases/roles/delete-role.use-case';
 import { FindRoleUseCase } from '../use-cases/roles/find-role.use-case';
@@ -39,6 +40,7 @@ export class RolesController {
     private readonly updateRoleUseCase: UpdateRoleUseCase,
     private readonly deleteRoleUseCase: DeleteRoleUseCase,
     private readonly updateRolePermissionsUseCase: UpdateRolePermissionsUseCase,
+    private readonly cloneRoleUseCase: CloneRoleUseCase,
   ) {}
 
   @Get()
@@ -89,5 +91,16 @@ export class RolesController {
     @Body() dto: UpdateRolePermissionsDTO,
   ): Promise<RoleResponseDTO> {
     return this.updateRolePermissionsUseCase.execute(uuid, dto);
+  }
+
+  @Post(':uuid/clone')
+  @RequirePermission('roles', 'create')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Clone a role, copying its permissions into a new one' })
+  clone(
+    @Param('uuid', ParseUuidPipe) uuid: string,
+    @Body() dto: CreateRoleDTO,
+  ): Promise<RoleResponseDTO> {
+    return this.cloneRoleUseCase.execute(uuid, dto);
   }
 }
