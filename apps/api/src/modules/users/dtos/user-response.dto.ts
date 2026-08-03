@@ -3,6 +3,8 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { UserEntity } from '../entities/user.entity';
 import { EUserStatus } from '../enums/user-status.enum';
 
+import { RoleSummaryDTO } from './role-summary.dto';
+
 export class UserResponseDTO {
   @ApiProperty()
   uuid!: string;
@@ -19,8 +21,8 @@ export class UserResponseDTO {
   @ApiProperty({ enum: EUserStatus })
   status!: EUserStatus;
 
-  @ApiProperty({ type: [String] })
-  roles!: string[];
+  @ApiProperty({ type: [RoleSummaryDTO] })
+  roles!: RoleSummaryDTO[];
 
   @ApiProperty()
   createdAt!: Date;
@@ -33,7 +35,7 @@ export class UserResponseDTO {
     dto.name = entity.name;
     dto.avatarUrl = entity.avatarUrl;
     dto.status = entity.status;
-    dto.roles = entity.userRoles?.map((ur) => ur.role.name) ?? [];
+    dto.roles = entity.userRoles?.map((ur) => RoleSummaryDTO.from(ur.role)) ?? [];
     dto.createdAt = entity.createdAt;
 
     return dto;

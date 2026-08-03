@@ -9,6 +9,7 @@ import { REDIS_CLIENT } from '@core/redis/redis.constants';
 
 import { AppException } from '@shared/exceptions';
 
+import { RoleSummaryDTO } from '../../users/dtos/role-summary.dto';
 import { EUserStatus } from '../../users/enums/user-status.enum';
 import { UsersRepository } from '../../users/repositories/users.repository';
 import { ILoginResult } from '../interfaces/login-result.interface';
@@ -45,7 +46,7 @@ export class RefreshTokenUseCase {
       name: user.name,
       avatarUrl: user.avatarUrl,
       status: user.status,
-      roles: user.userRoles.map((ur) => ur.role.name),
+      roles: user.userRoles.map((ur) => RoleSummaryDTO.from(ur.role)),
     });
   }
 

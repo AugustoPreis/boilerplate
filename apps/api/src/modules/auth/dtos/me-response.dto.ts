@@ -1,5 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
+import { RoleSummaryDTO } from '../../users/dtos/role-summary.dto';
+
 export class MeResponseDTO {
   @ApiProperty()
   uuid!: string;
@@ -16,6 +18,6 @@ export class MeResponseDTO {
   @ApiProperty()
   status!: string;
 
-  @ApiProperty({ type: [String] })
-  roles!: string[];
+  @ApiProperty({ type: [RoleSummaryDTO] })
+  roles!: RoleSummaryDTO[];
 }

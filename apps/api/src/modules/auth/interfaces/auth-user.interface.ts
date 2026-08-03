@@ -1,3 +1,5 @@
+import { RoleSummaryDTO } from '../../users/dtos/role-summary.dto';
+
 export interface IAuthUser {
   id: number;
   uuid: string;
@@ -5,5 +7,5 @@ export interface IAuthUser {
   name: string;
   avatarUrl: string | null;
   status: string;
-  roles: string[];
+  roles: RoleSummaryDTO[];
 }

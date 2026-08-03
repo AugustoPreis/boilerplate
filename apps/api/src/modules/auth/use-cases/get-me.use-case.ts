@@ -2,6 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { AppException } from '@shared/exceptions';
 
+import { RoleSummaryDTO } from '../../users/dtos/role-summary.dto';
 import { UsersRepository } from '../../users/repositories/users.repository';
 import { MeResponseDTO } from '../dtos/me-response.dto';
 
@@ -22,7 +23,7 @@ export class GetMeUseCase {
       name: user.name,
       avatarUrl: user.avatarUrl,
       status: user.status,
-      roles: user.userRoles?.map((ur) => ur.role.name) ?? [],
+      roles: user.userRoles?.map((ur) => RoleSummaryDTO.from(ur.role)) ?? [],
     };
   }
 }
