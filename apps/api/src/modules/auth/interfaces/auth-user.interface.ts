@@ -8,4 +8,5 @@ export interface IAuthUser {
   avatarUrl: string | null;
   status: string;
   roles: RoleSummaryDTO[];
+  permissions: string[];
 }

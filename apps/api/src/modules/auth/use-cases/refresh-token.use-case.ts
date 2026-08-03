@@ -12,6 +12,7 @@ import { AppException } from '@shared/exceptions';
 import { RoleSummaryDTO } from '../../users/dtos/role-summary.dto';
 import { EUserStatus } from '../../users/enums/user-status.enum';
 import { UsersRepository } from '../../users/repositories/users.repository';
+import { getEffectivePermissions } from '../../users/utils/effective-permissions.util';
 import { ILoginResult } from '../interfaces/login-result.interface';
 
 import { LoginUseCase } from './login.use-case';
@@ -47,6 +48,7 @@ export class RefreshTokenUseCase {
       avatarUrl: user.avatarUrl,
       status: user.status,
       roles: user.userRoles.map((ur) => RoleSummaryDTO.from(ur.role)),
+      permissions: getEffectivePermissions(user.userRoles),
     });
   }
 

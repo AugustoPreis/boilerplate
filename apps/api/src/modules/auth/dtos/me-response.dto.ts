@@ -20,4 +20,7 @@ export class MeResponseDTO {
 
   @ApiProperty({ type: [RoleSummaryDTO] })
   roles!: RoleSummaryDTO[];
+
+  @ApiProperty({ type: [String], description: 'Effective permissions, as "resource:action"' })
+  permissions!: string[];
 }

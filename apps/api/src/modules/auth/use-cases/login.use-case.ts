@@ -60,6 +60,7 @@ export class LoginUseCase {
         avatarUrl: user.avatarUrl,
         status: user.status,
         roles: user.roles,
+        permissions: user.permissions,
       },
     };
   }

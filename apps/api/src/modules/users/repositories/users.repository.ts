@@ -45,6 +45,7 @@ export class UsersRepository {
       .addSelect('user.passwordHash')
       .leftJoinAndSelect('user.userRoles', 'userRole')
       .leftJoinAndSelect('userRole.role', 'role')
+      .leftJoinAndSelect('role.permissions', 'permission')
       .where('user.uuid = :uuid', { uuid })
       .andWhere('user.deletedAt IS NULL')
       .getOne();
@@ -56,6 +57,7 @@ export class UsersRepository {
       .addSelect('user.passwordHash')
       .leftJoinAndSelect('user.userRoles', 'userRole')
       .leftJoinAndSelect('userRole.role', 'role')
+      .leftJoinAndSelect('role.permissions', 'permission')
       .where('user.email = :email', { email })
       .andWhere('user.deletedAt IS NULL')
       .getOne();

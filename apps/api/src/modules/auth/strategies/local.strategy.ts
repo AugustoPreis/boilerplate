@@ -13,6 +13,7 @@ import { HashService } from '@shared/services/hash.service';
 import { RoleSummaryDTO } from '../../users/dtos/role-summary.dto';
 import { EUserStatus } from '../../users/enums/user-status.enum';
 import { UsersRepository } from '../../users/repositories/users.repository';
+import { getEffectivePermissions } from '../../users/utils/effective-permissions.util';
 import { IAuthUser } from '../interfaces/auth-user.interface';
 
 const MAX_ATTEMPTS = 5;
@@ -52,6 +53,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, LOCAL_STRATEGY) {
       avatarUrl: user.avatarUrl,
       status: user.status,
       roles: user.userRoles.map((ur) => RoleSummaryDTO.from(ur.role)),
+      permissions: getEffectivePermissions(user.userRoles),
     };
   }
 

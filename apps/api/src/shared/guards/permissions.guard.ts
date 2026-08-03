@@ -2,6 +2,7 @@ import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/c
 import { Reflector } from '@nestjs/core';
 
 import { UsersRepository } from '@modules/users/repositories/users.repository';
+import { getEffectivePermissions } from '@modules/users/utils/effective-permissions.util';
 
 import { IRequiredPermission, PERMISSION_KEY } from '../decorators/require-permission.decorator';
 import { AppException } from '../exceptions';
@@ -27,14 +28,9 @@ export class PermissionsGuard implements CanActivate {
     if (!userUuid) return false;
 
     const user = await this.usersRepository.findByUuid(userUuid);
-    const permissions = user?.userRoles?.flatMap((userRole) => userRole.role.permissions) ?? [];
+    const permissions = getEffectivePermissions(user?.userRoles ?? []);
 
-    const hasPermission = permissions.some(
-      (permission) =>
-        permission.resource === required.resource && permission.action === required.action,
-    );
-
-    if (!hasPermission) {
+    if (!permissions.includes(`${required.resource}:${required.action}`)) {
       throw AppException.from('errors.forbidden', HttpStatus.FORBIDDEN);
     }
 
