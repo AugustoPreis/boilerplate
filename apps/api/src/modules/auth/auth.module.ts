@@ -11,10 +11,12 @@ import { AuthController } from './controllers/auth.controller';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
+import { ForgotPasswordUseCase } from './use-cases/forgot-password.use-case';
 import { GetMeUseCase } from './use-cases/get-me.use-case';
 import { LoginUseCase } from './use-cases/login.use-case';
 import { LogoutUseCase } from './use-cases/logout.use-case';
 import { RefreshTokenUseCase } from './use-cases/refresh-token.use-case';
+import { ResetPasswordUseCase } from './use-cases/reset-password.use-case';
 
 @Module({
   imports: [
@@ -38,6 +40,8 @@ import { RefreshTokenUseCase } from './use-cases/refresh-token.use-case';
     RefreshTokenUseCase,
     LogoutUseCase,
     GetMeUseCase,
+    ForgotPasswordUseCase,
+    ResetPasswordUseCase,
   ],
 })
 export class AuthModule {}

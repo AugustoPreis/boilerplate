@@ -18,6 +18,11 @@ export function validateConfig(config: Record<string, unknown>): Record<string, 
       errors.push('JWT_REFRESH_SECRET must have at least 32 characters in production');
     }
 
+    const passwordResetSecret = (config.PASSWORD_RESET_SECRET as string) || '';
+    if (passwordResetSecret.length < 32) {
+      errors.push('PASSWORD_RESET_SECRET must have at least 32 characters in production');
+    }
+
     if (config.COOKIE_SECURE !== 'true') {
       errors.push('COOKIE_SECURE must be "true" in production (cookies require HTTPS)');
     }

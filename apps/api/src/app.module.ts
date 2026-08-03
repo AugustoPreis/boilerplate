@@ -5,10 +5,11 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
 
-import { appConfig, authConfig, databaseConfig } from './core/config';
+import { appConfig, authConfig, databaseConfig, mailConfig } from './core/config';
 import { validateConfig } from './core/config/config.validation';
 import { TypeOrmConfigModule } from './core/database/typeorm.module';
 import { I18nModule } from './core/i18n/i18n.module';
+import { MailModule } from './core/mail/mail.module';
 import { RedisModule } from './core/redis/redis.module';
 import { AuditModule } from './modules/audit/audit.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -30,7 +31,7 @@ import { SharedModule } from './shared/shared.module';
     ConfigModule.forRoot({
       isGlobal: true,
       validate: validateConfig,
-      load: [appConfig, authConfig, databaseConfig],
+      load: [appConfig, authConfig, databaseConfig, mailConfig],
       envFilePath: ['../../.env.local', '../../.env', '.env.local', '.env'],
     }),
     LoggerModule.forRootAsync({
@@ -77,6 +78,7 @@ import { SharedModule } from './shared/shared.module';
       },
     ]),
     RedisModule,
+    MailModule,
     AppCacheModule,
     SharedModule,
     HealthModule,
