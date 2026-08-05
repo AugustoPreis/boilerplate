@@ -3,17 +3,12 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { StorageService } from '@core/storage/storage.service';
 
 import { AppException } from '@shared/exceptions';
+import { getExtensionFromMimeType } from '@shared/utils/mime-type.util';
 
 import { UserResponseDTO } from '../dtos/user-response.dto';
 import { UsersRepository } from '../repositories/users.repository';
-
-export const MAX_AVATAR_SIZE_BYTES = 5 * 1024 * 1024;
-
-const MIME_TYPE_EXTENSIONS: Record<string, string> = {
-  'image/jpeg': 'jpg',
-  'image/png': 'png',
-  'image/webp': 'webp',
-};
+import { MAX_AVATAR_SIZE_BYTES } from '../users.constants';
+import { getAvatarStorageKey } from '../utils/avatar-storage-key.util';
 
 @Injectable()
 export class UploadUserAvatarUseCase {
@@ -38,7 +33,7 @@ export class UploadUserAvatarUseCase {
 
     // Deterministic key: the next upload from the same user overwrites the
     // previous object, so there's no orphaned avatar to clean up later.
-    const key = `users/avatars/${user.uuid}.${extension}`;
+    const key = getAvatarStorageKey(user.uuid, extension);
 
     const avatarUrl = await this.storageService.upload(key, file.buffer, file.mimetype);
 
@@ -48,7 +43,7 @@ export class UploadUserAvatarUseCase {
   }
 
   private ensureFileTypeIsSupported(file: Express.Multer.File): string {
-    const extension = MIME_TYPE_EXTENSIONS[file.mimetype];
+    const extension = getExtensionFromMimeType(file.mimetype);
 
     if (!extension) {
       throw AppException.from('users.errors.avatarInvalidType', HttpStatus.BAD_REQUEST);
