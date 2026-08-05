@@ -10,8 +10,11 @@ import {
   Post,
   Put,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { CurrentUser, RequirePermission } from '@shared/decorators';
 import { ParseUuidPipe } from '@shared/pipes/parse-uuid.pipe';
@@ -31,6 +34,7 @@ import { ListUsersUseCase } from '../use-cases/list-users.use-case';
 import { UpdateUserPasswordUseCase } from '../use-cases/update-user-password.use-case';
 import { UpdateUserStatusUseCase } from '../use-cases/update-user-status.use-case';
 import { UpdateUserUseCase } from '../use-cases/update-user.use-case';
+import { UploadUserAvatarUseCase } from '../use-cases/upload-user-avatar.use-case';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -45,6 +49,7 @@ export class UsersController {
     private readonly deleteUserUseCase: DeleteUserUseCase,
     private readonly assignRolesUseCase: AssignRolesUseCase,
     private readonly updateUserPasswordUseCase: UpdateUserPasswordUseCase,
+    private readonly uploadUserAvatarUseCase: UploadUserAvatarUseCase,
   ) {}
 
   @Get()
@@ -116,5 +121,20 @@ export class UsersController {
     @Body() dto: UpdateUserPasswordDTO,
   ): Promise<void> {
     return this.updateUserPasswordUseCase.execute(uuid, dto);
+  }
+
+  // No @RequirePermission: any authenticated user may change their own avatar.
+  @Post('me/avatar')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: { type: 'object', properties: { file: { type: 'string', format: 'binary' } } },
+  })
+  @ApiOperation({ summary: 'Upload the current user avatar' })
+  uploadAvatar(
+    @CurrentUser('uuid') uuid: string,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<UserResponseDTO> {
+    return this.uploadUserAvatarUseCase.execute(uuid, file);
   }
 }

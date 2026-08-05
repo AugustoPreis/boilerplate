@@ -26,6 +26,18 @@ export function validateConfig(config: Record<string, unknown>): Record<string, 
     if (config.COOKIE_SECURE !== 'true') {
       errors.push('COOKIE_SECURE must be "true" in production (cookies require HTTPS)');
     }
+
+    if (!(config.S3_ACCESS_KEY_ID as string)) {
+      errors.push('S3_ACCESS_KEY_ID must be set in production');
+    }
+
+    if (!(config.S3_SECRET_ACCESS_KEY as string)) {
+      errors.push('S3_SECRET_ACCESS_KEY must be set in production');
+    }
+
+    if (!(config.S3_BUCKET as string)) {
+      errors.push('S3_BUCKET must be set in production');
+    }
   }
 
   const bcryptRounds = parseInt((config.BCRYPT_ROUNDS as string) || '12', 10);
