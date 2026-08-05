@@ -1,5 +1,6 @@
+import { BullModule } from '@nestjs/bullmq';
 import { Module, RequestMethod } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ThrottlerModule } from '@nestjs/throttler';
@@ -78,6 +79,17 @@ import { SharedModule } from './shared/shared.module';
         limit: 100,
       },
     ]),
+    BullModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        connection: {
+          host: config.get<string>('REDIS_HOST', 'localhost'),
+          port: config.get<number>('REDIS_PORT', 6379),
+          password: config.get<string>('REDIS_PASSWORD') || undefined,
+          db: config.get<number>('REDIS_DB', 0),
+        },
+      }),
+    }),
     RedisModule,
     MailModule,
     StorageModule,
