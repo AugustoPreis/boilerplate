@@ -43,6 +43,14 @@ do módulo mais antigo do projeto, não o padrão a seguir. `BullModule.forRootA
 (a mesma conexão Redis é compartilhada). Para qualquer configuração nova, siga o padrão
 `registerAs` (passos acima), não o do Redis.
 
+## Atualizando as imagens do `docker-compose.yml`
+
+O Dependabot cuida das dependências npm, das GitHub Actions e da imagem base de
+`apps/api/Dockerfile` (ver `.github/dependabot.yml`) — mas ele não lê `docker-compose.yml`. As
+imagens de infraestrutura de desenvolvimento (`postgres`, `redis:7-alpine`, `minio/minio`) ficam
+de fora da automação e precisam de atualização manual ocasional, verificando a tag pinada em cada
+serviço contra a última release estável.
+
 ## Por que a validação fica centralizada em um único arquivo
 
 `config.validation.ts` é passado como `validate` para `ConfigModule.forRoot(...)` e roda uma única
