@@ -20,6 +20,6 @@
       "@core/*": ["./src/core/*"],
       "@modules/*": ["./src/modules/*"]
     },
-    "types": ["jest", "node"]
+    "types": ["jest", "node", "multer"]
   }
 }

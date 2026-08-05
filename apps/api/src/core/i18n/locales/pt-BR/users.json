@@ -4,7 +4,10 @@
     "passwordsMustBeDifferent": "A nova senha deve ser diferente da senha atual.",
     "passwordsMustMatch": "As senhas não coincidem.",
     "invalidCurrentPassword": "A senha atual está incorreta.",
-    "emailTaken": "O e-mail \"{email}\" já está em uso."
+    "emailTaken": "O e-mail \"{email}\" já está em uso.",
+    "avatarRequired": "Envie um arquivo de imagem.",
+    "avatarInvalidType": "Formato de imagem inválido. Envie um arquivo JPG, PNG ou WEBP.",
+    "avatarTooLarge": "A imagem deve ter no máximo 5MB."
   },
 
   "audit": {

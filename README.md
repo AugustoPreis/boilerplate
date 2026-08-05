@@ -22,3 +22,6 @@ em `ADMIN_EMAIL`/`ADMIN_PASSWORD` no `.env`.
 Em desenvolvimento (`docker-compose.override.yml`, aplicado automaticamente),
 o código roda com hot-reload e um [MailHog](http://localhost:8025) captura
 qualquer e-mail enviado pela API, ao invés de entregá-lo de verdade.
+
+Arquivos enviados pela API (ex.: avatar de usuário) vão para um
+[MinIO](http://localhost:9001) local, compatível com S3.

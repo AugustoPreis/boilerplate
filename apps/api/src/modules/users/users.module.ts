@@ -17,6 +17,7 @@ import { ListUsersUseCase } from './use-cases/list-users.use-case';
 import { UpdateUserPasswordUseCase } from './use-cases/update-user-password.use-case';
 import { UpdateUserStatusUseCase } from './use-cases/update-user-status.use-case';
 import { UpdateUserUseCase } from './use-cases/update-user.use-case';
+import { UploadUserAvatarUseCase } from './use-cases/upload-user-avatar.use-case';
 
 @Module({
   imports: [SharedModule, TypeOrmModule.forFeature([UserEntity, UserRoleEntity, RoleEntity])],
@@ -31,6 +32,7 @@ import { UpdateUserUseCase } from './use-cases/update-user.use-case';
     DeleteUserUseCase,
     AssignRolesUseCase,
     UpdateUserPasswordUseCase,
+    UploadUserAvatarUseCase,
   ],
   exports: [UsersRepository],
 })
