@@ -8,7 +8,7 @@
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
-  "transformIgnorePatterns": ["node_modules/(?!.*uuid)"],
+  "transformIgnorePatterns": ["node_modules/(?!.*(uuid|@faker-js))"],
   "moduleNameMapper": {
     "^@boilerplate/shared$": "<rootDir>/../../../packages/shared/src/index.ts",
     "^@shared/(.*)$": "<rootDir>/../src/shared/$1",
