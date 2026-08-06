@@ -56,9 +56,9 @@ export default tseslint.config(
           alphabetize: { order: 'asc', caseInsensitive: true },
         },
       ],
-      // Fronteiras arquiteturais do §4.2 do plano: app/core/shared/features.
-      // O acesso entre features (só via barrel index.ts) fica para quando a
-      // 2ª feature existir e houver algo real para validar a regra contra.
+      // Architectural boundaries between app/core/shared/features. Barrel-only
+      // access between features is deferred to whichever PR adds the second
+      // feature — nothing exists yet to validate that rule against.
       'import/no-restricted-paths': [
         'error',
         {
@@ -66,32 +66,32 @@ export default tseslint.config(
             {
               target: './src/core',
               from: './src/features',
-              message: 'core/ é infraestrutura cross-cutting — não pode depender de features/.',
+              message: 'core/ is cross-cutting infrastructure — it cannot depend on features/.',
             },
             {
               target: './src/core',
               from: './src/app',
-              message: 'core/ não pode depender de app/.',
+              message: 'core/ cannot depend on app/.',
             },
             {
               target: './src/shared',
               from: './src/features',
-              message: 'shared/ é agnóstico de domínio — não pode depender de features/.',
+              message: 'shared/ is domain-agnostic — it cannot depend on features/.',
             },
             {
               target: './src/shared',
               from: './src/core',
-              message: 'shared/ é agnóstico de domínio — não pode depender de core/.',
+              message: 'shared/ is domain-agnostic — it cannot depend on core/.',
             },
             {
               target: './src/shared',
               from: './src/app',
-              message: 'shared/ não pode depender de app/.',
+              message: 'shared/ cannot depend on app/.',
             },
             {
               target: './src/features',
               from: './src/app',
-              message: 'features/ não pode depender de app/.',
+              message: 'features/ cannot depend on app/.',
             },
           ],
         },
@@ -99,9 +99,9 @@ export default tseslint.config(
     },
   },
   {
-    // Toda rota exporta `Route` (config do TanStack Router, não um
-    // componente) ao lado do componente da página — padrão oficial do
-    // file-based routing, sempre reportado como falso-positivo por esta regra.
+    // Every route file exports `Route` (TanStack Router config, not a
+    // component) alongside the page component — the official file-based
+    // routing pattern, always flagged as a false positive by this rule.
     files: ['src/app/routes/**/*.tsx'],
     rules: {
       'react-refresh/only-export-components': 'off',
