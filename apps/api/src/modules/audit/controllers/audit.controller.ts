@@ -2,7 +2,7 @@ import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { I18nLang } from 'nestjs-i18n';
 
-import { RequirePermission } from '@shared/decorators';
+import { ApiPaginatedResponse, RequirePermission } from '@shared/decorators';
 import { IPaginatedResult } from '@shared/interfaces';
 import { ParseUuidPipe } from '@shared/pipes/parse-uuid.pipe';
 
@@ -23,6 +23,7 @@ export class AuditController {
   @Get()
   @RequirePermission('audit', 'read')
   @ApiOperation({ summary: 'List audit logs' })
+  @ApiPaginatedResponse(AuditLogResponseDTO)
   findAll(
     @Query() query: AuditLogQueryDTO,
     @I18nLang() locale: string,

@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { RequirePermission } from '@shared/decorators';
+import { ApiPaginatedResponse, RequirePermission } from '@shared/decorators';
 import { ParseUuidPipe } from '@shared/pipes/parse-uuid.pipe';
 
 import { CreateRoleDTO } from '../dtos/create-role.dto';
@@ -46,6 +46,7 @@ export class RolesController {
   @Get()
   @RequirePermission('roles', 'read')
   @ApiOperation({ summary: 'List roles' })
+  @ApiPaginatedResponse(RoleResponseDTO)
   findAll(@Query() query: ListRoleDTO): ReturnType<ListRolesUseCase['execute']> {
     return this.listRolesUseCase.execute(query);
   }
