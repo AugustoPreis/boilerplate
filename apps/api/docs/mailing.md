@@ -1,75 +1,76 @@
 # E-mail
 
-## Regra central: `MailService` só é chamado pelo `MailProcessor`
+## Core rule: `MailService` is only called by `MailProcessor`
 
-Nenhum use-case deve injetar `core/mail/mail.service.ts` (`MailService`) diretamente, nem montar
-HTML por concatenação de string. O único ponto de entrada para o resto da aplicação é
-`MailerService.enqueue(job)` — ele apenas enfileira (ver [background-jobs.md](./background-jobs.md)
-para o mecanismo de fila em si). Quem efetivamente chama `MailService.send()` é o `MailProcessor`,
-ao processar o job.
+No use-case should inject `core/mail/mail.service.ts` (`MailService`) directly, or build HTML by
+string concatenation. The only entry point for the rest of the application is
+`MailerService.enqueue(job)` — it only enqueues (see [background-jobs.md](./background-jobs.md)
+for the queueing mechanism itself). The one thing that actually calls `MailService.send()` is
+`MailProcessor`, while processing the job.
 
-Isso existe para garantir duas coisas ao mesmo tempo: (1) todo e-mail passa pela fila, nunca é
-enviado de forma síncrona bloqueando uma resposta HTTP; (2) todo corpo de e-mail vem de um template
-`.hbs` versionado, nunca de HTML montado na mão dentro de um use-case.
+This exists to guarantee two things at once: (1) every e-mail goes through the queue, never sent
+synchronously blocking an HTTP response; (2) every e-mail body comes from a versioned `.hbs`
+template, never HTML hand-built inside a use-case.
 
-## Contrato do job
+## Job contract
 
 ```ts
 interface IMailJob {
   to: string;
-  subject: string; // já traduzido pelo chamador
-  template: string; // nome do arquivo em templates/, sem extensão
-  context: Record<string, unknown>; // já com todo texto traduzido
+  subject: string; // already translated by the caller
+  template: string; // file name under templates/, without extension
+  context: Record<string, unknown>; // already fully translated text
 }
 ```
 
-Decisão de design importante: **o job carrega dados já resolvidos**, não chaves de tradução nem
-`locale`. Quem enfileira (o use-case) já tem `I18nService` e o `locale` da request — é ele quem
-resolve `i18n.translate(...)` para montar `subject` e `context`. Nem `MailProcessor` nem
-`MailTemplateService` conhecem i18n: só recebem strings finais e um nome de template. Isso mantém
-o job autocontido (não depende do catálogo de tradução não ter mudado entre enfileirar e
-processar) e o processor simples.
+Important design decision: **the job carries already-resolved data**, not translation keys or a
+`locale`. Whoever enqueues (the use-case) already has `I18nService` and the request's `locale` — it
+resolves `i18n.translate(...)` itself to build `subject` and `context`. Neither `MailProcessor` nor
+`MailTemplateService` know anything about i18n: they only receive final strings and a template
+name. This keeps the job self-contained (it doesn't depend on the translation catalog being
+unchanged between enqueueing and processing) and keeps the processor simple.
 
-## Criando um template novo
+## Creating a new template
 
-1. Crie `core/mail/templates/<nome>.hbs`. Para reaproveitar a casca comum (cabeçalho com o nome da
-   aplicação, rodapé), envolva o conteúdo com o partial-block `base`:
+1. Create `core/mail/templates/<name>.hbs`. To reuse the shared shell (header with the
+   application name, footer), wrap the content with the `base` partial block:
 
    ```hbs
    {{#> base}}
-     <p>{{saudacao}}</p>
-     <p>{{corpo}}</p>
+     <p>{{greeting}}</p>
+     <p>{{body}}</p>
    {{/base}}
    ```
 
-   `templates/layouts/base.hbs` é a casca — ela referencia `{{> @partial-block}}` no ponto onde o
-   conteúdo específico do template entra. Esse é o mecanismo nativo do Handlebars para layouts
-   (não existe herança de template como em Nunjucks/Twig; partial-block é o equivalente).
+   `templates/layouts/base.hbs` is the shell — it references `{{> @partial-block}}` at the point
+   where the template-specific content goes. This is Handlebars' native mechanism for layouts
+   (there's no template inheritance like Nunjucks/Twig; a partial block is the equivalent).
 
-2. Nenhum registro manual é necessário além disso — `MailTemplateService` lê e compila o `.hbs`
-   sob demanda (`fs.readFileSync` + `Handlebars.compile`), com cache em memória por nome de
-   template (não recompila a cada envio). O partial `base` é registrado uma vez no boot do módulo
-   (`onModuleInit`).
+2. No manual registration is needed beyond that — `MailTemplateService` reads and compiles the
+   `.hbs` on demand (`fs.readFileSync` + `Handlebars.compile`), with an in-memory cache per
+   template name (it doesn't recompile on every send). The `base` partial is registered once at
+   module boot (`onModuleInit`).
 
-3. No use-case que enfileira o e-mail, resolva todo texto via `i18n.translate(...)` e monte o
-   `context` com essas strings já traduzidas + qualquer dado dinâmico (ex. uma URL). Veja
-   `ForgotPasswordUseCase` como referência completa.
+3. In the use-case that enqueues the e-mail, resolve every string via `i18n.translate(...)` and
+   build `context` with those already-translated strings plus any dynamic data (e.g. a URL). See
+   `ForgotPasswordUseCase` as a full reference.
 
-4. **Importante para o build**: arquivos `.hbs` não são TypeScript — precisam estar listados em
-   `apps/api/nest-cli.json` → `compilerOptions.assets` para serem copiados para `dist/` no build
-   de produção (mesmo mecanismo já usado para os locales de i18n). Um template novo dentro de
-   `core/mail/templates/` já é coberto pelo glob existente; só um diretório fora dessa árvore
-   precisaria de uma entrada nova.
+4. **Important for the build**: `.hbs` files aren't TypeScript — they need to be listed in
+   `apps/api/nest-cli.json` → `compilerOptions.assets` to be copied into `dist/` for the
+   production build (the same mechanism already used for the i18n locale JSON files). A new
+   template inside `core/mail/templates/` is already covered by the existing glob; only a
+   directory outside that tree would need a new entry.
 
-## Por que a fila, não envio síncrono
+## Why the queue, not a synchronous send
 
-Enviar e-mail é uma chamada de rede para um serviço externo (SMTP) fora do controle da aplicação —
-pode ser lento ou falhar transitoriamente. Enfileirar significa que a resposta HTTP do endpoint que
-disparou o e-mail nunca espera por isso, e uma falha de SMTP não vira um erro 500 para o usuário.
-A política de retry (`attempts: 3`, backoff exponencial) e o log de falha final ficam documentados
-em [background-jobs.md](./background-jobs.md).
+Sending an e-mail is a network call to an external service (SMTP) outside the application's
+control — it can be slow or fail transiently. Enqueuing means the HTTP response of the endpoint
+that triggered the e-mail never waits on it, and an SMTP failure never turns into a 500 for the
+user. The retry policy (`attempts: 3`, exponential backoff) and the final-failure log are
+documented in [background-jobs.md](./background-jobs.md).
 
-## Ambiente de desenvolvimento
+## Development environment
 
-Em dev, `MAIL_HOST`/`MAIL_PORT` apontam para o MailHog do `docker-compose.override.yml` — todo
-e-mail enviado é capturado ali (`http://localhost:8025`), nunca entregue de verdade.
+In dev, `MAIL_HOST`/`MAIL_PORT` point at the MailHog container from
+`docker-compose.override.yml` — every e-mail sent is captured there
+(`http://localhost:8025`), never actually delivered.

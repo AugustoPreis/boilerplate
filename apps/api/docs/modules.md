@@ -1,9 +1,9 @@
-# Criando um módulo novo
+# Creating a new module
 
-Passo a passo para adicionar um recurso de domínio novo (ex. um módulo `products`), replicando a
-estrutura já usada por `users`/`roles`/`audit`.
+Step-by-step for adding a new domain resource (e.g. a `products` module), mirroring the structure
+already used by `users`/`roles`/`audit`.
 
-## Estrutura de pastas
+## Folder structure
 
 ```
 modules/products/
@@ -14,7 +14,7 @@ modules/products/
     product-query.dto.ts
     product-response.dto.ts
   entities/product.entity.ts
-  enums/product-status.enum.ts        # se houver um enum de domínio
+  enums/product-status.enum.ts        # if there's a domain enum
   repositories/products.repository.ts
   use-cases/
     create-product.use-case.ts
@@ -22,13 +22,13 @@ modules/products/
     delete-product.use-case.ts
     find-product.use-case.ts
     list-products.use-case.ts
-  utils/                                # helpers puros específicos do módulo, se necessário
+  utils/                                # pure helpers specific to this module, if needed
   products.module.ts
-  products.constants.ts                 # constantes do módulo (ex. limites), se necessário
+  products.constants.ts                 # module constants (e.g. limits), if needed
 ```
 
-Um use-case por operação, nunca um "ProductsService" genérico com todos os métodos — isso mantém
-cada operação testável isoladamente e o diff de uma mudança de regra de negócio pequeno.
+One use-case per operation, never a generic "ProductsService" with every method — this keeps each
+operation independently testable and keeps the diff for a single business-rule change small.
 
 ## `products.module.ts`
 
@@ -44,45 +44,45 @@ cada operação testável isoladamente e o diff de uma mudança de regra de neg�
     UpdateProductUseCase,
     DeleteProductUseCase,
   ],
-  exports: [ProductsRepository], // só o repository, se outro módulo precisar consultar dados
+  exports: [ProductsRepository], // only the repository, if another module needs to read this data
 })
 export class ProductsModule {}
 ```
 
-`SharedModule` é importado explicitamente por convenção mesmo sendo `@Global()` — deixa claro, ao
-ler o módulo, que ele depende de peças de `shared/` (guards, exceptions, etc.), embora tecnicamente
-não seja necessário para a injeção funcionar.
+`SharedModule` is imported explicitly by convention even though it's `@Global()` — it makes it
+clear, just from reading the module, that it depends on pieces of `shared/` (guards, exceptions,
+etc.), even though it's not technically required for injection to work.
 
-## Registro em `AppModule`
+## Registering in `AppModule`
 
-Adicione o import e a entrada em `imports: [...]` de `apps/api/src/app.module.ts`, junto dos
-outros módulos de domínio (`UsersModule`, `RolesModule`, `AuthModule`, `AuditModule`).
+Add the import and the entry to `imports: [...]` in `apps/api/src/app.module.ts`, alongside the
+other domain modules (`UsersModule`, `RolesModule`, `AuthModule`, `AuditModule`).
 
-## Entidade
+## Entity
 
-Estenda `shared/entities/base.entity.ts` (`BaseEntity`) — já traz `id` (incremental, uso interno),
-`uuid` (público), `createdAt`/`updatedAt`/`deletedAt`. Se a entidade precisa aparecer na trilha de
-auditoria, decore com `@AuditEntity({ name: '...', module: '...' })` e cada campo relevante com
-`@Audit()` — ver [auditing.md](./auditing.md). Gere a migration correspondente (ver
-`core/database/migrations/`, convenção de nome por timestamp).
+Extend `shared/entities/base.entity.ts` (`BaseEntity`) — it already provides `id` (incrementing,
+internal use), `uuid` (public), `createdAt`/`updatedAt`/`deletedAt`. If the entity should show up
+in the audit trail, decorate it with `@AuditEntity({ name: '...', module: '...' })` and every
+relevant field with `@Audit()` — see [auditing.md](./auditing.md). Generate the matching migration
+(see `core/database/migrations/`, timestamp-based naming convention).
 
 ## Repository
 
-Um método por operação de acesso a dados, sempre devolvendo a entidade (nunca o DTO — o mapeamento
-para DTO acontece no use-case ou no `static from()` do DTO de resposta). Para escrita, sempre
-`repo.save()`/`repo.remove()`/`repo.softRemove()`, nunca `repo.update()`/`repo.delete()` — ver a
-explicação em [architecture.md](./architecture.md#camadas). Para listagem paginada, siga o padrão
-`buildSkip`/`buildPaginatedResult` de `shared/utils/pagination.util.ts`.
+One method per data-access operation, always returning the entity (never the DTO — mapping to a
+DTO happens in the use-case or in the response DTO's `static from()`). For writes, always
+`repo.save()`/`repo.remove()`/`repo.softRemove()`, never `repo.update()`/`repo.delete()` — see the
+explanation in [architecture.md](./architecture.md#layers). For paginated listing, follow the
+`buildSkip`/`buildPaginatedResult` pattern from `shared/utils/pagination.util.ts`.
 
 ## Controller
 
-Fino: injeta os use-cases do módulo, um método por rota, delega direto (`return
-this.xUseCase.execute(...)`). Aplique `@RequirePermission('<resource>', '<action>')` em toda rota
-que exige autorização granular; omita apenas para os poucos casos de "ação sobre o próprio
-usuário autenticado" (ex. `PUT /users/me/password`) — nesse caso adicione um comentário de uma
-linha explicando por quê, seguindo o padrão já usado em `UsersController`.
+Thin: injects the module's use-cases, one method per route, delegates directly (`return
+this.xUseCase.execute(...)`). Apply `@RequirePermission('<resource>', '<action>')` on every route
+that requires granular authorization; only omit it for the few "action on the currently
+authenticated user themselves" cases (e.g. `PUT /users/me/password`) — and in that case, add a
+one-line comment explaining why, following the pattern already used in `UsersController`.
 
-## Nomenclatura
+## Naming
 
-Veja [conventions.md](./conventions.md) para convenção de nomes de arquivo/classe, DTOs e
-mensagens de erro i18n.
+See [conventions.md](./conventions.md) for file/class naming, DTOs, and i18n error message
+conventions.

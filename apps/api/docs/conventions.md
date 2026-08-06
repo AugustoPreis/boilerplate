@@ -1,68 +1,69 @@
-# Convenções gerais
+# General conventions
 
-## Nomenclatura de arquivos e classes
+## File and class naming
 
-| Peça             | Arquivo                        | Classe                                  |
-| ---------------- | ------------------------------ | --------------------------------------- |
-| Controller       | `<recurso>.controller.ts`      | `<Recurso>Controller`                   |
-| Use-case         | `<ação>-<recurso>.use-case.ts` | `<Ação><Recurso>UseCase`                |
-| Repository       | `<recurso>s.repository.ts`     | `<Recurso>sRepository`                  |
-| Entity           | `<recurso>.entity.ts`          | `<Recurso>Entity`                       |
-| DTO de entrada   | `<ação>-<recurso>.dto.ts`      | `<Ação><Recurso>DTO`                    |
-| DTO de saída     | `<recurso>-response.dto.ts`    | `<Recurso>ResponseDTO`                  |
-| Enum             | `<recurso>-<campo>.enum.ts`    | `E<Recurso><Campo>` (ex. `EUserStatus`) |
-| Util/helper puro | `<algo>.util.ts`               | função exportada, não classe            |
-| Interface        | `<algo>.interface.ts`          | `I<Algo>`                               |
+| Piece            | File                              | Class                                     |
+| ---------------- | --------------------------------- | ----------------------------------------- |
+| Controller       | `<resource>.controller.ts`        | `<Resource>Controller`                    |
+| Use-case         | `<action>-<resource>.use-case.ts` | `<Action><Resource>UseCase`               |
+| Repository       | `<resource>s.repository.ts`       | `<Resource>sRepository`                   |
+| Entity           | `<resource>.entity.ts`            | `<Resource>Entity`                        |
+| Request DTO      | `<action>-<resource>.dto.ts`      | `<Action><Resource>DTO`                   |
+| Response DTO     | `<resource>-response.dto.ts`      | `<Resource>ResponseDTO`                   |
+| Enum             | `<resource>-<field>.enum.ts`      | `E<Resource><Field>` (e.g. `EUserStatus`) |
+| Pure util/helper | `<something>.util.ts`             | exported function, not a class            |
+| Interface        | `<something>.interface.ts`        | `I<Something>`                            |
 
-Um use-case por operação (nunca um service genérico com todos os métodos de um recurso) — ver
+One use-case per operation (never a generic service holding every method for a resource) — see
 [architecture.md](./architecture.md).
 
 ## DTOs
 
-- **Entrada** (`create-x.dto.ts`, `update-x.dto.ts`, `x-query.dto.ts`): `@ApiProperty`/
-  `@ApiPropertyOptional` do Swagger, e validadores de `@shared/validators` sempre que existir um
-  wrapper para o validador usado (`IsString`, `IsEmail`, `IsEnum`, `IsUUID`, `IsArray`,
-  `MinLength`, `MaxLength`, `Matches`, `Length`, `IsNotEmpty`, `IsUrl`, `IsCpf`) — são finos
-  wrappers sobre os decorators equivalentes de `class-validator`, já pré-configurados com a
-  mensagem de erro traduzida (`i18nValidationMessage('validation.<chave>')`), então importe de lá,
-  não direto de `class-validator`, para não hardcodar uma mensagem em inglês. Decorators sem
-  wrapper (ex. `IsOptional`, que não falha sozinho — só pula o resto das validações quando o
-  campo é `undefined`, logo não tem mensagem de erro própria para traduzir) são importados direto
-  de `class-validator`. Ao adicionar um validador novo que ainda não tem wrapper e que gera uma
-  mensagem de erro, crie o wrapper em `shared/validators/i18n-validators.ts` seguindo o mesmo
-  padrão, em vez de importar direto de `class-validator` com mensagem hardcoded. DTOs de listagem
-  estendem `PaginationQueryDTO` (`shared/dtos/pagination-query.dto.ts`) para herdar
-  `page`/`perPage`.
-- **Saída** (`x-response.dto.ts`): um `static from(entity): XResponseDTO` que mapeia a entidade —
-  nunca serializa a entidade do TypeORM diretamente na resposta HTTP. Exceção: quando montar o DTO
-  exige uma dependência injetada e assíncrona (ex. `AuditLogResponseMapper`, que precisa do
-  `AuditPipelineService` para traduzir/formatar o diff) — nesse caso um mapper `@Injectable()` com
-  um método de instância assíncrono substitui o `static from()` síncrono.
+- **Request** (`create-x.dto.ts`, `update-x.dto.ts`, `x-query.dto.ts`): `@ApiProperty`/
+  `@ApiPropertyOptional` from Swagger, and validators from `@shared/validators` whenever a wrapper
+  exists for the validator in use (`IsString`, `IsEmail`, `IsEnum`, `IsUUID`, `IsArray`,
+  `MinLength`, `MaxLength`, `Matches`, `Length`, `IsNotEmpty`, `IsUrl`, `IsCpf`) — these are thin
+  wrappers over the equivalent `class-validator` decorators, already pre-wired with a translated
+  error message (`i18nValidationMessage('validation.<key>')`), so import from there, not directly
+  from `class-validator`, to avoid hardcoding an English-only message. Decorators with no wrapper
+  (e.g. `IsOptional`, which doesn't fail on its own — it just skips the rest of the validations
+  when the field is `undefined`, so it has no error message of its own to translate) are imported
+  directly from `class-validator`. When adding a new validator that doesn't have a wrapper yet and
+  does produce an error message, add the wrapper to `shared/validators/i18n-validators.ts`
+  following the same pattern, instead of importing directly from `class-validator` with a
+  hardcoded message. Listing DTOs extend `PaginationQueryDTO`
+  (`shared/dtos/pagination-query.dto.ts`) to inherit `page`/`perPage`.
+- **Response** (`x-response.dto.ts`): a `static from(entity): XResponseDTO` that maps the entity —
+  never serialize a TypeORM entity directly in an HTTP response. Exception: when building the DTO
+  requires an injected, asynchronous dependency (e.g. `AuditLogResponseMapper`, which needs
+  `AuditPipelineService` to translate/format the diff) — in that case, an `@Injectable()` mapper
+  with an async instance method replaces the synchronous `static from()`.
 
-## Erros: `AppException`
+## Errors: `AppException`
 
-Toda regra de negócio que falha lança `AppException.from(i18nKey, httpStatus, options?)`, nunca um
-`HttpException`/`BadRequestException` genérico do Nest com uma string hardcoded:
+Any business rule that fails throws `AppException.from(i18nKey, httpStatus, options?)`, never a
+generic Nest `HttpException`/`BadRequestException` with a hardcoded string:
 
 ```ts
 throw AppException.from('users.errors.notFound', HttpStatus.NOT_FOUND);
 throw AppException.from('users.errors.emailTaken', HttpStatus.CONFLICT, { args: { email } });
 ```
 
-`i18nKey` é resolvido para a mensagem final pelo `HttpExceptionFilter` global (`shared/filters/`),
-usando o locale da requisição atual — o use-case nunca chama `i18n.translate(...)` para montar uma
-mensagem de erro de resposta (isso é diferente de montar o corpo de um e-mail, onde o use-case
-_precisa_ resolver o texto antes de enfileirar — ver [mailing.md](./mailing.md)). `options.args` são
-os parâmetros de interpolação da mensagem traduzida; `options.code` é um código de erro estável
-opcional, para o frontend distinguir cenários sem parsear a mensagem traduzida.
+`i18nKey` gets resolved into the final message by the global `HttpExceptionFilter`
+(`shared/filters/`), using the current request's locale — the use-case never calls
+`i18n.translate(...)` to build an error response message (this is different from building an
+e-mail body, where the use-case _does_ need to resolve the text before enqueuing — see
+[mailing.md](./mailing.md)). `options.args` are the translated message's interpolation parameters;
+`options.code` is an optional stable error code, so the frontend can distinguish scenarios without
+parsing the translated message.
 
-Toda chave de erro nova vai no arquivo de locale do módulo dono
-(`core/i18n/locales/pt-BR/<módulo>.json`, dentro do bloco `errors`), nunca hardcoded em inglês nem
-português dentro do código.
+Every new error key goes into the owning module's locale file
+(`core/i18n/locales/pt-BR/<module>.json`, inside the `errors` block), never hardcoded in English
+or Portuguese inside the code.
 
-## Paginação
+## Pagination
 
-Listagens usam paginação por offset (`skip`/`take`), não cursor:
+Listings use offset-based pagination (`skip`/`take`), not cursor-based:
 
 ```ts
 const [data, total] = await this.repo.findAndCount({
@@ -71,26 +72,26 @@ const [data, total] = await this.repo.findAndCount({
 return buildPaginatedResult(data, total, page, perPage);
 ```
 
-`buildSkip`/`buildPaginatedResult` (`shared/utils/pagination.util.ts`) e `IPaginatedResult<T>`
-(`{ data, meta: { total, page, perPage, lastPage } }`) são os únicos pontos de montagem desse
-formato — não recalcule `lastPage` manualmente em outro lugar.
+`buildSkip`/`buildPaginatedResult` (`shared/utils/pagination.util.ts`) and `IPaginatedResult<T>`
+(`{ data, meta: { total, page, perPage, lastPage } }`) are the only places that assemble this
+shape — don't recompute `lastPage` manually anywhere else.
 
 ## Logging
 
-Logging é feito com o `Logger` nativo do `@nestjs/common`, instanciado por classe:
+Logging uses `@nestjs/common`'s built-in `Logger`, instantiated per class:
 
 ```ts
-private readonly logger = new Logger(MinhaClasse.name);
+private readonly logger = new Logger(MyClass.name);
 ```
 
-Não use `console.log`/`console.error` em código de aplicação, nem tente usar `shared/logger/`
-(esse serviço existe no código mas não está registrado em nenhum módulo importado — não o
-referencie até que alguém efetivamente o conecte ao DI).
+Don't use `console.log`/`console.error` in application code, and don't try to use `shared/logger/`
+(that service exists in the codebase but isn't registered in any imported module — don't reference
+it until someone actually wires it into DI).
 
 ## UUIDs
 
-Toda entidade tem `id` (incremental, `PrimaryGeneratedColumn`, uso interno/joins) e `uuid` (exposto
-externamente — rotas, DTOs, chaves de storage/Redis). Nunca exponha `id` numérico numa rota ou
-resposta. Novos UUIDs são gerados via `UuidService.generate()` (`shared/services/uuid.service.ts`),
-que usa UUID v7 por padrão (ordenável, melhor para índices de banco) — só peça `v4` explicitamente
-se houver um motivo concreto para não ordenável.
+Every entity has an `id` (incrementing, `PrimaryGeneratedColumn`, internal/join use) and a `uuid`
+(exposed externally — routes, DTOs, storage/Redis keys). Never expose the numeric `id` in a route
+or response. New UUIDs are generated via `UuidService.generate()`
+(`shared/services/uuid.service.ts`), which defaults to UUID v7 (sortable, better for database
+indexes) — only request `v4` explicitly when there's a concrete reason not to want sortability.

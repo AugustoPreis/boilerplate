@@ -1,25 +1,25 @@
-# Documentação da API
+# API documentation
 
-Documentação de arquitetura e convenções, versionada junto do código que ela descreve. O
-[README da raiz](../../../README.md) cobre só "como rodar o projeto"; aqui entra o "como o
-projeto é organizado e por quê".
+Architecture and convention documentation, versioned alongside the code it describes. The
+[root README](../../../README.md) only covers "how to run the project"; this is the "how it's
+organized and why" layer.
 
-- **[architecture.md](./architecture.md)** — as camadas (controller → use-case → repository →
-  entity), a diferença entre `core/`, `shared/` e `modules/`, e quando um use-case complexo deve
-  delegar para colaboradores menores (usando o pipeline de auditoria como exemplo real).
-- **[modules.md](./modules.md)** — como criar um módulo de domínio novo do zero: pastas, arquivo
-  de módulo, registro em `AppModule`, convenção de nomes.
-- **[configuration.md](./configuration.md)** — como adicionar uma variável de ambiente nova:
-  `*.config.ts`, `config.validation.ts` e `.env.example`, e por que a validação fica centralizada.
+- **[architecture.md](./architecture.md)** — the layers (controller → use-case → repository →
+  entity), the difference between `core/`, `shared/`, and `modules/`, and when a complex use-case
+  should delegate to smaller collaborators (using the audit pipeline as a real example).
+- **[modules.md](./modules.md)** — how to scaffold a brand-new domain module: folders, module
+  file, registration in `AppModule`, naming convention.
+- **[configuration.md](./configuration.md)** — how to add a new environment variable:
+  `*.config.ts`, `config.validation.ts`, and `.env.example`, and why validation is centralized.
 - **[authorization.md](./authorization.md)** — RBAC: roles, permissions, effective permissions,
   `@RequirePermission`, `PermissionsGuard`.
-- **[auditing.md](./auditing.md)** — o pipeline de trilha de auditoria: diff → normalize → format
-  → translate; como adicionar um formatter/normalizer novo; `@AuditEntity`/`@Audit`.
-- **[background-jobs.md](./background-jobs.md)** — BullMQ: como registrar uma queue, um
-  processor, e a convenção de `defaultJobOptions`/retry.
-- **[mailing.md](./mailing.md)** — como criar um template `.hbs` novo, partials/layout
-  compartilhado, e a regra "`MailService` só é chamado pelo `MailProcessor`".
-- **[storage.md](./storage.md)** — `StorageService`, convenção de key, e a diferença de política
-  de bucket entre dev e produção.
-- **[conventions.md](./conventions.md)** — nomenclatura, DTOs de entrada/saída, i18n de
-  mensagens de erro, tratamento de erro via `AppException`, paginação.
+- **[auditing.md](./auditing.md)** — the audit trail pipeline: diff → normalize → format →
+  translate; how to add a new formatter/normalizer; `@AuditEntity`/`@Audit`.
+- **[background-jobs.md](./background-jobs.md)** — BullMQ: how to register a queue, a processor,
+  and the `defaultJobOptions`/retry convention.
+- **[mailing.md](./mailing.md)** — how to create a new `.hbs` template, the shared partial/layout,
+  and the rule "`MailService` is only called by `MailProcessor`".
+- **[storage.md](./storage.md)** — `StorageService`, the object key convention, and the bucket
+  policy difference between dev and production.
+- **[conventions.md](./conventions.md)** — naming, request/response DTOs, i18n error messages,
+  error handling via `AppException`, pagination.

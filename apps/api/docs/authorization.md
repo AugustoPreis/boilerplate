@@ -1,21 +1,21 @@
-# Autorização (RBAC)
+# Authorization (RBAC)
 
-## Modelo
+## Model
 
-- **`PermissionEntity`** — um par `resource:action` (ex. `users:read`), com unicidade garantida
-  por um índice composto único `(resource, action)` no banco. Recursos e ações hoje seguem um
-  produto cartesiano fixo, semeado por `PermissionsSeeder`: recursos `users`, `roles`,
-  `permissions`, `audit`; ações `create`, `read`, `update`, `delete`.
-- **`RoleEntity`** — um nome, uma descrição opcional, e uma relação `ManyToMany` com
-  `PermissionEntity` (`role_permissions`). O campo `isReserved` marca papéis geridos pelo sistema
-  (hoje só o `admin`, criado por `RolesSeeder` com todas as permissões existentes) — nunca
-  editável via DTO, e `DeleteRoleUseCase` recusa deletar um papel reservado.
-- **`UserRoleEntity`** — tabela de junção `user ↔ role`. Um usuário pode ter múltiplos papéis.
+- **`PermissionEntity`** — a `resource:action` pair (e.g. `users:read`), with uniqueness enforced
+  by a composite unique index `(resource, action)` at the database level. Resources and actions
+  today follow a fixed cartesian product, seeded by `PermissionsSeeder`: resources `users`,
+  `roles`, `permissions`, `audit`; actions `create`, `read`, `update`, `delete`.
+- **`RoleEntity`** — a name, an optional description, and a `ManyToMany` relation to
+  `PermissionEntity` (`role_permissions`). The `isReserved` field marks system-managed roles
+  (today, only `admin`, created by `RolesSeeder` with every existing permission) — never editable
+  through a DTO, and `DeleteRoleUseCase` refuses to delete a reserved role.
+- **`UserRoleEntity`** — the `user ↔ role` join table. A user can have multiple roles.
 
-## Permissões efetivas
+## Effective permissions
 
-`getEffectivePermissions(userRoles)` (`modules/users/utils/effective-permissions.util.ts`) achata
-todos os papéis de um usuário num `Set<string>` de chaves `resource:action`, deduplicado:
+`getEffectivePermissions(userRoles)` (`modules/users/utils/effective-permissions.util.ts`)
+flattens all of a user's roles into a deduplicated `Set<string>` of `resource:action` keys:
 
 ```ts
 export function getEffectivePermissions(userRoles: UserRoleEntity[]): string[] {
@@ -29,10 +29,10 @@ export function getEffectivePermissions(userRoles: UserRoleEntity[]): string[] {
 }
 ```
 
-Essa é a função central: qualquer lugar que precise saber "o que este usuário pode fazer" (o guard,
-e o endpoint `GET /auth/me`) passa pelos mesmos dados de entrada e produz a mesma lista.
+This is the central function: anywhere that needs to know "what can this user do" (the guard, and
+the `GET /auth/me` endpoint) goes through the same input and produces the same list.
 
-## Protegendo um endpoint
+## Protecting an endpoint
 
 ```ts
 @Get()
@@ -40,35 +40,35 @@ e o endpoint `GET /auth/me`) passa pelos mesmos dados de entrada e produz a mesm
 findAll(@Query() query: UserQueryDTO) { ... }
 ```
 
-`@RequirePermission(resource, action)` só grava metadata (`SetMetadata`) — quem interpreta é o
-`PermissionsGuard`, registrado globalmente em `AppModule` (depois de `JwtAuthGuard`, antes de
-`CsrfGuard`). Se o handler/controller **não** tem `@RequirePermission`, o guard não bloqueia nada
-(`if (!required) return true`) — mas o endpoint continua exigindo autenticação, porque
-`JwtAuthGuard` roda antes na cadeia. Use essa omissão apenas para ações sobre o próprio usuário
-autenticado (ex. `PUT /users/me/password`, `POST /users/me/avatar`), sempre com um comentário de
-uma linha explicando o motivo — nunca por esquecimento.
+`@RequirePermission(resource, action)` only writes metadata (`SetMetadata`) — `PermissionsGuard`,
+registered globally in `AppModule` (after `JwtAuthGuard`, before `CsrfGuard`), is what interprets
+it. If the handler/controller has **no** `@RequirePermission`, the guard doesn't block anything
+(`if (!required) return true`) — but the endpoint still requires authentication, because
+`JwtAuthGuard` runs earlier in the chain. Only skip it for actions on the currently authenticated
+user themselves (e.g. `PUT /users/me/password`, `POST /users/me/avatar`), always with a one-line
+comment explaining why — never by oversight.
 
-O guard **não confia em nada cacheado no JWT**: em toda requisição protegida, ele busca o
-`UserEntity` (com `userRoles` — carregado eager) de novo no banco e recalcula as permissões
-efetivas. Isso é proposital — uma mudança de papel/permissão feita agora tem efeito imediato na
-próxima requisição, sem precisar invalidar tokens.
+The guard **never trusts anything cached in the JWT**: on every protected request, it fetches the
+`UserEntity` (with `userRoles` — eager-loaded) again from the database and recomputes effective
+permissions. This is deliberate — a role/permission change now takes effect on the very next
+request, with no need to invalidate tokens.
 
-## Endpoint público
+## Public endpoint
 
-Para um endpoint que não exige autenticação nenhuma (não passa nem pelo `JwtAuthGuard`), use
-`@Public()` (`shared/decorators/public.decorator.ts`) — é isso, não a ausência de
-`@RequirePermission`, que remove a exigência de token. Único uso hoje: `GET /health`.
+For an endpoint that requires no authentication at all (doesn't even go through `JwtAuthGuard`),
+use `@Public()` (`shared/decorators/public.decorator.ts`) — that, not the absence of
+`@RequirePermission`, is what removes the token requirement. The only current use: `GET /health`.
 
-## Gerenciando papéis e permissões
+## Managing roles and permissions
 
-`RolesModule` expõe CRUD completo de `roles` e `permissions`, mais dois endpoints especiais:
+`RolesModule` exposes full CRUD for `roles` and `permissions`, plus two special endpoints:
 
-- `PUT /v1/roles/:uuid/permissions` (`UpdateRolePermissionsUseCase`) — **substitui** o conjunto de
-  permissões de um papel por inteiro (não é incremental; envie a lista completa desejada).
-- `POST /v1/roles/:uuid/clone` (`CloneRoleUseCase`) — cria um papel novo copiando as permissões do
-  papel de origem por referência; recebe o mesmo DTO de criação (`nome`/`descrição` novos
-  obrigatórios).
+- `PUT /v1/roles/:uuid/permissions` (`UpdateRolePermissionsUseCase`) — **replaces** a role's
+  permission set wholesale (not incremental; send the full desired list).
+- `POST /v1/roles/:uuid/clone` (`CloneRoleUseCase`) — creates a new role by copying the source
+  role's permissions by reference; takes the same creation DTO (new `name`/`description`
+  required).
 
-Como em qualquer outro módulo, `RolesRepository`/`PermissionsRepository` escrevem via
-`save()`/`remove()`, nunca `update()`/`delete()` — necessário para a trilha de auditoria capturar o
-estado "antes" (ver [auditing.md](./auditing.md)).
+As with any other module, `RolesRepository`/`PermissionsRepository` write via
+`save()`/`remove()`, never `update()`/`delete()` — required for the audit trail to capture the
+"before" state (see [auditing.md](./auditing.md)).

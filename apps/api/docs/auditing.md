@@ -1,22 +1,22 @@
-# Trilha de auditoria
+# Audit trail
 
-Toda mudança em um campo decorado com `@Audit()` de uma entidade decorada com `@AuditEntity()` é
-capturada automaticamente, sem nenhum código explícito no use-case que fez a mudança — desde que a
-escrita passe por `repo.save()`/`repo.remove()`/`repo.softRemove()` (nunca pelo estilo
-query-builder `repo.update()`/`repo.delete()`/`repo.softDelete()`, que nunca carrega o valor
-"antes" da mudança).
+Every change to an `@Audit()`-decorated field of an `@AuditEntity()`-decorated entity is captured
+automatically, with no explicit code in the use-case that made the change — as long as the write
+goes through `repo.save()`/`repo.remove()`/`repo.softRemove()` (never the query-builder style
+`repo.update()`/`repo.delete()`/`repo.softDelete()`, which never loads the "before" value of the
+change).
 
-## Duas partes: motor genérico vs. módulo de persistência
+## Two parts: the generic engine vs. the persistence module
 
-- **`shared/audit/`** — o motor: decorators, registry de metadata, pipeline de estágios,
-  formatters/normalizers/tradutor. Não conhece TypeORM nem HTTP; é reutilizável por qualquer
-  entidade de qualquer módulo.
-- **`modules/audit/`** — a parte concreta: o subscriber do TypeORM, o listener de evento, a
-  entidade `AuditLogEntity` (schema `audit`, tabela `audit_logs`), o repository, os use-cases de
-  leitura/escrita e o controller (`GET /v1/audit-logs`, `GET /v1/audit-logs/:uuid`, ambos atrás de
+- **`shared/audit/`** — the engine: decorators, the metadata registry, the stage pipeline,
+  formatters/normalizers/translator. Knows nothing about TypeORM or HTTP; reusable by any entity
+  in any module.
+- **`modules/audit/`** — the concrete part: the TypeORM subscriber, the event listener, the
+  `AuditLogEntity` entity (schema `audit`, table `audit_logs`), the repository, the read/write
+  use-cases, and the controller (`GET /v1/audit-logs`, `GET /v1/audit-logs/:uuid`, both behind
   `RequirePermission('audit', 'read')`).
 
-## Decorando uma entidade
+## Decorating an entity
 
 ```ts
 @AuditEntity({ name: 'user', module: 'users' })
@@ -26,7 +26,7 @@ export class UserEntity extends BaseEntity {
   @Column({ length: 255, unique: true })
   email!: string;
 
-  // Nunca auditado: é um segredo, não só um dado pessoal.
+  // Never audited: it's a secret, not just PII.
   @Audit({ ignore: true })
   @Column({ name: 'password_hash', type: 'text', select: false })
   passwordHash!: string;
@@ -37,17 +37,17 @@ export class UserEntity extends BaseEntity {
 }
 ```
 
-- `name` é a chave usada para buscar a entidade de novo depois (na leitura); `module` é o
-  namespace de i18n onde os rótulos/traduções desse tipo de entidade vivem (ver abaixo).
-- Todo campo que deve aparecer no diff precisa de `@Audit()`. Campo sem o decorator é
-  simplesmente ignorado (não gera erro) — mas prefira `@Audit({ ignore: true })` com um comentário
-  explicando o motivo quando a omissão não é óbvia (segredo, relação estruturalmente inobservável
-  pelo subscriber, etc.), para deixar claro que foi uma decisão e não um esquecimento.
+- `name` is the key used to look the entity back up later (on read); `module` is the i18n
+  namespace where that entity type's labels/translations live (see below).
+- Every field that should show up in the diff needs `@Audit()`. A field without the decorator is
+  simply ignored (no error) — but prefer `@Audit({ ignore: true })` with a comment explaining why
+  whenever the omission isn't obvious (a secret, a relation the subscriber can't structurally
+  observe, etc.), so it's clear it was a decision, not an oversight.
 
-## Traduzindo rótulos e valores de enum
+## Translating labels and enum values
 
-Cada módulo dono da entidade adiciona um bloco `audit` no seu próprio arquivo de locale
-(`core/i18n/locales/pt-BR/<módulo>.json`):
+Each module that owns an entity adds an `audit` block to its own locale file
+(`core/i18n/locales/pt-BR/<module>.json`):
 
 ```json
 {
@@ -63,63 +63,64 @@ Cada módulo dono da entidade adiciona um bloco `audit` no seu próprio arquivo 
 }
 ```
 
-`I18nAuditTranslator` busca essas chaves como `<module>.audit.entities.<name>.label` /
-`.fields.<campo>` / `.enums.<campo>.<valor>`. Ao criar uma entidade nova auditável, adicione o
-bloco correspondente no locale do módulo — sem ele, o rótulo cai no fallback (nome técnico do
-campo, sem tradução).
+`I18nAuditTranslator` looks these keys up as `<module>.audit.entities.<name>.label` /
+`.fields.<field>` / `.enums.<field>.<value>`. When adding a new auditable entity, add the matching
+block to that module's locale file — without it, the label falls back to the raw field name,
+untranslated.
 
-## Adicionando um formatter ou normalizer novo
+## Adding a new formatter or normalizer
 
-- **Normalizer** (`shared/audit/normalizers/`) — normaliza o valor _antes_ do diff, para que
-  diferenças de representação (ordem de array, `undefined` vs `null`, tipo de data) não gerem um
-  diff falso-positivo. Implemente `IAuditNormalizer` e referencie no campo:
-  `@Audit({ normalizer: MeuNormalizer })`.
-- **Formatter** (`shared/audit/formatters/`) — formata o valor _na leitura_, para exibição
-  (ex. `EnumFormatter` traduz o valor do enum; `CurrencyFormatter`/`DateFormatter` usam `Intl`
-  localizado). Implemente `IAuditFormatter` e referencie: `@Audit({ formatter: MeuFormatter })`.
-- **Relation resolver** (ex. `PermissionsRelationResolver`) — quando o campo é uma relação e o
-  diff bruto (ids) não é útil para exibição, um `IAuditRelationResolver` busca os registros reais
-  para formatar (ex. transformar uma lista de ids de permissão em `"users:read,
-users:write"`). Some sempre com `normalizer: ArrayNormalizer` se o campo for uma relação
-  to-many, para que a ordem não afete o diff.
+- **Normalizer** (`shared/audit/normalizers/`) — normalizes the value _before_ the diff, so
+  representation differences (array order, `undefined` vs. `null`, date type) don't produce a
+  false-positive diff. Implement `IAuditNormalizer` and reference it on the field:
+  `@Audit({ normalizer: MyNormalizer })`.
+- **Formatter** (`shared/audit/formatters/`) — formats the value _on read_, for display (e.g.
+  `EnumFormatter` translates the enum value; `CurrencyFormatter`/`DateFormatter` use locale-aware
+  `Intl`). Implement `IAuditFormatter` and reference it: `@Audit({ formatter: MyFormatter })`.
+- **Relation resolver** (e.g. `PermissionsRelationResolver`) — when the field is a relation and
+  the raw diff (ids) isn't useful for display, an `IAuditRelationResolver` fetches the real records
+  to format (e.g. turning a list of permission ids into `"users:read, users:write"`). Always pair
+  it with `normalizer: ArrayNormalizer` if the field is a to-many relation, so ordering doesn't
+  affect the diff.
 
-Registre a classe nova nos `providers` de `AuditEngineModule` (`shared/audit/audit-engine.module.ts`)
-— é isso que permite que qualquer `FormatStage`/`NormalizeStage`/`ResolveRelationsStage` a resolva
-dinamicamente via `ModuleRef.get(Tipo, { strict: false })`, sem que o motor genérico precise
-importar o módulo de domínio dono do resolver.
+Register the new class in `AuditEngineModule`'s `providers`
+(`shared/audit/audit-engine.module.ts`) — that's what lets any `FormatStage`/`NormalizeStage`/
+`ResolveRelationsStage` resolve it dynamically via `ModuleRef.get(Type, { strict: false })`,
+without the generic engine ever needing to import the domain module that owns the resolver.
 
-## O pipeline, em duas metades
+## The pipeline, in two halves
 
-**Escrita** (`AuditPipelineService.recordChange`, chamado por `RecordAuditLogUseCase` a partir do
-evento emitido pelo `AuditSubscriber`): `LoadMetadataStage → NormalizeStage → DiffStage`. Produz o
-`IFieldDiff[]` (`{ field, old, new }`) que é persistido como `jsonb` em `audit.audit_logs`. Se o
-diff vier vazio (nada realmente mudou depois da normalização), **nenhuma linha é gravada**.
+**Write** (`AuditPipelineService.recordChange`, called by `RecordAuditLogUseCase` from the event
+emitted by `AuditSubscriber`): `LoadMetadataStage → NormalizeStage → DiffStage`. Produces the
+`IFieldDiff[]` (`{ field, old, new }`) persisted as `jsonb` in `audit.audit_logs`. If the diff
+comes out empty (nothing actually changed after normalization), **no row is written**.
 
-**Leitura** (`AuditPipelineService.buildChangeSet`, chamado por `AuditLogResponseMapper` ao montar
-a resposta HTTP): `ResolveRelationsStage → TranslateStage → FormatStage → BuildDtoStage`. Pega o
-diff bruto já persistido e o transforma, para o locale da requisição atual, num
-`AuditFieldChangeDTO[]` com rótulo traduzido e valores `{ value, display }` (valor cru + valor
-formatado) tanto para o "antes" quanto para o "depois".
+**Read** (`AuditPipelineService.buildChangeSet`, called by `AuditLogResponseMapper` when building
+the HTTP response): `ResolveRelationsStage → TranslateStage → FormatStage → BuildDtoStage`. Takes
+the already-persisted raw diff and turns it, for the current request's locale, into an
+`AuditFieldChangeDTO[]` with a translated label and `{ value, display }` pairs (raw value + display
+value) for both the "before" and "after" sides.
 
-Falhas degradam com segurança em qualquer ponto: entidade sem `@AuditEntity()` cai num diff bruto
-sem tradução; um relation resolver que falha mantém o valor cru; e qualquer erro em
-`RecordAuditLogUseCase` é capturado e logado por `AuditChangeListener` sem afetar a
-transação/resposta da operação original que disparou a auditoria.
+Failures degrade safely at any point: an entity with no `@AuditEntity()` falls back to an untranslated
+raw diff; a relation resolver that fails keeps the raw value; and any error inside
+`RecordAuditLogUseCase` is caught and logged by `AuditChangeListener` without affecting the
+transaction/response of the original operation that triggered the audit.
 
-## Ponta a ponta (exemplo real)
+## End-to-end (real example)
 
-`UserEntity.status` muda de `ACTIVE` para `INACTIVE` via `UsersRepository.update()` (que faz
-`repo.save()`):
+`UserEntity.status` changes from `ACTIVE` to `INACTIVE` via `UsersRepository.update()` (which does
+a `repo.save()`):
 
-1. `AuditSubscriber.afterUpdate` dispara (ouve todas as entidades; ignora as que não têm
-   `@AuditEntity()`), monta `before`/`after` restritos aos campos com `@Audit()`, e emite
-   `AUDIT_CHANGE_REQUESTED_EVENT` via `EventEmitter2` com o ator atual (`RequestContextService`).
-2. `AuditChangeListener` recebe o evento (assíncrono) e chama `RecordAuditLogUseCase`, que roda o
-   pipeline de escrita: `status` não muda de normalizer (usa o `DefaultNormalizer`), e
-   `DiffEngine` detecta `'ACTIVE' !== 'INACTIVE'` → gera `{ field: 'status', old: 'ACTIVE', new:
-'INACTIVE' }`. Grava uma linha em `audit.audit_logs`.
-3. Depois, `GET /v1/audit-logs/:uuid` busca essa linha e roda o pipeline de leitura: `status` tem
-   `formatter: EnumFormatter`, que traduz `ACTIVE`/`INACTIVE` via
-   `users.audit.entities.user.enums.status.*` → `"Ativo"`/`"Inativo"`. A resposta final inclui
+1. `AuditSubscriber.afterUpdate` fires (it listens to every entity; ignores anything without
+   `@AuditEntity()`), builds `before`/`after` restricted to the `@Audit()` fields, and emits
+   `AUDIT_CHANGE_REQUESTED_EVENT` via `EventEmitter2` with the current actor
+   (`RequestContextService`).
+2. `AuditChangeListener` receives the event (asynchronously) and calls `RecordAuditLogUseCase`,
+   which runs the write pipeline: `status` has no custom normalizer (falls back to
+   `DefaultNormalizer`), and `DiffEngine` detects `'ACTIVE' !== 'INACTIVE'` → produces
+   `{ field: 'status', old: 'ACTIVE', new: 'INACTIVE' }`. A row is written to `audit.audit_logs`.
+3. Later, `GET /v1/audit-logs/:uuid` fetches that row and runs the read pipeline: `status` has
+   `formatter: EnumFormatter`, which translates `ACTIVE`/`INACTIVE` via
+   `users.audit.entities.user.enums.status.*` → `"Ativo"`/`"Inativo"`. The final response includes
    `{ field: "status", label: "Status", old: { value: "ACTIVE", display: "Ativo" }, new: { value:
 "INACTIVE", display: "Inativo" } }`.

@@ -1,61 +1,60 @@
-# Configuração
+# Configuration
 
-## Adicionando uma variável de ambiente nova
+## Adding a new environment variable
 
-1. **`.env.example`** — adicione a variável com um valor de exemplo/seguro, agrupada com as
-   variáveis relacionadas (ex. um bloco `# Storage` novo). Se a variável tem uma contraparte
-   sensível real usada em produção, deixe claro no comentário (ex. `# true em produção, false em
-desenvolvimento`).
-2. **`core/config/<algo>.config.ts`** — exponha a variável via `registerAs('<namespace>', () =>
-({ ... }))`, lendo de `process.env.MINHA_VAR` com um default sensato para desenvolvimento:
+1. **`.env.example`** — add the variable with a safe/example value, grouped with related variables
+   (e.g. a new `# Storage` block). If the variable has a real, sensitive production counterpart,
+   make that clear in a comment (e.g. `# true in production, false in development`).
+2. **`core/config/<something>.config.ts`** — expose the variable via `registerAs('<namespace>', ()
+=> ({ ... }))`, reading from `process.env.MY_VAR` with a sensible development default:
 
    ```ts
    import { registerAs } from '@nestjs/config';
 
-   export default registerAs('minhaFeature', () => ({
-     algumaCoisa: process.env.MINHA_VAR || 'default-dev',
+   export default registerAs('myFeature', () => ({
+     something: process.env.MY_VAR || 'default-dev',
    }));
    ```
 
-   Acesso depois em qualquer serviço via `ConfigService.get<string>('minhaFeature.algumaCoisa')`,
-   não `process.env` direto — mantém a leitura de env centralizada e testável nesse serviço. As
-   exceções reais do projeto são código que roda fora do grafo de DI do Nest (o data source de CLI
-   do TypeORM em `core/database/data-source.ts`, os seeders em `core/database/seeds/`) e checagens
-   pontuais de `NODE_ENV` feitas antes do `ConfigService` estar disponível (dentro de factories de
-   módulo, como em `LoggerModule.forRootAsync` e `I18nModule`) — não replique esse padrão para uma
-   env var de feature nova; ele só se justifica nesses dois casos específicos.
+   Access it afterwards from any service via `ConfigService.get<string>('myFeature.something')`,
+   not `process.env` directly — this keeps env reads centralized and testable. The project's real
+   exceptions are code that runs outside Nest's DI graph (the TypeORM CLI data source in
+   `core/database/data-source.ts`, the seeders in `core/database/seeds/`) and a couple of one-off
+   `NODE_ENV` checks made before `ConfigService` is available (inside module factories, like
+   `LoggerModule.forRootAsync` and `I18nModule`) — don't replicate that for a new feature's env
+   var; it's only justified in those two specific cases.
 
-3. **`core/config/index.ts`** — exporte o novo config (`export { default as minhaFeatureConfig }
-from './minha-feature.config';`).
-4. **`app.module.ts`** — adicione ao array `load: [...]` do `ConfigModule.forRoot(...)`.
-5. **`config.validation.ts`**, se a variável é obrigatória em produção — adicione uma checagem
-   dentro do bloco `if (env === 'production')`, seguindo o padrão já usado para os secrets de JWT
-   e para as credenciais de S3 (presença/tamanho mínimo, empurrando um erro para a lista `errors`).
-   Isso faz o boot falhar cedo (com uma mensagem clara) em vez de a aplicação subir "quebrada" em
-   produção por falta de uma env var.
+3. **`core/config/index.ts`** — export the new config (`export { default as myFeatureConfig } from
+'./my-feature.config';`).
+4. **`app.module.ts`** — add it to the `load: [...]` array of `ConfigModule.forRoot(...)`.
+5. **`config.validation.ts`**, if the variable is required in production — add a check inside the
+   `if (env === 'production')` block, following the pattern already used for the JWT secrets and
+   the S3 credentials (presence/minimum length, pushing an error onto the `errors` list). This
+   makes the boot fail fast (with a clear message) instead of the application coming up "broken"
+   in production because of a missing env var.
 
-### Exceção: Redis
+### Exception: Redis
 
-`core/redis/redis.module.ts` lê `REDIS_HOST`/`REDIS_PORT`/`REDIS_PASSWORD`/`REDIS_DB` diretamente
-do `ConfigService` sem um `redis.config.ts` via `registerAs` — isso é uma inconsistência histórica
-do módulo mais antigo do projeto, não o padrão a seguir. `BullModule.forRootAsync` (ver
-[background-jobs.md](./background-jobs.md)) reaproveita essas mesmas variáveis pelo mesmo motivo
-(a mesma conexão Redis é compartilhada). Para qualquer configuração nova, siga o padrão
-`registerAs` (passos acima), não o do Redis.
+`core/redis/redis.module.ts` reads `REDIS_HOST`/`REDIS_PORT`/`REDIS_PASSWORD`/`REDIS_DB` directly
+off `ConfigService`, with no `redis.config.ts` via `registerAs` — this is a historical
+inconsistency from the project's oldest module, not the pattern to follow.
+`BullModule.forRootAsync` (see [background-jobs.md](./background-jobs.md)) reuses those same
+variables for the same reason (it's the same underlying Redis connection). For any new
+configuration, follow the `registerAs` pattern above, not Redis's.
 
-## Atualizando as imagens do `docker-compose.yml`
+## Updating the `docker-compose.yml` images
 
-O Dependabot cuida das dependências npm, das GitHub Actions e da imagem base de
-`apps/api/Dockerfile` (ver `.github/dependabot.yml`) — mas ele não lê `docker-compose.yml`. As
-imagens de infraestrutura de desenvolvimento (`postgres`, `redis:7-alpine`, `minio/minio`) ficam
-de fora da automação e precisam de atualização manual ocasional, verificando a tag pinada em cada
-serviço contra a última release estável.
+Dependabot handles npm dependencies, GitHub Actions, and `apps/api/Dockerfile`'s base image (see
+`.github/dependabot.yml`) — but it doesn't read `docker-compose.yml`. The development
+infrastructure images (`postgres`, `redis:7-alpine`, `minio/minio`) fall outside that automation
+and need an occasional manual bump, checking the pinned tag on each service against the latest
+stable release.
 
-## Por que a validação fica centralizada em um único arquivo
+## Why validation lives in a single file
 
-`config.validation.ts` é passado como `validate` para `ConfigModule.forRoot(...)` e roda uma única
-vez, no boot. Ter todas as regras de "isso é obrigatório/precisa ter esse formato em produção" num
-único lugar (em vez de espalhadas em cada `*.config.ts` ou verificadas lazy em cada serviço que usa
-a variável) significa: (1) a aplicação nunca sobe num estado parcialmente configurado — ou todas as
-regras passam, ou o processo nem inicia; (2) para saber tudo que é exigido em produção, um único
-arquivo responde a pergunta, sem precisar grep-ar o projeto inteiro.
+`config.validation.ts` is passed as `validate` to `ConfigModule.forRoot(...)` and runs once, at
+boot. Keeping every "this is required/must have this shape in production" rule in one place
+(instead of scattered across each `*.config.ts` or lazily checked in every service that reads the
+variable) means: (1) the application never comes up in a half-configured state — either every rule
+passes, or the process never starts; (2) to know everything required in production, a single file
+answers the question, with no need to grep the whole project.

@@ -1,14 +1,14 @@
-# Jobs em background (BullMQ)
+# Background jobs (BullMQ)
 
-Filas rodam sobre o Redis que já existe (`core/redis/`), via `@nestjs/bullmq`. Hoje só há uma
-fila, a de e-mail (ver [mailing.md](./mailing.md)) — este documento descreve o padrão para
-registrar uma nova.
+Queues run on top of the Redis that already exists (`core/redis/`), via `@nestjs/bullmq`. Today
+there's only one queue, the mail queue (see [mailing.md](./mailing.md)) — this document describes
+the pattern for registering a new one.
 
-## Conexão
+## Connection
 
-`BullModule.forRootAsync` é registrado uma única vez em `AppModule`, reaproveitando as mesmas
-variáveis de ambiente que `RedisModule` já usa (`REDIS_HOST`/`REDIS_PORT`/`REDIS_PASSWORD`/
-`REDIS_DB`) — mesma infra, mesma conexão lógica, sem uma env var nova por fila:
+`BullModule.forRootAsync` is registered once in `AppModule`, reusing the same environment
+variables `RedisModule` already uses (`REDIS_HOST`/`REDIS_PORT`/`REDIS_PASSWORD`/`REDIS_DB`) — same
+infrastructure, same logical connection, no new env var per queue:
 
 ```ts
 BullModule.forRootAsync({
@@ -24,30 +24,30 @@ BullModule.forRootAsync({
 }),
 ```
 
-## Registrando uma queue nova
+## Registering a new queue
 
-Dentro do módulo dono da fila (ex. `core/mail/mail.module.ts`), registre a queue com seus
-`defaultJobOptions`:
+Inside the module that owns the queue (e.g. `core/mail/mail.module.ts`), register the queue with
+its `defaultJobOptions`:
 
 ```ts
 BullModule.registerQueue({
-  name: MEU_QUEUE_NAME,
+  name: MY_QUEUE_NAME,
   defaultJobOptions: {
     attempts: 3,
     backoff: { type: 'exponential', delay: 5000 },
     removeOnComplete: true,
-    removeOnFail: 100, // mantém as últimas 100 falhas pra inspeção manual via Redis/CLI
+    removeOnFail: 100, // keeps the last 100 failures around for manual inspection via Redis/CLI
   },
 }),
 ```
 
-`defaultJobOptions` fica na queue, não em cada chamada de `.add()` — todo job herda a mesma
-política de retry sem precisar repetir a configuração em cada `enqueue()`.
+`defaultJobOptions` lives on the queue, not on each `.add()` call — every job inherits the same
+retry policy without repeating the configuration on every `enqueue()`.
 
-## Produzindo um job
+## Producing a job
 
-Um serviço fino injeta a queue via `@InjectQueue(MEU_QUEUE_NAME)` e só chama `.add(...)` — sem
-lógica de negócio:
+A thin service injects the queue via `@InjectQueue(MY_QUEUE_NAME)` and just calls `.add(...)` — no
+business logic:
 
 ```ts
 @Injectable()
@@ -60,11 +60,11 @@ export class MailerService {
 }
 ```
 
-## Consumindo um job
+## Consuming a job
 
-Um processor estende `WorkerHost` (não existe mais `@Process()` como método decorator na versão
-atual do `@nestjs/bullmq` — o método de processamento é a implementação do método abstrato
-`process`) e é decorado com `@Processor(MEU_QUEUE_NAME)`:
+A processor extends `WorkerHost` (the current version of `@nestjs/bullmq` no longer has a
+`@Process()` method decorator — the processing method is the implementation of the abstract
+`process` method) and is decorated with `@Processor(MY_QUEUE_NAME)`:
 
 ```ts
 @Processor(MAIL_QUEUE_NAME)
@@ -76,7 +76,7 @@ export class MailProcessor extends WorkerHost {
   }
 
   async process(job: Job<IMailJob>): Promise<void> {
-    // ... trabalho real ...
+    // ... actual work ...
   }
 
   @OnWorkerEvent('failed')
@@ -86,11 +86,11 @@ export class MailProcessor extends WorkerHost {
 }
 ```
 
-## Convenção de erro
+## Error convention
 
-Sem alerta externo (fora de escopo). Uma falha após todas as tentativas de `attempts` é só logada
-via `Logger` (padrão do projeto — ver [conventions.md](./conventions.md#logging)) no handler
-`@OnWorkerEvent('failed')`, com o `job.data` relevante para diagnóstico manual. O endpoint HTTP que
-enfileirou o job já respondeu antes disso (enfileirar é o último passo do use-case, depois de
-qualquer efeito colateral síncrono necessário) — uma falha de processamento assíncrono nunca deve
-quebrar a resposta original.
+No external alerting (out of scope). A failure after all `attempts` are exhausted is just logged
+via `Logger` (project convention — see [conventions.md](./conventions.md#logging)) in the
+`@OnWorkerEvent('failed')` handler, with the relevant `job.data` for manual diagnosis. The HTTP
+endpoint that enqueued the job has already responded by that point (enqueuing is the last step of
+the use-case, after any synchronous side effect that's actually required) — an async processing
+failure should never break the original HTTP response.
