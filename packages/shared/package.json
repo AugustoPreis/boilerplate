@@ -19,9 +19,9 @@
   "devDependencies": {
     "@boilerplate/eslint-config": "workspace:*",
     "@boilerplate/typescript-config": "workspace:*",
-    "eslint": "^10.6.0",
+    "eslint": "^10.8.0",
     "tsup": "^8.5.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.60.1"
+    "typescript-eslint": "^8.65.0"
   }
 }
