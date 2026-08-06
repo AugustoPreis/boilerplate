@@ -35,3 +35,26 @@ jobs:
       # --passWithNoTests until the first spec file lands — remove once there is one.
       - name: Test
         run: pnpm --filter=@boilerplate/api test --passWithNoTests
+
+  docker-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Validates the production image still builds from a clean state — no
+      # push, no registry credentials needed. Runs standalone (not depending
+      # on the `ci` job above) since it builds the image from scratch anyway
+      # and doesn't need that job's `pnpm install`.
+      - name: Build API image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/api/Dockerfile
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

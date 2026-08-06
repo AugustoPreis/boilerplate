@@ -1,0 +1,36 @@
+version: 2
+updates:
+  # Covers the whole pnpm workspace via the root lockfile (apps/api,
+  # packages/shared, and the tooling packages all resolve from here).
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    groups:
+      patch-and-minor:
+        update-types: ['patch', 'minor']
+      major:
+        update-types: ['major']
+
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    groups:
+      patch-and-minor:
+        update-types: ['patch', 'minor']
+      major:
+        update-types: ['major']
+
+  # Only apps/api/Dockerfile (the node:24-alpine base image) — Dependabot
+  # doesn't read docker-compose.yml, so postgres/redis/minio image bumps
+  # there stay a manual, occasional update (see docs/configuration.md).
+  - package-ecosystem: 'docker'
+    directory: '/apps/api'
+    schedule:
+      interval: 'weekly'
+    groups:
+      patch-and-minor:
+        update-types: ['patch', 'minor']
+      major:
+        update-types: ['major']
