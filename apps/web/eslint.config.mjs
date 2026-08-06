@@ -1,4 +1,5 @@
 import { base, tseslint } from '@boilerplate/eslint-config';
+import i18next from 'eslint-plugin-i18next';
 import importPlugin from 'eslint-plugin-import-x';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
@@ -18,6 +19,7 @@ export default tseslint.config(
       globals: globals.browser,
     },
     plugins: {
+      i18next,
       import: importPlugin,
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
@@ -33,6 +35,9 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      // Zero string solta (§13 of the architecture doc): every user-facing
+      // string goes through an i18n key instead of literal JSX text.
+      'i18next/no-literal-string': 'error',
       'func-style': ['error', 'declaration', { allowArrowFunctions: false }],
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-vars': [
