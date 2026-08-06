@@ -6,7 +6,7 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "plugins": ["@nestjs/swagger"],
-    "assets": ["core/i18n/locales/**/*"],
+    "assets": ["core/i18n/locales/**/*", "core/mail/templates/**/*"],
     "watchAssets": true
   }
 }

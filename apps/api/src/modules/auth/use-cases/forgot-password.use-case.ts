@@ -6,7 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import Redis from 'ioredis';
 import { I18nService } from 'nestjs-i18n';
 
-import { MailService } from '@core/mail/mail.service';
+import { MailerService } from '@core/mail/mailer.service';
 import { REDIS_CLIENT } from '@core/redis/redis.constants';
 
 import { TimeUnitHelper } from '@shared/helpers';
@@ -19,7 +19,7 @@ import { getPasswordResetRedisKey } from '../utils/redis-keys.util';
 export class ForgotPasswordUseCase {
   constructor(
     private readonly usersRepository: UsersRepository,
-    private readonly mailService: MailService,
+    private readonly mailerService: MailerService,
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
     private readonly i18n: I18nService,
@@ -51,21 +51,22 @@ export class ForgotPasswordUseCase {
 
     await this.redis.set(getPasswordResetRedisKey(user.uuid), hash, 'EX', expiresInSeconds);
 
-    await this.mailService.send({
-      to: user.email,
-      subject: this.i18n.translate('auth.mail.passwordReset.subject', { lang: locale }),
-      html: this.buildEmailHtml(user.name, token, locale),
-    });
-  }
-
-  private buildEmailHtml(name: string, token: string, locale: string): string {
     const resetUrl = `${this.config.get<string>('app.frontendUrl')}/reset-password?token=${token}`;
 
-    return [
-      `<p>${this.i18n.translate('auth.mail.passwordReset.greeting', { lang: locale, args: { name } })}</p>`,
-      `<p>${this.i18n.translate('auth.mail.passwordReset.body', { lang: locale })}</p>`,
-      `<p><a href="${resetUrl}">${resetUrl}</a></p>`,
-      `<p>${this.i18n.translate('auth.mail.passwordReset.footer', { lang: locale })}</p>`,
-    ].join('\n');
+    await this.mailerService.enqueue({
+      to: user.email,
+      subject: this.i18n.translate('auth.mail.passwordReset.subject', { lang: locale }),
+      template: 'password-reset',
+      context: {
+        appName: this.config.get<string>('app.name'),
+        greeting: this.i18n.translate('auth.mail.passwordReset.greeting', {
+          lang: locale,
+          args: { name: user.name },
+        }),
+        body: this.i18n.translate('auth.mail.passwordReset.body', { lang: locale }),
+        resetUrl,
+        footer: this.i18n.translate('auth.mail.passwordReset.footer', { lang: locale }),
+      },
+    });
   }
 }

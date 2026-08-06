@@ -1,9 +1,13 @@
+import { BullModule } from '@nestjs/bullmq';
 import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createTransport, Transporter } from 'nodemailer';
 
-import { MAIL_TRANSPORTER } from './mail.constants';
+import { MailTemplateService } from './mail-template.service';
+import { MAIL_QUEUE_NAME, MAIL_TRANSPORTER } from './mail.constants';
+import { MailProcessor } from './mail.processor';
 import { MailService } from './mail.service';
+import { MailerService } from './mailer.service';
 
 const mailTransporterProvider = {
   provide: MAIL_TRANSPORTER,
@@ -21,7 +25,24 @@ const mailTransporterProvider = {
 
 @Global()
 @Module({
-  providers: [mailTransporterProvider, MailService],
-  exports: [MailService],
+  imports: [
+    BullModule.registerQueue({
+      name: MAIL_QUEUE_NAME,
+      defaultJobOptions: {
+        attempts: 3,
+        backoff: { type: 'exponential', delay: 5000 },
+        removeOnComplete: true,
+        removeOnFail: 100,
+      },
+    }),
+  ],
+  providers: [
+    mailTransporterProvider,
+    MailService,
+    MailTemplateService,
+    MailerService,
+    MailProcessor,
+  ],
+  exports: [MailerService],
 })
 export class MailModule {}
