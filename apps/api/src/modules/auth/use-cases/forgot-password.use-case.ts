@@ -65,6 +65,8 @@ export class ForgotPasswordUseCase {
         }),
         body: this.i18n.translate('auth.mail.passwordReset.body', { lang: locale }),
         resetUrl,
+        buttonLabel: this.i18n.translate('auth.mail.passwordReset.button', { lang: locale }),
+        linkFallback: this.i18n.translate('auth.mail.passwordReset.linkFallback', { lang: locale }),
         footer: this.i18n.translate('auth.mail.passwordReset.footer', { lang: locale }),
       },
     });

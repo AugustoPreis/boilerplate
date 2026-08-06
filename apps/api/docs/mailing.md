@@ -45,11 +45,25 @@ unchanged between enqueueing and processing) and keeps the processor simple.
    `templates/layouts/base.hbs` is the shell — it references `{{> @partial-block}}` at the point
    where the template-specific content goes. This is Handlebars' native mechanism for layouts
    (there's no template inheritance like Nunjucks/Twig; a partial block is the equivalent).
+   The shell renders a full HTML document (doctype, table-based layout, dark-mode/mobile
+   `<style>` block) so it works consistently across webmail, desktop and mobile clients.
+
+   For a call-to-action button, use the `button` partial instead of a plain `<a>` — it renders a
+   bulletproof button (table cell + VML fallback for Outlook's Word rendering engine):
+
+   ```hbs
+   {{> button url=resetUrl label=buttonLabel}}
+   ```
+
+   Any hash argument passed to a partial (or partial block, like `preheader=body` on `base`) is
+   merged into that partial's context — that's how `base.hbs` receives the preheader text and
+   `button.hbs` receives `url`/`label` without the caller needing to change the job's `context`
+   shape.
 
 2. No manual registration is needed beyond that — `MailTemplateService` reads and compiles the
    `.hbs` on demand (`fs.readFileSync` + `Handlebars.compile`), with an in-memory cache per
-   template name (it doesn't recompile on every send). The `base` partial is registered once at
-   module boot (`onModuleInit`).
+   template name (it doesn't recompile on every send). The `base` and `button` partials are
+   registered once at module boot (`onModuleInit`).
 
 3. In the use-case that enqueues the e-mail, resolve every string via `i18n.translate(...)` and
    build `context` with those already-translated strings plus any dynamic data (e.g. a URL). See

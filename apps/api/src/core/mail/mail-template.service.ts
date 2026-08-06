@@ -10,13 +10,16 @@ export class MailTemplateService implements OnModuleInit {
   private readonly compiledTemplates = new Map<string, Handlebars.TemplateDelegate>();
 
   onModuleInit(): void {
-    const layoutPath = path.join(this.templatesDir, 'layouts', 'base.hbs');
-
-    Handlebars.registerPartial('base', fs.readFileSync(layoutPath, 'utf-8'));
+    this.registerPartial('base', path.join(this.templatesDir, 'layouts', 'base.hbs'));
+    this.registerPartial('button', path.join(this.templatesDir, 'partials', 'button.hbs'));
   }
 
   render(template: string, context: Record<string, unknown>): string {
     return this.getCompiledTemplate(template)(context);
+  }
+
+  private registerPartial(name: string, filePath: string): void {
+    Handlebars.registerPartial(name, fs.readFileSync(filePath, 'utf-8'));
   }
 
   private getCompiledTemplate(template: string): Handlebars.TemplateDelegate {
