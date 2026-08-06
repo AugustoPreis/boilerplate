@@ -1,7 +1,7 @@
 # Build context is the root of the monorepo (needed for pnpm workspace):
 #   docker build -f apps/api/Dockerfile .
 
-FROM node:24-alpine AS base
+FROM node:25-alpine AS base
 RUN corepack enable
 WORKDIR /app
 
@@ -19,7 +19,7 @@ FROM deps AS builder
 RUN pnpm --filter=@boilerplate/api deploy --legacy --prod /prod/api
 
 # --- Production image ---
-FROM node:24-alpine AS production
+FROM node:25-alpine AS production
 
 ENV NODE_ENV=production
 WORKDIR /app
