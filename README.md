@@ -13,8 +13,9 @@ Postgres via TypeORM, Redis, i18n, and an audit trail already in place.
    docker compose up
    ```
 
-This builds the image, runs the migrations and seeds, and leaves the API
-running at `http://localhost:3000` (Swagger docs at `/api/docs`).
+This builds the images, runs the migrations and seeds, and leaves the API
+running at `http://localhost:3000` (Swagger docs at `/api/docs`) and the web
+frontend at `http://localhost:5173`.
 
 An admin user is already created by the seed, with credentials defined by
 `ADMIN_EMAIL`/`ADMIN_PASSWORD` in `.env`.

@@ -32,3 +32,11 @@ services:
       - /app/packages/shared/node_modules
     ports:
       - '${API_HOST_PORT:-3000}:${PORT:-3000}'
+
+  web:
+    build:
+      dockerfile: apps/web/Dockerfile.dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/web/node_modules

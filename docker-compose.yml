@@ -95,6 +95,16 @@ services:
     networks:
       - boilerplate_network
 
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: ${APP_NAME:-boilerplate}_web
+    ports:
+      - '${WEB_HOST_PORT:-5173}:5173'
+    networks:
+      - boilerplate_network
+
 volumes:
   postgres_data:
   redis_data:
