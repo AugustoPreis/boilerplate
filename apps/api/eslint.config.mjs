@@ -87,4 +87,13 @@ export default tseslint.config(
       ],
     },
   },
+  {
+    files: ['**/*.spec.ts', '**/*.integration-spec.ts', '**/*.e2e-spec.ts', 'test/**/*.ts'],
+    rules: {
+      // jest.fn()/mockDeep() mocks are never bound to a real instance, so this
+      // rule flags every `expect(mock.method).toHaveBeenCalledWith(...)` —
+      // exactly the standard assertion shape for this project's mocking style.
+      '@typescript-eslint/unbound-method': 'off',
+    },
+  },
 );
