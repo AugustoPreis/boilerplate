@@ -6,7 +6,14 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
 
-import { appConfig, authConfig, databaseConfig, mailConfig, storageConfig } from './core/config';
+import {
+  appConfig,
+  authConfig,
+  databaseConfig,
+  mailConfig,
+  redisConfig,
+  storageConfig,
+} from './core/config';
 import { validateConfig } from './core/config/config.validation';
 import { TypeOrmConfigModule } from './core/database/typeorm.module';
 import { I18nModule } from './core/i18n/i18n.module';
@@ -33,7 +40,7 @@ import { SharedModule } from './shared/shared.module';
     ConfigModule.forRoot({
       isGlobal: true,
       validate: validateConfig,
-      load: [appConfig, authConfig, databaseConfig, mailConfig, storageConfig],
+      load: [appConfig, authConfig, databaseConfig, mailConfig, redisConfig, storageConfig],
       envFilePath: ['../../.env.local', '../../.env', '.env.local', '.env'],
     }),
     LoggerModule.forRootAsync({
@@ -83,10 +90,10 @@ import { SharedModule } from './shared/shared.module';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         connection: {
-          host: config.get<string>('REDIS_HOST', 'localhost'),
-          port: config.get<number>('REDIS_PORT', 6379),
-          password: config.get<string>('REDIS_PASSWORD') || undefined,
-          db: config.get<number>('REDIS_DB', 0),
+          host: config.get<string>('redis.host', 'localhost'),
+          port: config.get<number>('redis.port', 6379),
+          password: config.get<string>('redis.password') || undefined,
+          db: config.get<number>('redis.db', 0),
         },
       }),
     }),

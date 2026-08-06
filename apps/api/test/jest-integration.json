@@ -2,12 +2,10 @@
   "moduleFileExtensions": ["js", "json", "ts"],
   "rootDir": ".",
   "testEnvironment": "node",
-  "testRegex": ".e2e-spec.ts$",
+  "testRegex": ".integration-spec.ts$",
   "testTimeout": 60000,
   "setupFiles": ["<rootDir>/support/jest.setup.ts"],
-  "transform": {
-    "^.+\\.(t|j)s$": "ts-jest"
-  },
+  "transform": { "^.+\\.(t|j)s$": "ts-jest" },
   "transformIgnorePatterns": ["node_modules/(?!.*uuid)"],
   "moduleNameMapper": {
     "^@boilerplate/shared$": "<rootDir>/../../../packages/shared/src/index.ts",
