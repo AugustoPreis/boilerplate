@@ -1,14 +1,15 @@
+import { ErrorCode } from '@boilerplate/shared';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
 export interface IAppExceptionOptions {
   args?: Record<string, unknown>;
-  code?: string;
+  code?: ErrorCode;
 }
 
 export class AppException extends HttpException {
   public readonly i18nKey: string;
   public readonly args?: Record<string, unknown>;
-  public readonly code?: string;
+  public readonly code?: ErrorCode;
 
   constructor(i18nKey: string, status: HttpStatus, options?: IAppExceptionOptions) {
     super({ i18nKey, code: options?.code }, status);
