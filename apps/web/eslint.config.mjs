@@ -7,7 +7,13 @@ import globals from 'globals';
 
 export default tseslint.config(
   {
-    ignores: ['dist/', 'node_modules/', 'coverage/', 'src/app/routeTree.gen.ts', 'eslint.config.mjs'],
+    ignores: [
+      'dist/',
+      'node_modules/',
+      'coverage/',
+      'src/app/routeTree.gen.ts',
+      'eslint.config.mjs',
+    ],
   },
   ...base,
   {
@@ -35,8 +41,6 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
-      // Zero string solta (§13 of the architecture doc): every user-facing
-      // string goes through an i18n key instead of literal JSX text.
       'i18next/no-literal-string': 'error',
       'func-style': ['error', 'declaration', { allowArrowFunctions: false }],
       '@typescript-eslint/no-explicit-any': 'warn',
@@ -113,9 +117,9 @@ export default tseslint.config(
     },
   },
   {
-    // Layout/typography must go through the primitives in shared/ui (§5 of
-    // the architecture doc), never raw HTML tags, so identity/style live in
-    // one place per element. The primitives' own implementation is exempt.
+    // Layout/typography must go through the primitives in shared/ui never
+    // raw HTML tags, so identity/style live in one place per element.
+    // The primitives' own implementation is exempt.
     files: ['src/**/*.tsx'],
     ignores: ['src/shared/ui/layout/**/*.tsx', 'src/shared/ui/typography/**/*.tsx'],
     rules: {
@@ -123,8 +127,7 @@ export default tseslint.config(
         'error',
         {
           selector: 'JSXOpeningElement[name.name=/^(div|p|span|h1|h2|h3|h4|h5|h6)$/]',
-          message:
-            'Use a layout/typography primitive from shared/ui instead of this raw HTML tag.',
+          message: 'Use a layout/typography primitive from shared/ui instead of this raw HTML tag.',
         },
       ],
     },

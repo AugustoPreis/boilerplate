@@ -1,9 +1,9 @@
 @import 'tailwindcss';
 
-/* Latin + Latin Extended only: the app is pt-BR-only today (§13 of the
-   architecture doc) and those two subsets cover every accented character
-   pt-BR needs, without bundling the cyrillic/greek/vietnamese subsets
-   fontsource ships for the other weights' full `400.css` etc. imports. */
+/* Latin + Latin Extended only: the app is pt-BR-only today and those
+   two subsets cover every accented character pt-BR needs, without
+   bundling the cyrillic/greek/vietnamese subsets fontsource ships
+   for the other weights' full `400.css` etc. imports. */
 @import '@fontsource/inter/latin-400.css';
 @import '@fontsource/inter/latin-500.css';
 @import '@fontsource/inter/latin-600.css';
