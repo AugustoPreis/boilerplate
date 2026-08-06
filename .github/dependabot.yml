@@ -29,6 +29,15 @@ updates:
     directory: '/apps/api'
     schedule:
       interval: 'weekly'
+
+    ignore:
+      # Node follows an even/odd release cycle.
+      # Odd versions (25.x) are Current and not recommended for production.
+      # We intentionally track only LTS releases.
+      - dependency-name: 'node'
+        versions:
+          - '25.x'
+
     groups:
       patch-and-minor:
         update-types: ['patch', 'minor']
