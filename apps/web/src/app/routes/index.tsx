@@ -1,8 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { Moon, Sun } from 'lucide-react';
 import type { ReactElement } from 'react';
 
-import { useThemeMode } from '@app/providers/theme-mode.context';
+import { ThemeToggle } from '@app/providers/theme-toggle';
 
 import { Box, Stack } from '@shared/ui/layout';
 import { Heading, Text } from '@shared/ui/typography';
@@ -20,20 +19,5 @@ function HomePage(): ReactElement {
         <ThemeToggle />
       </Stack>
     </Box>
-  );
-}
-
-function ThemeToggle(): ReactElement {
-  const { resolvedMode, setMode } = useThemeMode();
-
-  return (
-    <button
-      type="button"
-      onClick={() => setMode(resolvedMode === 'dark' ? 'light' : 'dark')}
-      className="flex items-center gap-2 rounded-md border border-border px-3 py-2 text-sm"
-    >
-      {resolvedMode === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-      {resolvedMode === 'dark' ? 'Light mode' : 'Dark mode'}
-    </button>
   );
 }

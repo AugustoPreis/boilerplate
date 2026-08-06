@@ -1,9 +1,8 @@
 import { RouterProvider } from '@tanstack/react-router';
 import type { ReactElement } from 'react';
-import { Toaster } from 'sonner';
 
-import { useThemeMode } from './providers/theme-mode.context';
 import { ThemeProvider } from './providers/theme.provider';
+import { ThemedToaster } from './providers/themed-toaster';
 import { router } from './router/router';
 
 export function App(): ReactElement {
@@ -13,10 +12,4 @@ export function App(): ReactElement {
       <ThemedToaster />
     </ThemeProvider>
   );
-}
-
-function ThemedToaster(): ReactElement {
-  const { resolvedMode } = useThemeMode();
-
-  return <Toaster theme={resolvedMode} />;
 }
