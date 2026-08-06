@@ -16,7 +16,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { CurrentUser, RequirePermission } from '@shared/decorators';
+import { ApiPaginatedResponse, CurrentUser, RequirePermission } from '@shared/decorators';
 import { ParseUuidPipe } from '@shared/pipes/parse-uuid.pipe';
 
 import { AssignRolesDTO } from '../dtos/assign-roles.dto';
@@ -55,6 +55,7 @@ export class UsersController {
   @Get()
   @RequirePermission('users', 'read')
   @ApiOperation({ summary: 'List users' })
+  @ApiPaginatedResponse(UserResponseDTO)
   findAll(@Query() query: UserQueryDTO): ReturnType<ListUsersUseCase['execute']> {
     return this.listUsersUseCase.execute(query);
   }

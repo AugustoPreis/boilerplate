@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { RequirePermission } from '@shared/decorators';
+import { ApiPaginatedResponse, RequirePermission } from '@shared/decorators';
 import { IPaginatedResult } from '@shared/interfaces';
 import { ParseUuidPipe } from '@shared/pipes/parse-uuid.pipe';
 
@@ -41,6 +41,7 @@ export class PermissionsController {
   @Get()
   @RequirePermission('permissions', 'read')
   @ApiOperation({ summary: 'List permissions' })
+  @ApiPaginatedResponse(PermissionResponseDTO)
   findAll(@Query() query: ListPermissionDTO): Promise<IPaginatedResult<PermissionResponseDTO>> {
     return this.listPermissionsUseCase.execute(query);
   }
