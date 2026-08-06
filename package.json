@@ -19,6 +19,9 @@
     "format:check": "prettier --check .",
     "test": "turbo run test",
     "test:cov": "turbo run test:cov",
+    "test:integration": "turbo run test:integration",
+    "test:e2e": "turbo run test:e2e",
+    "test:all": "turbo run test:all",
     "prepare": "husky"
   },
   "devDependencies": {

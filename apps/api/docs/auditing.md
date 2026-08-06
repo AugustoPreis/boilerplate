@@ -124,3 +124,7 @@ a `repo.save()`):
    `users.audit.entities.user.enums.status.*` → `"Ativo"`/`"Inativo"`. The final response includes
    `{ field: "status", label: "Status", old: { value: "ACTIVE", display: "Ativo" }, new: { value:
 "INACTIVE", display: "Inativo" } }`.
+
+See also [testing.md](./testing.md): `test/integration/audit/audit-trail.integration-spec.ts`
+proves this exact flow end-to-end against a real Postgres, subscriber included — it's the one
+piece of this pipeline that can't be proven without the real TypeORM subscriber in the loop.
