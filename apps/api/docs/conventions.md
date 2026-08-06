@@ -13,6 +13,9 @@
 | Enum             | `<resource>-<field>.enum.ts`      | `E<Resource><Field>` (e.g. `EUserStatus`) |
 | Pure util/helper | `<something>.util.ts`             | exported function, not a class            |
 | Interface        | `<something>.interface.ts`        | `I<Something>`                            |
+| Unit spec        | `<subject>.spec.ts`               | in `__tests__/` next to the code          |
+| Integration spec | `<subject>.integration-spec.ts`   | in `test/integration/<module>/`           |
+| E2E spec         | `<module>.e2e-spec.ts`            | in `test/e2e/`                            |
 
 One use-case per operation (never a generic service holding every method for a resource). See
 [architecture.md](./architecture.md).

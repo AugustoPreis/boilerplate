@@ -15,6 +15,18 @@
     "test:cov": {
       "outputs": ["coverage/**"]
     },
+    "test:integration": {
+      "outputs": [],
+      "cache": false
+    },
+    "test:e2e": {
+      "outputs": [],
+      "cache": false
+    },
+    "test:all": {
+      "outputs": [],
+      "cache": false
+    },
     "dev": {
       "cache": false,
       "persistent": true

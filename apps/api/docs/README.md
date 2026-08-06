@@ -23,3 +23,5 @@ organized and why" layer.
   policy difference between dev and production.
 - **[conventions.md](./conventions.md)**: naming, request/response DTOs, i18n error messages,
   error handling via `AppException`, pagination.
+- **[testing.md](./testing.md)**: the three test levels (unit, integration, e2e), where each one
+  lives, and when to use each.

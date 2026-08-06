@@ -9,10 +9,10 @@ const redisProvider = {
   inject: [ConfigService],
   useFactory: (config: ConfigService): Redis => {
     return new Redis({
-      host: config.get<string>('REDIS_HOST', 'localhost'),
-      port: config.get<number>('REDIS_PORT', 6379),
-      password: config.get<string>('REDIS_PASSWORD') || undefined,
-      db: config.get<number>('REDIS_DB', 0),
+      host: config.get<string>('redis.host', 'localhost'),
+      port: config.get<number>('redis.port', 6379),
+      password: config.get<string>('redis.password') || undefined,
+      db: config.get<number>('redis.db', 0),
       lazyConnect: true,
     });
   },

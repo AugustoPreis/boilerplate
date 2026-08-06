@@ -6,8 +6,11 @@ allowBuilds:
   '@nestjs/core': true
   '@scarf/scarf': false
   bcrypt: true
+  cpu-features: true
   esbuild: true
   msgpackr-extract: false
+  protobufjs: true
+  ssh2: true
   unrs-resolver: true
 
 minimumReleaseAgeExclude:

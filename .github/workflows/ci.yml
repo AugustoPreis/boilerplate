@@ -32,9 +32,40 @@ jobs:
       - name: Build
         run: pnpm build
 
-      # --passWithNoTests until the first spec file lands; remove once there is one.
       - name: Test
-        run: pnpm --filter=@boilerplate/api test --passWithNoTests
+        run: pnpm --filter=@boilerplate/api test
+
+  test-integration-e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # The API consumes `@boilerplate/shared` as a compiled workspace
+      # dependency, not via ts-node, same as the Dockerfile.
+      - name: Build @boilerplate/shared
+        run: pnpm --filter=@boilerplate/shared build
+
+      # Docker is available natively on ubuntu-latest, so Testcontainers
+      # works with no extra setup: no `services:` block, no privileged flag.
+      - name: Integration tests
+        run: pnpm --filter=@boilerplate/api test:integration
+
+      - name: E2E tests
+        run: pnpm --filter=@boilerplate/api test:e2e
 
   docker-build:
     runs-on: ubuntu-latest

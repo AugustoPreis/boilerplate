@@ -86,3 +86,10 @@ one-line comment explaining why, following the pattern already used in `UsersCon
 
 See [conventions.md](./conventions.md) for file/class naming, DTOs, and i18n error message
 conventions.
+
+## Tests
+
+For each new use-case, add (or reuse) the `__tests__/` folder next to it. For the new repository,
+add a `*.repository.integration-spec.ts` under `test/integration/<module>/`. See
+[testing.md](./testing.md) for the full picture (why repositories/controllers follow different
+rules, where each level lives, and the shared `test/support/` harness).
