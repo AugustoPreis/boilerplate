@@ -34,7 +34,7 @@ export class UserEntity extends BaseEntity {
 
   // Never audited: role assignment writes directly to the `user_roles` join
   // table via `UsersRepository.setRoles`, which never calls
-  // `UserEntity.repo.save()` — this relation is structurally unobservable by
+  // `UserEntity.repo.save()`, so this relation is structurally unobservable by
   // the TypeORM subscriber that drives the audit trail.
   @Audit({ ignore: true })
   @OneToMany(() => UserRoleEntity, (ur) => ur.user, { eager: true })

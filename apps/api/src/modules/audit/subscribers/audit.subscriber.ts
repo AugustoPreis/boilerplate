@@ -25,7 +25,7 @@ import {
  * every entity's insert/update/remove/soft-remove and, for the ones
  * decorated with `@AuditEntity()`, emits `AUDIT_CHANGE_REQUESTED_EVENT`.
  *
- * No `listenTo()` on purpose — it listens to *all* entities and filters via
+ * No `listenTo()` on purpose: it listens to *all* entities and filters via
  * `AuditMetadataRegistry.getByTarget()`, silently ignoring anything not
  * decorated (including `AuditLogEntity` itself and `UserRoleEntity`, whose
  * join-table writes never go through `save()`/`remove()`).
@@ -78,7 +78,7 @@ export class AuditSubscriber implements EntitySubscriberInterface {
       this.logger.warn(
         `Skipping audit for ${metadata.name}#update: no "before" snapshot was loaded ` +
           '(event.databaseEntity is undefined). This happens when the row was updated via ' +
-          'QueryBuilder (repo.update()) instead of repo.save() — the audit trail requires ' +
+          'QueryBuilder (repo.update()) instead of repo.save(); the audit trail requires ' +
           'the instance-based flow.',
       );
 
@@ -120,7 +120,7 @@ export class AuditSubscriber implements EntitySubscriberInterface {
       this.logger.warn(
         `Skipping audit for ${metadata.name}#${action.toLowerCase()}: no "before" snapshot was ` +
           'loaded (event.databaseEntity is undefined). This happens when the row was removed via ' +
-          'QueryBuilder (repo.delete()/softDelete()) instead of repo.remove()/softRemove() — the ' +
+          'QueryBuilder (repo.delete()/softDelete()) instead of repo.remove()/softRemove(); the ' +
           'audit trail requires the instance-based flow.',
       );
 

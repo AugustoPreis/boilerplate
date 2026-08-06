@@ -5,7 +5,7 @@ export interface IAuditEntityOptions {
   /**
    * i18n namespace to look up this entity's audit labels in (matches a
    * NestJS module's own i18n file, e.g. `roles` for both `role` and
-   * `permission`). Defaults to `name` — override it whenever a module audits
+   * `permission`). Defaults to `name`; override it whenever a module audits
    * more than one entity.
    */
   module?: string;

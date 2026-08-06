@@ -22,7 +22,7 @@ updates:
       major:
         update-types: ['major']
 
-  # Only apps/api/Dockerfile (the node:24-alpine base image) — Dependabot
+  # Only apps/api/Dockerfile (the node:24-alpine base image). Dependabot
   # doesn't read docker-compose.yml, so postgres/redis/minio image bumps
   # there stay a manual, occasional update (see docs/configuration.md).
   - package-ecosystem: 'docker'

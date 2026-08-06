@@ -27,7 +27,7 @@ modules/products/
   products.constants.ts                 # module constants (e.g. limits), if needed
 ```
 
-One use-case per operation, never a generic "ProductsService" with every method — this keeps each
+One use-case per operation, never a generic "ProductsService" with every method: this keeps each
 operation independently testable and keeps the diff for a single business-rule change small.
 
 ## `products.module.ts`
@@ -49,7 +49,7 @@ operation independently testable and keeps the diff for a single business-rule c
 export class ProductsModule {}
 ```
 
-`SharedModule` is imported explicitly by convention even though it's `@Global()` — it makes it
+`SharedModule` is imported explicitly by convention even though it's `@Global()`: it makes it
 clear, just from reading the module, that it depends on pieces of `shared/` (guards, exceptions,
 etc.), even though it's not technically required for injection to work.
 
@@ -60,17 +60,17 @@ other domain modules (`UsersModule`, `RolesModule`, `AuthModule`, `AuditModule`)
 
 ## Entity
 
-Extend `shared/entities/base.entity.ts` (`BaseEntity`) — it already provides `id` (incrementing,
+Extend `shared/entities/base.entity.ts` (`BaseEntity`): it already provides `id` (incrementing,
 internal use), `uuid` (public), `createdAt`/`updatedAt`/`deletedAt`. If the entity should show up
 in the audit trail, decorate it with `@AuditEntity({ name: '...', module: '...' })` and every
-relevant field with `@Audit()` — see [auditing.md](./auditing.md). Generate the matching migration
+relevant field with `@Audit()`. See [auditing.md](./auditing.md). Generate the matching migration
 (see `core/database/migrations/`, timestamp-based naming convention).
 
 ## Repository
 
-One method per data-access operation, always returning the entity (never the DTO — mapping to a
+One method per data-access operation, always returning the entity (never the DTO: mapping to a
 DTO happens in the use-case or in the response DTO's `static from()`). For writes, always
-`repo.save()`/`repo.remove()`/`repo.softRemove()`, never `repo.update()`/`repo.delete()` — see the
+`repo.save()`/`repo.remove()`/`repo.softRemove()`, never `repo.update()`/`repo.delete()`. See the
 explanation in [architecture.md](./architecture.md#layers). For paginated listing, follow the
 `buildSkip`/`buildPaginatedResult` pattern from `shared/utils/pagination.util.ts`.
 
@@ -79,7 +79,7 @@ explanation in [architecture.md](./architecture.md#layers). For paginated listin
 Thin: injects the module's use-cases, one method per route, delegates directly (`return
 this.xUseCase.execute(...)`). Apply `@RequirePermission('<resource>', '<action>')` on every route
 that requires granular authorization; only omit it for the few "action on the currently
-authenticated user themselves" cases (e.g. `PUT /users/me/password`) — and in that case, add a
+authenticated user themselves" cases (e.g. `PUT /users/me/password`), and in that case, add a
 one-line comment explaining why, following the pattern already used in `UsersController`.
 
 ## Naming

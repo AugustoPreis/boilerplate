@@ -54,7 +54,7 @@ export class RolesRepository {
     assignDefined(entity, data);
 
     // `save()` (not `update()`) so the TypeORM subscriber driving the audit
-    // trail gets a populated `event.databaseEntity` — `repo.update()` never
+    // trail gets a populated `event.databaseEntity`; `repo.update()` never
     // loads a "before" state.
     return this.repo.save(entity);
   }

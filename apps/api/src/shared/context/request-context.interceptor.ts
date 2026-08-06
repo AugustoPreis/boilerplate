@@ -7,8 +7,8 @@ import { RequestContextService } from './request-context.service';
 
 /**
  * Populates `RequestContextService` with the current request's actor so
- * components that run outside of Nest's request scope — chiefly the
- * `AuditSubscriber`, driven by TypeORM rather than by HTTP — can still know
+ * components that run outside of Nest's request scope, chiefly the
+ * `AuditSubscriber`, driven by TypeORM rather than by HTTP, can still know
  * who triggered a change.
  *
  * `next.handle()` must be called synchronously inside `run()` (rather than,

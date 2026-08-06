@@ -34,7 +34,7 @@ export class UpdateUserPasswordUseCase {
     });
 
     // Revokes the refresh token so any other session gets logged out on its
-    // next refresh — the current one keeps working until its access token
+    // next refresh. The current one keeps working until its access token
     // (short-lived) naturally expires.
     await this.redis.del(getRefreshTokenRedisKey(currentUserUuid));
   }

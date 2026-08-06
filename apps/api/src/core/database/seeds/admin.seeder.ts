@@ -59,6 +59,6 @@ export class AdminSeeder {
       await userRoleRepository.save(userRole);
     }
 
-    console.log(`AdminSeeder: admin user created — ${adminEmail}`);
+    console.log(`AdminSeeder: admin user created (${adminEmail})`);
   }
 }

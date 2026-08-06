@@ -43,7 +43,7 @@ export class ResetPasswordUseCase {
     });
 
     // The reset token is single-use, and any session that predates the
-    // reset is revoked too — the whole point of resetting is that it may
+    // reset is revoked too: the whole point of resetting is that it may
     // have been someone else who was logged in.
     await this.redis.del(getPasswordResetRedisKey(payload.sub));
     await this.redis.del(getRefreshTokenRedisKey(payload.sub));

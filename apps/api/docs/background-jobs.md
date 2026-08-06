@@ -1,13 +1,13 @@
 # Background jobs (BullMQ)
 
 Queues run on top of the Redis that already exists (`core/redis/`), via `@nestjs/bullmq`. Today
-there's only one queue, the mail queue (see [mailing.md](./mailing.md)) — this document describes
+there's only one queue, the mail queue (see [mailing.md](./mailing.md)). This document describes
 the pattern for registering a new one.
 
 ## Connection
 
 `BullModule.forRootAsync` is registered once in `AppModule`, reusing the same environment
-variables `RedisModule` already uses (`REDIS_HOST`/`REDIS_PORT`/`REDIS_PASSWORD`/`REDIS_DB`) — same
+variables `RedisModule` already uses (`REDIS_HOST`/`REDIS_PORT`/`REDIS_PASSWORD`/`REDIS_DB`); same
 infrastructure, same logical connection, no new env var per queue:
 
 ```ts
@@ -41,13 +41,13 @@ BullModule.registerQueue({
 }),
 ```
 
-`defaultJobOptions` lives on the queue, not on each `.add()` call — every job inherits the same
+`defaultJobOptions` lives on the queue, not on each `.add()` call: every job inherits the same
 retry policy without repeating the configuration on every `enqueue()`.
 
 ## Producing a job
 
-A thin service injects the queue via `@InjectQueue(MY_QUEUE_NAME)` and just calls `.add(...)` — no
-business logic:
+A thin service injects the queue via `@InjectQueue(MY_QUEUE_NAME)` and just calls `.add(...)`, with
+no business logic:
 
 ```ts
 @Injectable()
@@ -63,7 +63,7 @@ export class MailerService {
 ## Consuming a job
 
 A processor extends `WorkerHost` (the current version of `@nestjs/bullmq` no longer has a
-`@Process()` method decorator — the processing method is the implementation of the abstract
+`@Process()` method decorator; the processing method is the implementation of the abstract
 `process` method) and is decorated with `@Processor(MY_QUEUE_NAME)`:
 
 ```ts
@@ -89,8 +89,8 @@ export class MailProcessor extends WorkerHost {
 ## Error convention
 
 No external alerting (out of scope). A failure after all `attempts` are exhausted is just logged
-via `Logger` (project convention — see [conventions.md](./conventions.md#logging)) in the
+via `Logger` (project convention, see [conventions.md](./conventions.md#logging)) in the
 `@OnWorkerEvent('failed')` handler, with the relevant `job.data` for manual diagnosis. The HTTP
 endpoint that enqueued the job has already responded by that point (enqueuing is the last step of
-the use-case, after any synchronous side effect that's actually required) — an async processing
+the use-case, after any synchronous side effect that's actually required). An async processing
 failure should never break the original HTTP response.

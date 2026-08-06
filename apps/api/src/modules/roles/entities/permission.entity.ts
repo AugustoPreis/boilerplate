@@ -27,10 +27,10 @@ export class PermissionEntity {
   description!: string | null;
 
   // Not decorated with @Audit(): the same diff is already captured from the
-  // owning side, on `Role.permissions` — decorating this inverse side too
+  // owning side, on `Role.permissions`, so decorating this inverse side too
   // would duplicate it.
   // Target/inverse side given as strings (rather than `() => RoleEntity`) so
-  // this file never needs a value-level import of `role.entity.ts` — it only
+  // this file never needs a value-level import of `role.entity.ts`; it only
   // needs `RoleEntity` as a type. `role.entity.ts` (indirectly, via
   // `@Audit({ relationResolver: PermissionsRelationResolver })`) now pulls in
   // `PermissionsRepository`, whose `@InjectRepository(PermissionEntity)`

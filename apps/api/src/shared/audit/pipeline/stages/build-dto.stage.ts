@@ -6,7 +6,7 @@ import { IAuditChangeSetContext } from '../../interfaces';
 /**
  * Final stage of the read-side pipeline: converts the enriched work items
  * into the frontend-facing `AuditFieldChangeDTO[]`. The frontend never
- * interprets raw data itself — everything it needs is already resolved.
+ * interprets raw data itself; everything it needs is already resolved.
  */
 @Injectable()
 export class BuildDtoStage {

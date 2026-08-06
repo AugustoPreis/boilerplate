@@ -24,7 +24,7 @@ import { I18nAuditTranslator } from './translators/i18n-audit.translator';
 /**
  * Generic, reusable audit engine: decorators/registry/diff/normalizers/
  * formatters/translators/pipeline. Knows nothing about TypeORM, HTTP or any
- * specific feature module — `@modules/audit` is the only consumer that wires
+ * specific feature module: `@modules/audit` is the only consumer that wires
  * it to persistence and to the outside world.
  *
  * Custom formatters/normalizers/relation-resolvers referenced from `@Audit()`

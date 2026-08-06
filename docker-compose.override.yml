@@ -1,8 +1,8 @@
-# Applied automatically by Docker Compose when present — is the mode
-# default for those who clone the repo to develop. `docker compose up` (without
+# Applied automatically by Docker Compose when present; this is the default
+# for those who clone the repo to develop. `docker compose up` (without
 # flags) already brings everything up in dev mode with hot-reload via bind mount of the code.
 services:
-  # SMTP test server for local development — catches every outgoing e-mail
+  # SMTP test server for local development: catches every outgoing e-mail
   # instead of delivering it. Web UI at http://localhost:8025.
   mailhog:
     image: mailhog/mailhog:v1.0.1

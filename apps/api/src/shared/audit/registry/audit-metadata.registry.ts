@@ -3,7 +3,7 @@ import { AuditTarget, IAuditEntityMetadata, IAuditFieldMetadata } from '../inter
 /**
  * Central, in-memory registry of audit metadata, populated directly by the
  * `@AuditEntity()` and `@Audit()` decorators. No other component in the audit
- * engine should read `Reflect` metadata directly — everything goes through here.
+ * engine should read `Reflect` metadata directly; everything goes through here.
  *
  * Decorator evaluation order note: TypeScript evaluates property decorators
  * (bottom-up) before the class decorator. This registry tolerates either

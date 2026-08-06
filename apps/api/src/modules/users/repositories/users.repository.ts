@@ -108,7 +108,7 @@ export class UsersRepository {
 
     // Loaded (rather than QueryBuilder-updated) and saved via `save()` so the
     // TypeORM subscriber driving the audit trail gets a populated
-    // `event.databaseEntity` — `repo.update()` never loads a "before" state.
+    // `event.databaseEntity`; `repo.update()` never loads a "before" state.
     return this.repo.save(entity);
   }
 

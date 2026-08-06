@@ -24,7 +24,7 @@ export class RoleEntity {
   @Column({ type: 'text', nullable: true })
   description!: string | null;
 
-  // System-managed only (set by RolesSeeder), never through a DTO — not user-editable.
+  // System-managed only (set by RolesSeeder), never through a DTO: not user-editable.
   @Column({ name: 'is_reserved', type: 'boolean', default: false })
   isReserved!: boolean;
 

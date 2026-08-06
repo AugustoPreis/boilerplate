@@ -36,7 +36,7 @@ export class UpdateUserUseCase {
     }
 
     // Omitted `roleUuids` leaves the user's roles untouched; provided (even
-    // empty) replaces the full set — same semantics as PUT /users/:uuid/roles.
+    // empty) replaces the full set, same semantics as PUT /users/:uuid/roles.
     if (dto.roleUuids) {
       const roleIds = await this.resolveRoleIds(dto.roleUuids);
 

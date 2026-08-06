@@ -60,7 +60,7 @@ export class StorageService implements OnModuleInit {
 
   // Only meant for dev (MinIO): in a real AWS S3 setup the bucket and its
   // policy are provisioned by infra/IaC, and the app's IAM role typically
-  // doesn't have PutBucketPolicy permission — that's why this is gated by
+  // doesn't have PutBucketPolicy permission, which is why this is gated by
   // `storage.autoConfigureBucket` (`S3_AUTO_CONFIGURE_BUCKET`), off by
   // default outside of what `.env.example` sets for local development.
   private async ensureBucketExists(): Promise<void> {

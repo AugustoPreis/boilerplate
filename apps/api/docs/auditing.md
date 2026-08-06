@@ -1,17 +1,17 @@
 # Audit trail
 
 Every change to an `@Audit()`-decorated field of an `@AuditEntity()`-decorated entity is captured
-automatically, with no explicit code in the use-case that made the change — as long as the write
+automatically, with no explicit code in the use-case that made the change, as long as the write
 goes through `repo.save()`/`repo.remove()`/`repo.softRemove()` (never the query-builder style
 `repo.update()`/`repo.delete()`/`repo.softDelete()`, which never loads the "before" value of the
 change).
 
 ## Two parts: the generic engine vs. the persistence module
 
-- **`shared/audit/`** — the engine: decorators, the metadata registry, the stage pipeline,
+- **`shared/audit/`** is the engine: decorators, the metadata registry, the stage pipeline,
   formatters/normalizers/translator. Knows nothing about TypeORM or HTTP; reusable by any entity
   in any module.
-- **`modules/audit/`** — the concrete part: the TypeORM subscriber, the event listener, the
+- **`modules/audit/`** is the concrete part: the TypeORM subscriber, the event listener, the
   `AuditLogEntity` entity (schema `audit`, table `audit_logs`), the repository, the read/write
   use-cases, and the controller (`GET /v1/audit-logs`, `GET /v1/audit-logs/:uuid`, both behind
   `RequirePermission('audit', 'read')`).
@@ -40,7 +40,7 @@ export class UserEntity extends BaseEntity {
 - `name` is the key used to look the entity back up later (on read); `module` is the i18n
   namespace where that entity type's labels/translations live (see below).
 - Every field that should show up in the diff needs `@Audit()`. A field without the decorator is
-  simply ignored (no error) — but prefer `@Audit({ ignore: true })` with a comment explaining why
+  simply ignored (no error), but prefer `@Audit({ ignore: true })` with a comment explaining why
   whenever the omission isn't obvious (a secret, a relation the subscriber can't structurally
   observe, etc.), so it's clear it was a decision, not an oversight.
 
@@ -65,26 +65,26 @@ Each module that owns an entity adds an `audit` block to its own locale file
 
 `I18nAuditTranslator` looks these keys up as `<module>.audit.entities.<name>.label` /
 `.fields.<field>` / `.enums.<field>.<value>`. When adding a new auditable entity, add the matching
-block to that module's locale file — without it, the label falls back to the raw field name,
+block to that module's locale file; without it, the label falls back to the raw field name,
 untranslated.
 
 ## Adding a new formatter or normalizer
 
-- **Normalizer** (`shared/audit/normalizers/`) — normalizes the value _before_ the diff, so
+- **Normalizer** (`shared/audit/normalizers/`): normalizes the value _before_ the diff, so
   representation differences (array order, `undefined` vs. `null`, date type) don't produce a
   false-positive diff. Implement `IAuditNormalizer` and reference it on the field:
   `@Audit({ normalizer: MyNormalizer })`.
-- **Formatter** (`shared/audit/formatters/`) — formats the value _on read_, for display (e.g.
+- **Formatter** (`shared/audit/formatters/`): formats the value _on read_, for display (e.g.
   `EnumFormatter` translates the enum value; `CurrencyFormatter`/`DateFormatter` use locale-aware
   `Intl`). Implement `IAuditFormatter` and reference it: `@Audit({ formatter: MyFormatter })`.
-- **Relation resolver** (e.g. `PermissionsRelationResolver`) — when the field is a relation and
+- **Relation resolver** (e.g. `PermissionsRelationResolver`): when the field is a relation and
   the raw diff (ids) isn't useful for display, an `IAuditRelationResolver` fetches the real records
   to format (e.g. turning a list of permission ids into `"users:read, users:write"`). Always pair
   it with `normalizer: ArrayNormalizer` if the field is a to-many relation, so ordering doesn't
   affect the diff.
 
 Register the new class in `AuditEngineModule`'s `providers`
-(`shared/audit/audit-engine.module.ts`) — that's what lets any `FormatStage`/`NormalizeStage`/
+(`shared/audit/audit-engine.module.ts`). That's what lets any `FormatStage`/`NormalizeStage`/
 `ResolveRelationsStage` resolve it dynamically via `ModuleRef.get(Type, { strict: false })`,
 without the generic engine ever needing to import the domain module that owns the resolver.
 

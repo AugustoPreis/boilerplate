@@ -8,7 +8,7 @@ import { AppException } from '../exceptions/app.exception';
 
 /**
  * Catches every `HttpException`, including `I18nValidationException` (thrown
- * by `i18nFieldValidationExceptionFactory`) — handled here directly rather
+ * by `i18nFieldValidationExceptionFactory`). It's handled here directly rather
  * than via a second `@Catch(I18nValidationException)` filter, since NestJS
  * reverses global filters before matching (last registered is tried first),
  * so a second filter would silently lose to this one whenever it's

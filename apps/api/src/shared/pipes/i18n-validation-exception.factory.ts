@@ -8,7 +8,7 @@ import { AuditMetadataRegistry } from '@shared/audit/registry/audit-metadata.reg
  * Infers which audited entity a DTO validates from its class name alone
  * (`CreateRoleDTO` / `UpdateRoleDTO` / `ListRoleDTO` -> `role`), so a new DTO
  * needs zero extra config to get translated field labels in its validation
- * errors — it just has to be named the way every DTO in this repo already is.
+ * errors; it just has to be named the way every DTO in this repo already is.
  */
 const DTO_SUFFIXES = ['DTO', 'Dto'];
 const QUERY_SUFFIXES = ['Query', 'Filter'];
@@ -119,8 +119,8 @@ export function i18nFieldValidationExceptionFactory(
 }
 
 /**
- * Flattens a (possibly nested) `ValidationError[]` tree — as translated by
- * `i18nFieldValidationExceptionFactory` — into a plain list of message
+ * Flattens a (possibly nested) `ValidationError[]` tree (as translated by
+ * `i18nFieldValidationExceptionFactory`) into a plain list of message
  * strings, so API error responses only ever carry a string or a string[],
  * never the internal `property`/`target`/`constraints` shape.
  */
