@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import type { ReactElement } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { ThemeToggle } from '@app/providers/theme-toggle';
 
@@ -11,11 +12,13 @@ export const Route = createFileRoute('/')({
 });
 
 function HomePage(): ReactElement {
+  const { t } = useTranslation();
+
   return (
     <Box as="main" className="flex min-h-screen items-center justify-center">
       <Stack align="center" gap={4}>
-        <Heading level={1}>Boilerplate</Heading>
-        <Text tone="muted">Vite + React + TanStack Router + Tailwind v4</Text>
+        <Heading level={1}>{t('appName')}</Heading>
+        <Text tone="muted">{t('stackTagline')}</Text>
         <ThemeToggle />
       </Stack>
     </Box>

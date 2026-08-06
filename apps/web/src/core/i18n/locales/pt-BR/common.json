@@ -1,0 +1,8 @@
+{
+  "appName": "Boilerplate",
+  "stackTagline": "Vite + React + TanStack Router + Tailwind v4",
+  "theme": {
+    "switchToDarkMode": "Modo escuro",
+    "switchToLightMode": "Modo claro"
+  }
+}
