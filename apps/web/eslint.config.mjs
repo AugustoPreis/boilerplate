@@ -107,4 +107,21 @@ export default tseslint.config(
       'react-refresh/only-export-components': 'off',
     },
   },
+  {
+    // Layout/typography must go through the primitives in shared/ui (§5 of
+    // the architecture doc), never raw HTML tags, so identity/style live in
+    // one place per element. The primitives' own implementation is exempt.
+    files: ['src/**/*.tsx'],
+    ignores: ['src/shared/ui/layout/**/*.tsx', 'src/shared/ui/typography/**/*.tsx'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'JSXOpeningElement[name.name=/^(div|p|span|h1|h2|h3|h4|h5|h6)$/]',
+          message:
+            'Use a layout/typography primitive from shared/ui instead of this raw HTML tag.',
+        },
+      ],
+    },
+  },
 );
