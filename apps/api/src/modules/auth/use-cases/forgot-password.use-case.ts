@@ -59,6 +59,7 @@ export class ForgotPasswordUseCase {
       template: 'password-reset',
       context: {
         appName: this.config.get<string>('app.name'),
+        locale,
         greeting: this.i18n.translate('auth.mail.passwordReset.greeting', {
           lang: locale,
           args: { name: user.name },
@@ -68,6 +69,7 @@ export class ForgotPasswordUseCase {
         buttonLabel: this.i18n.translate('auth.mail.passwordReset.button', { lang: locale }),
         linkFallback: this.i18n.translate('auth.mail.passwordReset.linkFallback', { lang: locale }),
         footer: this.i18n.translate('auth.mail.passwordReset.footer', { lang: locale }),
+        disclaimer: this.i18n.translate('common.mail.disclaimer', { lang: locale }),
       },
     });
   }
