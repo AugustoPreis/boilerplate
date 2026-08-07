@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { Request, Response } from 'express';
 import { I18nLang } from 'nestjs-i18n';
@@ -21,6 +21,7 @@ import { SkipCsrf } from '@shared/decorators/skip-csrf.decorator';
 import { UuidService } from '@shared/services/uuid.service';
 
 import { ForgotPasswordDTO } from '../dtos/forgot-password.dto';
+import { LoginResponseDTO } from '../dtos/login-response.dto';
 import { LoginDTO } from '../dtos/login.dto';
 import { MeResponseDTO } from '../dtos/me-response.dto';
 import { ResetPasswordDTO } from '../dtos/reset-password.dto';
@@ -56,11 +57,12 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Login with email and password' })
+  @ApiOkResponse({ type: LoginResponseDTO })
   async login(
     @Body() _dto: LoginDTO,
     @CurrentUser() user: IAuthUser,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<{ user: MeResponseDTO }> {
+  ): Promise<LoginResponseDTO> {
     const result = await this.loginUseCase.execute(user);
 
     setAuthCookies(res, this.config, result, this.uuidService.generate('v4'));
@@ -73,10 +75,11 @@ export class AuthController {
   @SkipCsrf()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Refresh access token using the refresh_token cookie' })
+  @ApiOkResponse({ type: LoginResponseDTO })
   async refresh(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<{ user: MeResponseDTO }> {
+  ): Promise<LoginResponseDTO> {
     const result = await this.refreshTokenUseCase.execute(req.cookies[REFRESH_TOKEN_COOKIE]);
 
     setAuthCookies(res, this.config, result, this.uuidService.generate('v4'));
