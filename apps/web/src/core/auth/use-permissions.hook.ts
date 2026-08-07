@@ -7,8 +7,13 @@ export interface IUsePermissions {
   hasAnyPermission: (permissions: string[]) => boolean;
 }
 
+// Stable reference: the store selector must return the same array instance
+// across renders when there's no user, otherwise Zustand's useSyncExternalStore
+// sees a "changed" snapshot on every render and loops forever.
+const EMPTY_PERMISSIONS: string[] = [];
+
 export function usePermissions(): IUsePermissions {
-  const permissions = useAuthStore((state) => state.user?.permissions ?? []);
+  const permissions = useAuthStore((state) => state.user?.permissions ?? EMPTY_PERMISSIONS);
 
   return {
     permissions,
