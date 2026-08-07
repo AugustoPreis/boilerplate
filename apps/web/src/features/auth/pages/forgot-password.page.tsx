@@ -9,9 +9,9 @@ import { mapAxiosErrorToAppError } from '@core/errors/error.mapper';
 import { Button } from '@shared/ui/button';
 import { FormField } from '@shared/ui/form';
 import { Input } from '@shared/ui/input';
-import { Box, Stack } from '@shared/ui/layout';
-import { Heading } from '@shared/ui/typography';
+import { Stack } from '@shared/ui/layout';
 
+import { AuthLayout } from '../components/auth-layout';
 import { useForgotPasswordMutation } from '../queries/auth.queries';
 import {
   forgotPasswordSchema,
@@ -24,7 +24,9 @@ export function ForgotPasswordPage(): ReactElement {
 
   const form = useForm<ForgotPasswordFormValues>({
     resolver: zodResolver(forgotPasswordSchema),
-    defaultValues: { email: '' },
+    defaultValues: {
+      email: '',
+    },
   });
 
   function onSubmit(values: ForgotPasswordFormValues): void {
@@ -40,26 +42,28 @@ export function ForgotPasswordPage(): ReactElement {
   }
 
   return (
-    <Box as="main" className="flex min-h-screen items-center justify-center">
-      <Stack gap={6} className="w-full max-w-sm">
-        <Heading level={1}>{t('forgotPassword.title')}</Heading>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <Stack gap={4}>
-            <FormField
-              control={form.control}
-              name="email"
-              label={t('forgotPassword.emailLabel')}
-              render={(field) => <Input type="email" {...field} />}
-            />
-            <Button type="submit" disabled={forgotPasswordMutation.isPending}>
-              {t('forgotPassword.submit')}
-            </Button>
-          </Stack>
-        </form>
+    <AuthLayout
+      title={t('forgotPassword.title')}
+      footer={
         <Link to="/login" className="text-sm underline">
           {t('forgotPassword.backToLoginLink')}
         </Link>
-      </Stack>
-    </Box>
+      }
+    >
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <Stack gap={4}>
+          <FormField
+            control={form.control}
+            name="email"
+            label={t('forgotPassword.emailLabel')}
+            render={(field) => <Input type="email" {...field} />}
+          />
+
+          <Button type="submit" disabled={forgotPasswordMutation.isPending}>
+            {t('forgotPassword.submit')}
+          </Button>
+        </Stack>
+      </form>
+    </AuthLayout>
   );
 }
