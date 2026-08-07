@@ -4,6 +4,9 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+  // API and web share a single .env at the monorepo root (see .env.example);
+  // Vite defaults envDir to this config's own directory otherwise.
+  envDir: '../../',
   plugins: [
     tanstackRouter({
       target: 'react',
