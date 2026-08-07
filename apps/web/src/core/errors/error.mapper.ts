@@ -7,7 +7,9 @@ export function mapAxiosErrorToAppError(error: AxiosError<IApiErrorResponse>): A
   const response = error.response?.data;
 
   if (response) {
-    return new AppError(response.message, response.statusCode, response.code);
+    const message = Array.isArray(response.message) ? response.message.join(' ') : response.message;
+
+    return new AppError(message, response.statusCode, response.code);
   }
 
   return new AppError(error.message, 0);

@@ -1,13 +1,21 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ThemeToggle } from '@app/providers/theme-toggle';
 
+import { useAuthStore } from '@core/auth/auth.store';
 import { Box, Stack } from '@shared/ui/layout';
 import { Heading, Text } from '@shared/ui/typography';
 
+import { LogoutButton } from '@features/auth';
+
 export const Route = createFileRoute('/')({
+  beforeLoad: () => {
+    if (useAuthStore.getState().status !== 'authenticated') {
+      throw redirect({ to: '/login' });
+    }
+  },
   component: HomePage,
 });
 
@@ -20,6 +28,7 @@ function HomePage(): ReactElement {
         <Heading level={1}>{t('appName')}</Heading>
         <Text tone="muted">{t('stackTagline')}</Text>
         <ThemeToggle />
+        <LogoutButton />
       </Stack>
     </Box>
   );

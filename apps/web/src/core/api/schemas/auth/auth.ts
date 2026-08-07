@@ -19,12 +19,38 @@ export const AuthControllerLoginV1Body = zod.object({
   "password": zod.string().min(1)
 })
 
-export const AuthControllerLoginV1Response = zod.unknown()
+export const AuthControllerLoginV1Response = zod.object({
+  "user": zod.object({
+  "uuid": zod.string(),
+  "email": zod.string(),
+  "name": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "status": zod.string(),
+  "roles": zod.array(zod.object({
+  "uuid": zod.string(),
+  "name": zod.string()
+})),
+  "permissions": zod.array(zod.string()).describe('Effective permissions, as \"resource:action\"')
+})
+})
 
 /**
  * @summary Refresh access token using the refresh_token cookie
  */
-export const AuthControllerRefreshV1Response = zod.unknown()
+export const AuthControllerRefreshV1Response = zod.object({
+  "user": zod.object({
+  "uuid": zod.string(),
+  "email": zod.string(),
+  "name": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "status": zod.string(),
+  "roles": zod.array(zod.object({
+  "uuid": zod.string(),
+  "name": zod.string()
+})),
+  "permissions": zod.array(zod.string()).describe('Effective permissions, as \"resource:action\"')
+})
+})
 
 /**
  * @summary Revoke the refresh token and clear session cookies
