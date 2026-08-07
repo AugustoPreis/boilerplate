@@ -1,10 +1,7 @@
+import { PASSWORD_REGEX } from '@boilerplate/shared';
 import { z } from 'zod';
 
 import { i18next } from '@core/i18n';
-
-// Must stay in sync with apps/api/src/modules/users/dtos/create-user.dto.ts's
-// PASSWORD_REGEX: min 8 chars, at least one lower/upper/digit/special char.
-const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/;
 
 export const resetPasswordSchema = z
   .object({
