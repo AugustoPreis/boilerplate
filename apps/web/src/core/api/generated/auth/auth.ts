@@ -8,6 +8,7 @@
 import type {
   ForgotPasswordDTO,
   LoginDTO,
+  LoginResponseDTO,
   MeResponseDTO,
   ResetPasswordDTO
 } from '../boilerplateAPI.schemas';
@@ -23,7 +24,7 @@ import { customInstance } from '../../http/mutator';
 const authControllerLoginV1 = (
     loginDTO: LoginDTO,
  ) => {
-      return customInstance<void>(
+      return customInstance<LoginResponseDTO>(
       {url: `/api/v1/auth/login`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: loginDTO
@@ -36,7 +37,7 @@ const authControllerLoginV1 = (
 const authControllerRefreshV1 = (
 
  ) => {
-      return customInstance<void>(
+      return customInstance<LoginResponseDTO>(
       {url: `/api/v1/auth/refresh`, method: 'POST'
     },
       );

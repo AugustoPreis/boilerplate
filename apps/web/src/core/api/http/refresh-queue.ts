@@ -6,6 +6,16 @@ interface IRetryableConfig extends InternalAxiosRequestConfig {
   _retried?: boolean;
 }
 
+// The refresh call itself goes through this same axios instance, so a 401
+// on it would otherwise recurse straight back into refreshOnce() and
+// deadlock: that pending promise can only settle by this exact call
+// returning first.
+const REFRESH_ENDPOINT_PATH = '/auth/refresh';
+
+function isRefreshRequest(config: IRetryableConfig | undefined): boolean {
+  return Boolean(config?.url?.includes(REFRESH_ENDPOINT_PATH));
+}
+
 let refreshPromise: Promise<boolean> | null = null;
 
 function refreshOnce(): Promise<boolean> {
@@ -30,7 +40,7 @@ export async function handleUnauthorized(
 ): Promise<AxiosResponse> {
   const config = error.config as IRetryableConfig | undefined;
 
-  if (error.response?.status !== 401 || !config || config._retried) {
+  if (error.response?.status !== 401 || !config || config._retried || isRefreshRequest(config)) {
     throw error;
   }
 

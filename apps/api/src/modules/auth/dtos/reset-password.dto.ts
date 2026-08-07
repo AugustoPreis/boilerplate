@@ -1,9 +1,8 @@
+import { PASSWORD_REGEX } from '@boilerplate/shared';
 import { ApiProperty } from '@nestjs/swagger';
 import { i18nValidationMessage } from 'nestjs-i18n';
 
 import { IsString, Matches, MinLength } from '@shared/validators';
-
-import { PASSWORD_REGEX } from '../../users/dtos/create-user.dto';
 
 export class ResetPasswordDTO {
   @ApiProperty()

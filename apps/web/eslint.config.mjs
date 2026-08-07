@@ -50,6 +50,9 @@ export default tseslint.config(
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
+      // react-hook-form's handleSubmit(...) returns a Promise, by design,
+      // for the canonical `<form onSubmit={form.handleSubmit(onSubmit)}>`.
+      '@typescript-eslint/no-misused-promises': ['error', { checksVoidReturn: { attributes: false } }],
       'import/no-duplicates': 'error',
       'import/order': [
         'error',
@@ -116,6 +119,16 @@ export default tseslint.config(
     files: ['src/app/routes/**/*.tsx'],
     rules: {
       'react-refresh/only-export-components': 'off',
+    },
+  },
+  {
+    // `throw redirect(...)`/`throw notFound(...)` are TanStack Router's own
+    // documented control-flow idiom for beforeLoad/loader — neither throws
+    // a real Error instance. Covers route files and the shared route
+    // guards (core/auth/route-guards.ts) that also throw them.
+    files: ['src/app/routes/**/*.tsx', 'src/core/auth/route-guards.ts'],
+    rules: {
+      '@typescript-eslint/only-throw-error': 'off',
     },
   },
   {

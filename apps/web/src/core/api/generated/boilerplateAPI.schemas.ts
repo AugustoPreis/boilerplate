@@ -156,6 +156,10 @@ export interface MeResponseDTO {
   permissions: string[];
 }
 
+export interface LoginResponseDTO {
+  user: MeResponseDTO;
+}
+
 export interface ForgotPasswordDTO {
   email: string;
 }
