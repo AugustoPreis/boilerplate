@@ -7,26 +7,28 @@ import type {
   ResetPasswordDTO,
 } from '@core/api/generated/boilerplateAPI.schemas';
 
+const auth = getAuth();
+
 export function login(dto: LoginDTO): Promise<LoginResponseDTO> {
-  return getAuth().authControllerLoginV1(dto);
+  return auth.authControllerLoginV1(dto);
 }
 
 export function logout(): Promise<void> {
-  return getAuth().authControllerLogoutV1();
+  return auth.authControllerLogoutV1();
 }
 
 export function getMe(): Promise<MeResponseDTO> {
-  return getAuth().authControllerMeV1();
+  return auth.authControllerMeV1();
 }
 
 export function forgotPassword(dto: ForgotPasswordDTO): Promise<void> {
-  return getAuth().authControllerForgotPasswordV1(dto);
+  return auth.authControllerForgotPasswordV1(dto);
 }
 
 export function resetPassword(dto: ResetPasswordDTO): Promise<void> {
-  return getAuth().authControllerResetPasswordV1(dto);
+  return auth.authControllerResetPasswordV1(dto);
 }
 
 export function refresh(): Promise<LoginResponseDTO> {
-  return getAuth().authControllerRefreshV1();
+  return auth.authControllerRefreshV1();
 }
