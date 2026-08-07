@@ -1,8 +1,8 @@
-import { createFileRoute, redirect } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import type { ReactElement } from 'react';
 import { z } from 'zod';
 
-import { useAuthStore } from '@core/auth/auth.store';
+import { requireGuest } from '@core/auth/route-guards';
 
 import { ResetPasswordPage } from '@features/auth';
 
@@ -12,11 +12,7 @@ const resetPasswordSearchSchema = z.object({
 
 export const Route = createFileRoute('/_auth/reset-password')({
   validateSearch: resetPasswordSearchSchema,
-  beforeLoad: () => {
-    if (useAuthStore.getState().status === 'authenticated') {
-      throw redirect({ to: '/' });
-    }
-  },
+  beforeLoad: requireGuest,
   component: RouteComponent,
 });
 

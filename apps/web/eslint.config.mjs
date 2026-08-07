@@ -119,9 +119,15 @@ export default tseslint.config(
     files: ['src/app/routes/**/*.tsx'],
     rules: {
       'react-refresh/only-export-components': 'off',
-      // `throw redirect(...)`/`throw notFound(...)` are TanStack Router's
-      // own documented control-flow idiom for beforeLoad/loader — neither
-      // throws a real Error instance.
+    },
+  },
+  {
+    // `throw redirect(...)`/`throw notFound(...)` are TanStack Router's own
+    // documented control-flow idiom for beforeLoad/loader — neither throws
+    // a real Error instance. Covers route files and the shared route
+    // guards (core/auth/route-guards.ts) that also throw them.
+    files: ['src/app/routes/**/*.tsx', 'src/core/auth/route-guards.ts'],
+    rules: {
       '@typescript-eslint/only-throw-error': 'off',
     },
   },
