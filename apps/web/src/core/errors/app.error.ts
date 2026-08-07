@@ -11,6 +11,9 @@ export class AppError extends Error implements IAppError {
 
     this.name = 'AppError';
     this.statusCode = statusCode;
-    this.code = code;
+
+    if (code) {
+      this.code = code;
+    }
   }
 }
