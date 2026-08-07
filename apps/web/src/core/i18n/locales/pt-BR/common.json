@@ -4,5 +4,25 @@
   "theme": {
     "switchToDarkMode": "Modo escuro",
     "switchToLightMode": "Modo claro"
+  },
+  "actions": {
+    "close": "Fechar"
+  },
+  "nav": {
+    "dashboard": "Painel"
+  },
+  "breadcrumbs": {
+    "dashboard": "Painel"
+  },
+  "header": {
+    "openNavigationMenu": "Abrir menu de navegação",
+    "navigationTitle": "Menu de navegação"
+  },
+  "userMenu": {
+    "trigger": "Menu do usuário"
+  },
+  "footer": {
+    "copyright": "© {{year}} {{appName}}",
+    "version": "Versão {{version}}"
   }
 }
