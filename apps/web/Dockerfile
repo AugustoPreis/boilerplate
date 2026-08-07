@@ -11,6 +11,7 @@ COPY . .
 RUN corepack prepare --activate $(node -p "require('./package.json').packageManager")
 RUN pnpm install --frozen-lockfile
 
+RUN pnpm --filter=@boilerplate/shared build
 RUN pnpm --filter=@boilerplate/web build
 
 # --- Production image ---

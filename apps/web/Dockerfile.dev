@@ -12,4 +12,4 @@ RUN pnpm install
 # optimizer writes into the bind-mounted apps/web/node_modules/.vite at
 # runtime, which the non-root `node` user can't do since that directory
 # is populated by this root-run `pnpm install`. Dev-only, never shipped.
-CMD ["pnpm", "--filter=@boilerplate/web", "dev"]
+CMD ["sh", "-c", "pnpm --filter=@boilerplate/shared build && pnpm --filter=@boilerplate/web dev"]

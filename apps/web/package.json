@@ -11,11 +11,14 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "api:generate": "orval --config orval.config.ts"
   },
   "dependencies": {
+    "@boilerplate/shared": "workspace:*",
     "@fontsource/inter": "^5.3.0",
     "@tanstack/react-router": "^1.170.21",
+    "axios": "^1.19.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "i18next": "^26.3.6",
@@ -25,6 +28,7 @@
     "react-i18next": "^17.0.11",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.6.0",
+    "zod": "^4.4.3",
     "zustand": "^5.0.14"
   },
   "devDependencies": {
@@ -42,6 +46,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.3",
     "globals": "^17.9.0",
+    "orval": "^8.23.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
     "vite": "^8.2.1"

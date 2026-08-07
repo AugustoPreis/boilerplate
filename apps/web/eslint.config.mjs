@@ -12,6 +12,8 @@ export default tseslint.config(
       'node_modules/',
       'coverage/',
       'src/app/routeTree.gen.ts',
+      'src/core/api/generated/**',
+      'src/core/api/schemas/**',
       'eslint.config.mjs',
     ],
   },
