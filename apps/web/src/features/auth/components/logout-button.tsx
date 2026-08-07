@@ -1,31 +1,16 @@
-import { useNavigate } from '@tanstack/react-router';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@shared/ui/button';
 
-import { useLogoutMutation } from '../queries/auth.queries';
+import { useLogout } from '../hooks/use-logout.hook';
 
 export function LogoutButton(): ReactElement {
   const { t } = useTranslation('auth');
-  const navigate = useNavigate();
-  const logoutMutation = useLogoutMutation();
-
-  function handleLogout(): void {
-    logoutMutation.mutate(undefined, {
-      onSuccess: () => {
-        void navigate({ to: '/login' });
-      },
-    });
-  }
+  const { logout, isPending } = useLogout();
 
   return (
-    <Button
-      type="button"
-      variant="outline"
-      onClick={handleLogout}
-      disabled={logoutMutation.isPending}
-    >
+    <Button type="button" variant="outline" onClick={logout} disabled={isPending}>
       {t('logout')}
     </Button>
   );
