@@ -1,4 +1,5 @@
 version: 2
+
 updates:
   # Covers the whole pnpm workspace via the root lockfile (apps/api,
   # packages/shared, and the tooling packages all resolve from here).
@@ -6,40 +7,47 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
+
+    ignore:
+      - dependency-name: '*'
+        update-types:
+          - 'version-update:semver-major'
+
     groups:
       patch-and-minor:
-        update-types: ['patch', 'minor']
-      major:
-        update-types: ['major']
+        update-types:
+          - 'patch'
+          - 'minor'
 
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
       interval: 'weekly'
+
+    ignore:
+      - dependency-name: '*'
+        update-types:
+          - 'version-update:semver-major'
+
     groups:
       patch-and-minor:
-        update-types: ['patch', 'minor']
-      major:
-        update-types: ['major']
+        update-types:
+          - 'patch'
+          - 'minor'
 
-  # Only apps/api/Dockerfile (the node:24-alpine base image). Dependabot
-  # doesn't read docker-compose.yml, so postgres/redis/minio image bumps
-  # there stay a manual, occasional update (see docs/configuration.md).
+  # Only apps/api/Dockerfile (the node:24-alpine base image).
   - package-ecosystem: 'docker'
     directory: '/apps/api'
     schedule:
       interval: 'weekly'
 
     ignore:
-      # Node follows an even/odd release cycle.
-      # Odd versions (25.x) are Current and not recommended for production.
-      # We intentionally track only LTS releases.
-      - dependency-name: 'node'
-        versions:
-          - '25.x'
+      - dependency-name: '*'
+        update-types:
+          - 'version-update:semver-major'
 
     groups:
       patch-and-minor:
-        update-types: ['patch', 'minor']
-      major:
-        update-types: ['major']
+        update-types:
+          - 'patch'
+          - 'minor'
