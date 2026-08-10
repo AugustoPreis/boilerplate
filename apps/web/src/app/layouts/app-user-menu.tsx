@@ -1,3 +1,5 @@
+import { Link } from '@tanstack/react-router';
+import { LogOut, Settings2, User } from 'lucide-react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -61,8 +63,25 @@ export function AppUserMenu(): ReactElement | null {
             </Text>
           </Stack>
         </DropdownMenuLabel>
+        <DropdownMenuItem asChild>
+          <Link to="/account">
+            <User size={16} aria-hidden="true" />
+            {t('userMenu.myProfile', { ns: 'common' })}
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link to="/preferences">
+            <Settings2 size={16} aria-hidden="true" />
+            {t('userMenu.preferences', { ns: 'common' })}
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onSelect={logout} disabled={isPending}>
+        <DropdownMenuItem
+          onSelect={logout}
+          disabled={isPending}
+          className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+        >
+          <LogOut size={16} aria-hidden="true" />
           {t('logout')}
         </DropdownMenuItem>
       </DropdownMenuContent>
