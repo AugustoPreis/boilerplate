@@ -1,5 +1,6 @@
 import { registerAuthHandlers } from '@core/api/http/auth-handlers';
 import { useAuthStore } from '@core/auth/auth.store';
+import { ROUTES } from '@shared/routes';
 
 import { refresh } from '@features/auth';
 
@@ -9,7 +10,7 @@ import { router } from '../router/router';
 // out. onSessionExpired fires on the very first /auth/me 401 too (the normal
 // "not logged in yet" bootstrap outcome, not just a session dying mid-browse),
 // so it must not force a redirect away from one of these.
-const PUBLIC_PATHS = ['/login', '/forgot-password', '/reset-password'];
+const PUBLIC_PATHS: string[] = [ROUTES.login, ROUTES.forgotPassword, ROUTES.resetPassword];
 
 export function registerRealAuthHandlers(): void {
   registerAuthHandlers({
@@ -30,7 +31,7 @@ export function registerRealAuthHandlers(): void {
       const isOnPublicRoute = PUBLIC_PATHS.includes(router.state.location.pathname);
 
       if (!isOnPublicRoute) {
-        void router.navigate({ to: '/login' });
+        void router.navigate({ to: ROUTES.login });
       }
     },
   });

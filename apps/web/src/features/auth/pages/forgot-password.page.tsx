@@ -5,13 +5,15 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
+import { AuthLayout } from '@app/layouts/auth-layout';
+
 import { mapAxiosErrorToAppError } from '@core/errors/error.mapper';
+import { ROUTES } from '@shared/routes';
 import { Button } from '@shared/ui/button';
 import { FormField } from '@shared/ui/form';
 import { Input } from '@shared/ui/input';
 import { Stack } from '@shared/ui/layout';
 
-import { AuthLayout } from '../components/auth-layout';
 import { useForgotPasswordMutation } from '../queries/auth.queries';
 import {
   forgotPasswordSchema,
@@ -45,7 +47,7 @@ export function ForgotPasswordPage(): ReactElement {
     <AuthLayout
       title={t('forgotPassword.title')}
       footer={
-        <Link to="/login" className="text-sm underline">
+        <Link to={ROUTES.login} className="text-sm underline">
           {t('forgotPassword.backToLoginLink')}
         </Link>
       }

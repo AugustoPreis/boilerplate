@@ -4,5 +4,57 @@
   "theme": {
     "switchToDarkMode": "Modo escuro",
     "switchToLightMode": "Modo claro"
+  },
+  "actions": {
+    "close": "Fechar"
+  },
+  "nav": {
+    "dashboard": "Início",
+    "groups": {
+      "general": "Geral",
+      "administration": "Administração"
+    }
+  },
+  "sidebar": {
+    "settings": "Configurações",
+    "collapse": "Recolher",
+    "expand": "Expandir"
+  },
+  "breadcrumbs": {
+    "dashboard": "Início",
+    "account": "Minha conta",
+    "preferences": "Preferências",
+    "settings": "Configurações"
+  },
+  "header": {
+    "openNavigationMenu": "Abrir menu de navegação",
+    "navigationTitle": "Menu de navegação"
+  },
+  "userMenu": {
+    "trigger": "Menu do usuário",
+    "myProfile": "Meu perfil",
+    "preferences": "Preferências"
+  },
+  "pages": {
+    "account": {
+      "title": "Minha conta",
+      "description": "Esta página está em construção."
+    },
+    "preferences": {
+      "title": "Preferências",
+      "description": "Esta página está em construção."
+    },
+    "settings": {
+      "title": "Configurações",
+      "description": "Esta página está em construção."
+    }
+  },
+  "footer": {
+    "copyright": "© {{year}} {{appName}} · v{{version}}",
+    "links": {
+      "documentation": "Documentação",
+      "support": "Suporte",
+      "status": "Status"
+    }
   }
 }
