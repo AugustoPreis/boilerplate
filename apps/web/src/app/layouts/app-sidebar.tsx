@@ -9,7 +9,6 @@ import { ROUTES } from '@shared/routes';
 import { Box, Stack } from '@shared/ui/layout';
 import { cn } from '@shared/utils/cn';
 
-import { AppBrand } from './app-brand';
 import { AppNav } from './app-nav';
 import { getSidebarItemClasses } from './sidebar-item-classes';
 
@@ -26,15 +25,11 @@ export function AppSidebar(): ReactElement {
         collapsed ? 'w-20' : 'w-64',
       )}
     >
-      <Box className="border-b border-border p-4">
-        <AppBrand collapsed={collapsed} />
-      </Box>
-
       <Box className="flex-1 overflow-y-auto p-4">
         <AppNav collapsed={collapsed} />
       </Box>
 
-      <Stack gap={1} className="border-t border-border p-4">
+      <Stack gap={1} className="border-border p-4">
         <Link to={ROUTES.settings} className={getSidebarItemClasses(collapsed)}>
           <Settings size={18} aria-hidden="true" />
           {!collapsed && t('sidebar.settings')}
@@ -49,7 +44,7 @@ export function AppSidebar(): ReactElement {
           ) : (
             <ChevronLeft size={18} aria-hidden="true" />
           )}
-          {collapsed ? t('sidebar.expand') : t('sidebar.collapse')}
+          {collapsed ? '' : t('sidebar.collapse')}
         </button>
       </Stack>
     </Box>

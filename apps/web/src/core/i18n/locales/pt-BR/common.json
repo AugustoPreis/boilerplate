@@ -17,8 +17,7 @@
   },
   "sidebar": {
     "settings": "Configurações",
-    "collapse": "Recolher",
-    "expand": "Expandir"
+    "collapse": "Recolher"
   },
   "breadcrumbs": {
     "dashboard": "Início",
@@ -50,11 +49,6 @@
     }
   },
   "footer": {
-    "copyright": "© {{year}} {{appName}} · v{{version}}",
-    "links": {
-      "documentation": "Documentação",
-      "support": "Suporte",
-      "status": "Status"
-    }
+    "copyright": "© {{year}} {{appName}} · v{{version}}"
   }
 }

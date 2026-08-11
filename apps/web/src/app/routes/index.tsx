@@ -3,7 +3,6 @@ import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AppLayout } from '@app/layouts/app-layout';
-import { ThemeToggle } from '@app/providers/theme-toggle';
 
 import { requireAuth } from '@core/auth/route-guards';
 import { Stack } from '@shared/ui/layout';
@@ -25,7 +24,6 @@ function HomePage(): ReactElement {
       <Stack align="center" gap={4}>
         <Heading level={1}>{t('appName')}</Heading>
         <Text tone="muted">{t('stackTagline')}</Text>
-        <ThemeToggle />
         <LogoutButton />
       </Stack>
     </AppLayout>

@@ -1,7 +1,9 @@
 import { Link } from '@tanstack/react-router';
-import { LogOut, Settings2, User } from 'lucide-react';
+import { LogOut, Moon, Settings2, Sun, User } from 'lucide-react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { useThemeMode } from '@app/providers/theme-mode.context';
 
 import { useAuthStore } from '@core/auth/auth.store';
 import { ROUTES } from '@shared/routes';
@@ -15,7 +17,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@shared/ui/dropdown-menu';
-import { Stack } from '@shared/ui/layout';
+import { Grid, Stack } from '@shared/ui/layout';
 import { Text } from '@shared/ui/typography';
 import { getInitials } from '@shared/utils/get-initials';
 
@@ -25,6 +27,14 @@ export function AppUserMenu(): ReactElement | null {
   const { t } = useTranslation('auth');
   const user = useAuthStore((state) => state.user);
   const { logout, isPending } = useLogout();
+  const { resolvedMode, setMode } = useThemeMode();
+  const isDark = resolvedMode === 'dark';
+
+  function toggleThemeMode(e: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
+    e.preventDefault();
+
+    setMode(isDark ? 'light' : 'dark');
+  }
 
   if (!user) {
     return null;
@@ -67,6 +77,12 @@ export function AppUserMenu(): ReactElement | null {
             <Settings2 size={16} aria-hidden="true" />
             {t('userMenu.preferences', { ns: 'common' })}
           </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild onClick={toggleThemeMode}>
+          <Grid>
+            {isDark ? <Sun size={16} /> : <Moon size={16} />}
+            {isDark ? t('common:theme.switchToLightMode') : t('common:theme.switchToDarkMode')}
+          </Grid>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
