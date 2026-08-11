@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { AuthLayout } from '@app/layouts/auth-layout';
 
 import { mapAxiosErrorToAppError } from '@core/errors/error.mapper';
+import { ROUTES } from '@shared/routes';
 import { Button } from '@shared/ui/button';
 import { FormField } from '@shared/ui/form';
 import { Input } from '@shared/ui/input';
@@ -45,7 +46,7 @@ export function ResetPasswordPage({ token }: ResetPasswordPageProps): ReactEleme
       {
         onSuccess: () => {
           toast.success(t('resetPassword.success'));
-          void navigate({ to: '/login' });
+          void navigate({ to: ROUTES.login });
         },
         onError: (error) => {
           toast.error(mapAxiosErrorToAppError(error).message);
@@ -58,7 +59,7 @@ export function ResetPasswordPage({ token }: ResetPasswordPageProps): ReactEleme
     <AuthLayout
       title={t('resetPassword.title')}
       footer={
-        <Link to="/login" className="text-sm underline">
+        <Link to={ROUTES.login} className="text-sm underline">
           {t('forgotPassword.backToLoginLink')}
         </Link>
       }

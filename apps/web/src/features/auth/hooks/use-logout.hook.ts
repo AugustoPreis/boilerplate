@@ -1,5 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 
+import { ROUTES } from '@shared/routes';
+
 import { useLogoutMutation } from '../queries/auth.queries';
 
 export interface IUseLogout {
@@ -14,7 +16,7 @@ export function useLogout(): IUseLogout {
   function logout(): void {
     logoutMutation.mutate(undefined, {
       onSuccess: () => {
-        void navigate({ to: '/login' });
+        void navigate({ to: ROUTES.login });
       },
     });
   }

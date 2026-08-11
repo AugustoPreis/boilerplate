@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { AuthLayout } from '@app/layouts/auth-layout';
 
 import { mapAxiosErrorToAppError } from '@core/errors/error.mapper';
+import { ROUTES } from '@shared/routes';
 import { Button } from '@shared/ui/button';
 import { FormField } from '@shared/ui/form';
 import { Input } from '@shared/ui/input';
@@ -33,7 +34,7 @@ export function LoginPage(): ReactElement {
     loginMutation.mutate(values, {
       onSuccess: () => {
         toast.success(t('login.success'));
-        void navigate({ to: '/' });
+        void navigate({ to: ROUTES.home });
       },
       onError: (error) => {
         toast.error(mapAxiosErrorToAppError(error).message);
@@ -45,7 +46,7 @@ export function LoginPage(): ReactElement {
     <AuthLayout
       title={t('login.title')}
       footer={
-        <Link to="/forgot-password" className="text-sm underline">
+        <Link to={ROUTES.forgotPassword} className="text-sm underline">
           {t('login.forgotPasswordLink')}
         </Link>
       }
