@@ -3,7 +3,7 @@ import { LogOut, Moon, Settings2, Sun, User } from 'lucide-react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useThemeMode } from '@app/providers/theme-mode.context';
+import { useThemeMode } from '@app/providers/theme';
 
 import { useAuthStore } from '@core/auth/auth.store';
 import { ROUTES } from '@shared/routes';
