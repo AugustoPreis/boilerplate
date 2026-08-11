@@ -3,13 +3,12 @@ import { ChevronLeft, ChevronRight, Settings } from 'lucide-react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useSidebarStore } from '@app/providers/sidebar.store';
-
 import { ROUTES } from '@shared/routes';
 import { Box, Stack } from '@shared/ui/layout';
 import { cn } from '@shared/utils/cn';
 
 import { AppNav } from './app-nav';
+import { useSidebarStore } from './app-sidebar.store';
 import { getSidebarItemClasses } from './sidebar-item-classes';
 
 export function AppSidebar(): ReactElement {

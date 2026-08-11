@@ -4,7 +4,7 @@ import { ROUTES } from '@shared/routes';
 
 import { refresh } from '@features/auth';
 
-import { router } from '../router/router';
+import { router } from '../../router/router';
 
 // Mirrors the routes under app/routes/_auth/ — pages reachable while logged
 // out. onSessionExpired fires on the very first /auth/me 401 too (the normal
