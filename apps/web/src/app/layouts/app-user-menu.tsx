@@ -4,6 +4,7 @@ import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAuthStore } from '@core/auth/auth.store';
+import { ROUTES } from '@shared/routes';
 import { Avatar, AvatarFallback } from '@shared/ui/avatar';
 import { Button } from '@shared/ui/button';
 import {
@@ -16,17 +17,9 @@ import {
 } from '@shared/ui/dropdown-menu';
 import { Stack } from '@shared/ui/layout';
 import { Text } from '@shared/ui/typography';
+import { getInitials } from '@shared/utils/get-initials';
 
 import { useLogout } from '@features/auth';
-
-function getInitials(name: string): string {
-  return name
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join('');
-}
 
 export function AppUserMenu(): ReactElement | null {
   const { t } = useTranslation('auth');
@@ -64,13 +57,13 @@ export function AppUserMenu(): ReactElement | null {
           </Stack>
         </DropdownMenuLabel>
         <DropdownMenuItem asChild>
-          <Link to="/account">
+          <Link to={ROUTES.account}>
             <User size={16} aria-hidden="true" />
             {t('userMenu.myProfile', { ns: 'common' })}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link to="/preferences">
+          <Link to={ROUTES.preferences}>
             <Settings2 size={16} aria-hidden="true" />
             {t('userMenu.preferences', { ns: 'common' })}
           </Link>

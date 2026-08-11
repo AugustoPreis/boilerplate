@@ -3,12 +3,15 @@ import { ChevronLeft, ChevronRight, Settings } from 'lucide-react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useSidebarStore } from '@app/providers/sidebar.store';
+
+import { ROUTES } from '@shared/routes';
 import { Box, Stack } from '@shared/ui/layout';
 import { cn } from '@shared/utils/cn';
 
 import { AppBrand } from './app-brand';
-import { AppNav, NAV_ITEM_CLASSNAME } from './app-nav';
-import { useSidebarStore } from './sidebar.store';
+import { AppNav } from './app-nav';
+import { getSidebarItemClasses } from './sidebar-item-classes';
 
 export function AppSidebar(): ReactElement {
   const { t } = useTranslation();
@@ -32,14 +35,14 @@ export function AppSidebar(): ReactElement {
       </Box>
 
       <Stack gap={1} className="border-t border-border p-4">
-        <Link to="/settings" className={cn(NAV_ITEM_CLASSNAME, collapsed && 'justify-center px-2')}>
+        <Link to={ROUTES.settings} className={getSidebarItemClasses(collapsed)}>
           <Settings size={18} aria-hidden="true" />
           {!collapsed && t('sidebar.settings')}
         </Link>
         <button
           type="button"
           onClick={toggleCollapsed}
-          className={cn(NAV_ITEM_CLASSNAME, 'w-full')}
+          className={getSidebarItemClasses(collapsed, 'w-full')}
         >
           {collapsed ? (
             <ChevronRight size={18} aria-hidden="true" />

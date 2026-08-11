@@ -5,30 +5,24 @@ import { useTranslation } from 'react-i18next';
 import { usePermissions } from '@core/auth/use-permissions.hook';
 import { Stack } from '@shared/ui/layout';
 import { Text } from '@shared/ui/typography';
-import { cn } from '@shared/utils/cn';
 
 import { APP_NAV_ITEMS, type IAppNavItem } from './app-nav-items';
-
-export const NAV_ITEM_CLASSNAME =
-  'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground';
+import { getSidebarItemClasses } from './sidebar-item-classes';
 
 export interface AppNavProps {
   onNavigate?: () => void;
   collapsed?: boolean;
 }
 
-function isNavItemVisible(
-  item: IAppNavItem,
-  hasPermission: (permission: string) => boolean,
-): boolean {
-  return !item.permission || hasPermission(item.permission);
-}
-
 export function AppNav({ onNavigate, collapsed = false }: AppNavProps): ReactElement {
   const { t } = useTranslation();
   const { hasPermission } = usePermissions();
 
-  const items = APP_NAV_ITEMS.filter((item) => isNavItemVisible(item, hasPermission));
+  function isNavItemVisible(item: IAppNavItem): boolean {
+    return !item.permission || hasPermission(item.permission);
+  }
+
+  const items = APP_NAV_ITEMS.filter(isNavItemVisible);
 
   return (
     <Stack as="nav" gap={1}>
@@ -51,7 +45,7 @@ export function AppNav({ onNavigate, collapsed = false }: AppNavProps): ReactEle
             <Link
               to={item.to}
               onClick={onNavigate}
-              className={cn(NAV_ITEM_CLASSNAME, collapsed && 'justify-center px-2')}
+              className={getSidebarItemClasses(collapsed)}
               activeProps={{ className: 'bg-accent text-accent-foreground' }}
             >
               <Icon size={18} aria-hidden="true" />
