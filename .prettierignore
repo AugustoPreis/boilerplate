@@ -11,3 +11,9 @@ apps/web/src/app/routeTree.gen.ts
 # in apps/web) — never hand-edited, so never hand-formatted either.
 apps/web/src/core/api/generated/
 apps/web/src/core/api/schemas/
+
+# Shadcn components
+apps/web/src/shared/ui/
+
+## pnpm lockfile
+pnpm-lock.yaml

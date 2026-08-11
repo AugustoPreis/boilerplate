@@ -52,7 +52,10 @@ export default tseslint.config(
       ],
       // react-hook-form's handleSubmit(...) returns a Promise, by design,
       // for the canonical `<form onSubmit={form.handleSubmit(onSubmit)}>`.
-      '@typescript-eslint/no-misused-promises': ['error', { checksVoidReturn: { attributes: false } }],
+      '@typescript-eslint/no-misused-promises': [
+        'error',
+        { checksVoidReturn: { attributes: false } },
+      ],
       'import/no-duplicates': 'error',
       'import/order': [
         'error',
@@ -132,12 +135,14 @@ export default tseslint.config(
     },
   },
   {
-    // Layout/typography must go through the primitives in shared/ui never
-    // raw HTML tags, so identity/style live in one place per element.
-    // The primitives' own implementation is exempt.
+    // Layout/typography must go through the primitives in shared/ui, never
+    // raw HTML tags, so identity and styling live in one place per element.
+    // The primitives' own implementations are exempt, and generated UI
+    // components may export non-component values required by their API.
     files: ['src/**/*.tsx'],
     ignores: ['src/shared/ui/layout/**/*.tsx', 'src/shared/ui/typography/**/*.tsx'],
     rules: {
+      'react-refresh/only-export-components': 'off',
       'no-restricted-syntax': [
         'error',
         {
