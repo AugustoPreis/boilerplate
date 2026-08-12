@@ -44,7 +44,8 @@ export function SelectContent({
         position={position}
         className={cn(
           'relative z-50 min-w-32 overflow-hidden rounded-md border border-border bg-popover text-popover-foreground shadow-md',
-          position === 'popper' && 'translate-y-1',
+          position === 'popper' &&
+            'w-[var(--radix-select-trigger-width)] translate-y-1',
           className,
         )}
         {...props}

@@ -1,13 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Check } from 'lucide-react';
-import type { ReactElement } from 'react';
+import { useState, type ReactElement } from 'react';
 import { useForm, useWatch, type Resolver } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import type { UserResponseDTO } from '@core/api/generated/boilerplateAPI.schemas';
 import { mapAxiosErrorToAppError } from '@core/errors/error.mapper';
-import { Avatar, AvatarFallback } from '@shared/ui/avatar';
+import { AvatarUpload } from '@shared/ui/avatar-upload';
 import { Badge } from '@shared/ui/badge';
 import { Button } from '@shared/ui/button';
 import { FormField } from '@shared/ui/form';
@@ -18,10 +18,13 @@ import { PasswordInput } from '@shared/ui/password-input';
 import { SectionHeading } from '@shared/ui/section-heading';
 import { SummaryCard } from '@shared/ui/summary-card';
 import { Text } from '@shared/ui/typography';
-import { getInitials } from '@shared/utils/get-initials';
 
 import { useRoleOptions } from '../hooks/use-role-options.hook';
-import { useCreateUserMutation, useUpdateUserMutation } from '../queries/users.queries';
+import {
+  useCreateUserMutation,
+  useUpdateUserMutation,
+  useUploadUserAvatarMutation,
+} from '../queries/users.queries';
 import { createUserSchema } from '../schemas/create-user.schema';
 import { updateUserSchema } from '../schemas/update-user.schema';
 
@@ -55,6 +58,8 @@ export function UserForm({
   const { t } = useTranslation('users');
   const createMutation = useCreateUserMutation();
   const updateMutation = useUpdateUserMutation();
+  const uploadAvatarMutation = useUploadUserAvatarMutation();
+  const [avatarPreviewUrl, setAvatarPreviewUrl] = useState<string | null>(null);
   const isSaving = createMutation.isPending || updateMutation.isPending;
 
   // The resolver's inferred type comes from whichever schema is active
@@ -78,6 +83,25 @@ export function UserForm({
     (role) => role.uuid === roleUuid,
   )?.name;
   const currentStatus = user?.status ?? 'ACTIVE';
+
+  function handleAvatarFileSelected(file: File): void {
+    if (!user) {
+      return;
+    }
+
+    setAvatarPreviewUrl(URL.createObjectURL(file));
+
+    uploadAvatarMutation.mutate(
+      { uuid: user.uuid, file },
+      {
+        onSuccess: () => toast.success(t('form.avatarSuccess')),
+        onError: (error) => {
+          toast.error(mapAxiosErrorToAppError(error).message);
+          setAvatarPreviewUrl(null);
+        },
+      },
+    );
+  }
 
   function handleSubmit(values: IUserFormValues): void {
     if (user) {
@@ -156,15 +180,19 @@ export function UserForm({
               align="center"
               className="rounded-lg border border-border p-4 text-center"
             >
-              <Avatar className="size-20">
-                <AvatarFallback className="text-lg">
-                  {getInitials(user?.name || nameValue || '?')}
-                </AvatarFallback>
-              </Avatar>
+              <AvatarUpload
+                imageUrl={avatarPreviewUrl ?? user?.avatarUrl}
+                name={user?.name || nameValue || '?'}
+                selectLabel={t('form.avatarSelectLabel')}
+                uploadingLabel={t('form.avatarUploading')}
+                isUploading={uploadAvatarMutation.isPending}
+                disabled={readOnly || !user}
+                onFileSelected={handleAvatarFileSelected}
+              />
               <Stack gap={1}>
                 <Text weight="medium">{t('form.avatarTitle')}</Text>
                 <Text size="sm" tone="muted">
-                  {t('form.avatarHint')}
+                  {user ? t('form.avatarHint') : t('form.avatarHintCreate')}
                 </Text>
               </Stack>
             </Stack>

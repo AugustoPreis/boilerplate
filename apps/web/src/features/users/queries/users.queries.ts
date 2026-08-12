@@ -48,6 +48,11 @@ export interface IAssignRolesVariables {
   dto: AssignRolesDTO;
 }
 
+export interface IUploadUserAvatarVariables {
+  uuid: string;
+  file: File;
+}
+
 export function useUsersQuery(
   params: UsersControllerFindAllV1Params,
 ): UseQueryResult<UsersControllerFindAllV1200, ApiError> {
@@ -141,6 +146,22 @@ export function useAssignRolesMutation(): UseMutationResult<
 
   return useMutation({
     mutationFn: ({ uuid, dto }: IAssignRolesVariables) => usersService.assignRoles(uuid, dto),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: usersQueryKeys.all });
+    },
+  });
+}
+
+export function useUploadUserAvatarMutation(): UseMutationResult<
+  UserResponseDTO,
+  ApiError,
+  IUploadUserAvatarVariables
+> {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ uuid, file }: IUploadUserAvatarVariables) =>
+      usersService.uploadUserAvatar(uuid, file),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: usersQueryKeys.all });
     },

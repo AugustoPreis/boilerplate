@@ -45,3 +45,7 @@ export function deleteUser(uuid: string): Promise<void> {
 export function assignRoles(uuid: string, dto: AssignRolesDTO): Promise<UserResponseDTO> {
   return users.usersControllerAssignRolesV1(uuid, dto);
 }
+
+export function uploadUserAvatar(uuid: string, file: File): Promise<UserResponseDTO> {
+  return users.usersControllerUploadUserAvatarV1(uuid, { file });
+}

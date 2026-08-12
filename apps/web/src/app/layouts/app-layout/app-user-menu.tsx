@@ -7,7 +7,7 @@ import { useThemeMode } from '@app/providers/theme';
 
 import { useAuthStore } from '@core/auth/auth.store';
 import { ROUTES } from '@shared/routes';
-import { Avatar, AvatarFallback } from '@shared/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@shared/ui/avatar';
 import { Button } from '@shared/ui/button';
 import {
   DropdownMenu,
@@ -51,6 +51,7 @@ export function AppUserMenu(): ReactElement | null {
           aria-label={t('userMenu.trigger', { ns: 'common' })}
         >
           <Avatar>
+            <AvatarImage src={user.avatarUrl ?? undefined} alt={user.name} />
             <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
           </Avatar>
         </Button>
