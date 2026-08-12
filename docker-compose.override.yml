@@ -16,6 +16,8 @@ services:
     build:
       dockerfile: apps/api/Dockerfile.dev
       target: dev
+    environment:
+      CI: 'true'
     volumes:
       - .:/app
       - /app/node_modules
@@ -25,6 +27,8 @@ services:
   api:
     build:
       dockerfile: apps/api/Dockerfile.dev
+    environment:
+      CI: 'true'
     volumes:
       - .:/app
       - /app/node_modules
@@ -36,6 +40,8 @@ services:
   web:
     build:
       dockerfile: apps/web/Dockerfile.dev
+    environment:
+      CI: 'true'
     volumes:
       - .:/app
       - /app/node_modules
