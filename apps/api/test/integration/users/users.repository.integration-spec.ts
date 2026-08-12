@@ -125,7 +125,7 @@ describe('UsersRepository (integration)', () => {
       await usersRepository.create(buildUser({ email: 'bob@example.com' }));
       await usersRepository.create(buildUser({ email: 'charlie@test.com' }));
 
-      const result = await usersRepository.search(1, 20, { email: 'ALICE' });
+      const result = await usersRepository.search(1, 20, { search: 'ALICE' });
 
       expect(result.data).toHaveLength(1);
       expect(result.data[0].email).toBe('alice@example.com');
