@@ -69,7 +69,7 @@ export function ChangePasswordForm(): ReactElement {
           />
         </Box>
 
-        <Button type="submit" disabled={updatePasswordMutation.isPending} className="self-start">
+        <Button type="submit" disabled={updatePasswordMutation.isPending} className="self-end">
           {t('password.submit')}
         </Button>
       </Stack>

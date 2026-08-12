@@ -3,7 +3,7 @@
   "subtitle": "Gerencie sua foto de perfil e sua senha de acesso.",
   "avatar": {
     "selectLabel": "Selecionar imagem",
-    "submit": "Enviar foto",
+    "uploading": "Enviando...",
     "success": "Foto de perfil atualizada com sucesso."
   },
   "password": {
