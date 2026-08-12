@@ -1,5 +1,5 @@
-import { Link } from '@tanstack/react-router';
-import { Ban, CircleCheck, Eye, MoreVertical, Pencil, Trash2 } from 'lucide-react';
+import { useNavigate } from '@tanstack/react-router';
+import { Ban, CircleCheck, Eye, Pencil, Trash2 } from 'lucide-react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -7,15 +7,8 @@ import type { UserResponseDTO } from '@core/api/generated/boilerplateAPI.schemas
 import { ROUTES } from '@shared/routes';
 import { Avatar, AvatarFallback } from '@shared/ui/avatar';
 import { Badge } from '@shared/ui/badge';
-import { Button } from '@shared/ui/button';
 import { DataTable, type IDataTableColumn } from '@shared/ui/data-table';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@shared/ui/dropdown-menu';
+import { EntityActionsMenu } from '@shared/ui/entity-actions-menu';
 import { HStack, Stack } from '@shared/ui/layout';
 import { Text } from '@shared/ui/typography';
 import { getInitials } from '@shared/utils/get-initials';
@@ -51,6 +44,7 @@ export function UsersTable({
   onToggleStatus,
 }: UsersTableProps): ReactElement {
   const { t } = useTranslation('users');
+  const navigate = useNavigate();
 
   const columns: IDataTableColumn<UserResponseDTO>[] = [
     {
@@ -104,47 +98,34 @@ export function UsersTable({
       key: 'actions',
       header: t('table.actions'),
       cell: (user) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button type="button" variant="ghost" size="icon" aria-label={t('table.openActions')}>
-              <MoreVertical size={16} aria-hidden="true" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-fit min-w-40">
-            <DropdownMenuItem asChild>
-              <Link to={ROUTES.usersEdit} params={{ uuid: user.uuid }}>
-                {canUpdate ? (
-                  <Pencil size={14} aria-hidden="true" />
-                ) : (
-                  <Eye size={14} aria-hidden="true" />
-                )}
-                {canUpdate ? t('table.editAction') : t('table.viewAction')}
-              </Link>
-            </DropdownMenuItem>
-            {canUpdate ? (
-              <DropdownMenuItem onSelect={() => onToggleStatus(user)}>
-                {user.status === 'ACTIVE' ? (
-                  <Ban size={14} aria-hidden="true" />
-                ) : (
-                  <CircleCheck size={14} aria-hidden="true" />
-                )}
-                {user.status === 'ACTIVE' ? t('table.deactivateAction') : t('table.activateAction')}
-              </DropdownMenuItem>
-            ) : null}
-            {canDelete ? (
-              <>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onSelect={() => onDelete(user)}
-                  className="text-destructive focus:bg-destructive/10 focus:text-destructive"
-                >
-                  <Trash2 size={14} aria-hidden="true" />
-                  {t('table.deleteAction')}
-                </DropdownMenuItem>
-              </>
-            ) : null}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <EntityActionsMenu
+          triggerLabel={t('table.openActions')}
+          actions={[
+            {
+              key: 'view-edit',
+              label: canUpdate ? t('table.editAction') : t('table.viewAction'),
+              icon: canUpdate ? Pencil : Eye,
+              onSelect: () => {
+                void navigate({ to: ROUTES.usersEdit, params: { uuid: user.uuid } });
+              },
+            },
+            canUpdate && {
+              key: 'toggle-status',
+              label:
+                user.status === 'ACTIVE' ? t('table.deactivateAction') : t('table.activateAction'),
+              icon: user.status === 'ACTIVE' ? Ban : CircleCheck,
+              onSelect: () => onToggleStatus(user),
+            },
+            canDelete && {
+              key: 'delete',
+              label: t('table.deleteAction'),
+              icon: Trash2,
+              variant: 'destructive',
+              separatorBefore: true,
+              onSelect: () => onDelete(user),
+            },
+          ]}
+        />
       ),
     },
   ];

@@ -20,10 +20,10 @@ import { ConfirmDialog } from '@shared/ui/confirm-dialog';
 import { Input } from '@shared/ui/input';
 import { Box, HStack, Stack } from '@shared/ui/layout';
 import { Pagination } from '@shared/ui/pagination';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@shared/ui/select';
 import { Heading } from '@shared/ui/typography';
 
 import { RoleSelect } from '../components/role-select';
+import { UserStatusSelect } from '../components/user-status-select';
 import { UsersTable } from '../components/users-table';
 import {
   useDeleteUserMutation,
@@ -36,9 +36,6 @@ type UsersFilters = {
   status: UsersControllerFindAllV1Status | undefined;
   roleUuid: string | undefined;
 };
-
-const STATUS_FILTER_OPTIONS: UsersControllerFindAllV1Status[] = ['ACTIVE', 'INACTIVE', 'PENDING'];
-const STATUS_FILTER_ALL = 'ALL';
 
 export function UsersListPage(): ReactElement {
   const { t } = useTranslation('users');
@@ -71,17 +68,6 @@ export function UsersListPage(): ReactElement {
   const usersQuery = useUsersQuery(params);
   const users = usersQuery.data?.data ?? [];
   const meta = usersQuery.data?.meta;
-
-  function handleStatusFilterChange(value: string): void {
-    if (!value) {
-      return;
-    }
-
-    setFilter(
-      'status',
-      value === STATUS_FILTER_ALL ? undefined : (value as UsersControllerFindAllV1Status),
-    );
-  }
 
   function handleToggleStatus(user: UserResponseDTO): void {
     const nextStatus: UsersControllerFindAllV1Status =
@@ -134,22 +120,7 @@ export function UsersListPage(): ReactElement {
           placeholder={t('filters.searchPlaceholder')}
           aria-label={t('filters.searchPlaceholder')}
         />
-        <Select
-          value={filters.status ?? STATUS_FILTER_ALL}
-          onValueChange={handleStatusFilterChange}
-        >
-          <SelectTrigger aria-label={t('filters.statusLabel')} className="w-full">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={STATUS_FILTER_ALL}>{t('filters.allStatuses')}</SelectItem>
-            {STATUS_FILTER_OPTIONS.map((status) => (
-              <SelectItem key={status} value={status}>
-                {t(`status.${status}`)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <UserStatusSelect value={filters.status} onChange={(value) => setFilter('status', value)} />
         <RoleSelect value={filters.roleUuid} onChange={(value) => setFilter('roleUuid', value)} />
       </Box>
 

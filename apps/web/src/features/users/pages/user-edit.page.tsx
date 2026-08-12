@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import { usePermissions } from '@core/auth/use-permissions.hook';
 import { ROUTES } from '@shared/routes';
-import { Text } from '@shared/ui/typography';
+import { LoadingState } from '@shared/ui/loading-state';
+import { NotFoundState } from '@shared/ui/not-found-state';
 
 import { UserForm } from '../components/user-form';
 import { useUserQuery } from '../queries/users.queries';
@@ -25,11 +26,11 @@ export function UserEditPage({ uuid }: UserEditPageProps): ReactElement {
   }
 
   if (userQuery.isLoading) {
-    return <Text tone="muted">{t('edit.loading')}</Text>;
+    return <LoadingState message={t('edit.loading')} />;
   }
 
   if (userQuery.isError || !userQuery.data) {
-    return <Text tone="muted">{t('edit.notFound')}</Text>;
+    return <NotFoundState message={t('edit.notFound')} />;
   }
 
   return (

@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ArrowLeft, Check } from 'lucide-react';
+import { Check } from 'lucide-react';
 import type { ReactElement } from 'react';
 import { useForm, useWatch, type Resolver } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -11,11 +11,13 @@ import { Avatar, AvatarFallback } from '@shared/ui/avatar';
 import { Badge } from '@shared/ui/badge';
 import { Button } from '@shared/ui/button';
 import { FormField } from '@shared/ui/form';
+import { FormPageHeader } from '@shared/ui/form-page-header';
 import { Input } from '@shared/ui/input';
-import { Box, HStack, Stack } from '@shared/ui/layout';
+import { Box, Stack } from '@shared/ui/layout';
 import { PasswordInput } from '@shared/ui/password-input';
 import { SectionHeading } from '@shared/ui/section-heading';
-import { Heading, Text } from '@shared/ui/typography';
+import { SummaryCard } from '@shared/ui/summary-card';
+import { Text } from '@shared/ui/typography';
 import { getInitials } from '@shared/utils/get-initials';
 
 import { useRoleOptions } from '../hooks/use-role-options.hook';
@@ -127,21 +129,13 @@ export function UserForm({
   return (
     <form onSubmit={form.handleSubmit(handleSubmit)}>
       <Stack gap={6}>
-        <Stack gap={4}>
-          <Box>
-            <Button type="button" variant="link" className="h-auto p-0" onClick={onCancel}>
-              <ArrowLeft size={14} aria-hidden="true" />
-              {t('form.backToList')}
-            </Button>
-          </Box>
-
-          <HStack justify="between" align="start" wrap gap={4}>
-            <Stack gap={1}>
-              <Heading level={1}>{title}</Heading>
-              <Text tone="muted">{subtitle}</Text>
-            </Stack>
-
-            <HStack gap={2}>
+        <FormPageHeader
+          title={title}
+          subtitle={subtitle}
+          backLabel={t('form.backToList')}
+          onBack={onCancel}
+          actions={
+            <>
               <Button type="button" variant="outline" onClick={onCancel} disabled={isSaving}>
                 {readOnly ? t('form.back') : t('form.cancel')}
               </Button>
@@ -151,9 +145,9 @@ export function UserForm({
                   {t('form.submit')}
                 </Button>
               )}
-            </HStack>
-          </HStack>
-        </Stack>
+            </>
+          }
+        />
 
         <Box className="grid grid-cols-1 gap-8 lg:grid-cols-[280px_1fr]">
           <Stack gap={6}>
@@ -175,40 +169,35 @@ export function UserForm({
               </Stack>
             </Stack>
 
-            <Stack gap={3} className="rounded-lg border border-border p-4">
-              <Text size="sm" weight="semibold" tone="muted" className="uppercase tracking-wide">
-                {t('form.summaryTitle')}
-              </Text>
-
-              <HStack justify="between" align="center">
-                <Text size="sm" tone="muted">
-                  {t('form.summaryStatus')}
-                </Text>
-                <Badge variant={currentStatus === 'ACTIVE' ? 'success' : 'secondary'}>
-                  {t(`status.${currentStatus}`)}
-                </Badge>
-              </HStack>
-
-              <HStack justify="between" align="center">
-                <Text size="sm" tone="muted">
-                  {t('form.summaryRole')}
-                </Text>
-                <Text size="sm">{selectedRoleName ?? t('form.summaryNoRole')}</Text>
-              </HStack>
-
-              {user ? (
-                <HStack justify="between" align="center">
-                  <Text size="sm" tone="muted">
-                    {t('form.summaryCreatedAt')}
-                  </Text>
-                  <Text size="sm">{new Date(user.createdAt).toLocaleDateString('pt-BR')}</Text>
-                </HStack>
-              ) : (
-                <Text size="sm" tone="muted">
-                  {t('form.summaryCreateNote')}
-                </Text>
-              )}
-            </Stack>
+            <SummaryCard
+              title={t('form.summaryTitle')}
+              rows={[
+                {
+                  key: 'status',
+                  label: t('form.summaryStatus'),
+                  value: (
+                    <Badge variant={currentStatus === 'ACTIVE' ? 'success' : 'secondary'}>
+                      {t(`status.${currentStatus}`)}
+                    </Badge>
+                  ),
+                },
+                {
+                  key: 'role',
+                  label: t('form.summaryRole'),
+                  value: selectedRoleName ?? t('form.summaryNoRole'),
+                },
+                ...(user
+                  ? [
+                      {
+                        key: 'createdAt',
+                        label: t('form.summaryCreatedAt'),
+                        value: new Date(user.createdAt).toLocaleDateString('pt-BR'),
+                      },
+                    ]
+                  : []),
+              ]}
+              footnote={user ? undefined : t('form.summaryCreateNote')}
+            />
           </Stack>
 
           <Stack gap={8}>

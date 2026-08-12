@@ -14,9 +14,7 @@ const users = getUsers();
 // Orval can't resolve NestJS's `PartialType(OmitType(CreateUserDTO, [...]))`.
 // This is the real shape it accepts: everything from CreateUserDTO except
 // the password, all optional.
-export type UpdateUserPayload = Partial<
-  Pick<CreateUserDTO, 'email' | 'name' | 'avatarUrl' | 'roleUuids'>
->;
+export type UpdateUserPayload = Partial<Omit<CreateUserDTO, 'password'>>;
 
 export function listUsers(
   params?: UsersControllerFindAllV1Params,
