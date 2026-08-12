@@ -17,6 +17,9 @@ import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as AuthenticatedPreferencesRouteImport } from './routes/_authenticated/preferences'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authenticated/users/index'
+import { Route as AuthenticatedUsersUuidRouteImport } from './routes/_authenticated/users/$uuid'
+import { Route as AuthenticatedUsersNewRouteImport } from './routes/_authenticated/users/new'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
@@ -58,6 +61,21 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedUsersIndexRoute = AuthenticatedUsersIndexRouteImport.update({
+  id: '/users/',
+  path: '/users/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedUsersUuidRoute = AuthenticatedUsersUuidRouteImport.update({
+  id: '/users/$uuid',
+  path: '/users/$uuid',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedUsersNewRoute = AuthenticatedUsersNewRouteImport.update({
+  id: '/users/new',
+  path: '/users/new',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
@@ -67,6 +85,9 @@ export interface FileRoutesByFullPath {
   '/account': typeof AuthenticatedAccountRoute
   '/preferences': typeof AuthenticatedPreferencesRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/users/$uuid': typeof AuthenticatedUsersUuidRoute
+  '/users/new': typeof AuthenticatedUsersNewRoute
+  '/users/': typeof AuthenticatedUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/forgot-password': typeof AuthForgotPasswordRoute
@@ -76,6 +97,9 @@ export interface FileRoutesByTo {
   '/preferences': typeof AuthenticatedPreferencesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/': typeof AuthenticatedIndexRoute
+  '/users/$uuid': typeof AuthenticatedUsersUuidRoute
+  '/users/new': typeof AuthenticatedUsersNewRoute
+  '/users': typeof AuthenticatedUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -87,6 +111,9 @@ export interface FileRoutesById {
   '/_authenticated/preferences': typeof AuthenticatedPreferencesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/users/$uuid': typeof AuthenticatedUsersUuidRoute
+  '/_authenticated/users/new': typeof AuthenticatedUsersNewRoute
+  '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -98,6 +125,9 @@ export interface FileRouteTypes {
     | '/account'
     | '/preferences'
     | '/settings'
+    | '/users/$uuid'
+    | '/users/new'
+    | '/users/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/forgot-password'
@@ -107,6 +137,9 @@ export interface FileRouteTypes {
     | '/preferences'
     | '/settings'
     | '/'
+    | '/users/$uuid'
+    | '/users/new'
+    | '/users'
   id:
     | '__root__'
     | '/_authenticated'
@@ -117,6 +150,9 @@ export interface FileRouteTypes {
     | '/_authenticated/preferences'
     | '/_authenticated/settings'
     | '/_authenticated/'
+    | '/_authenticated/users/$uuid'
+    | '/_authenticated/users/new'
+    | '/_authenticated/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -184,6 +220,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/users/': {
+      id: '/_authenticated/users/'
+      path: '/users'
+      fullPath: '/users/'
+      preLoaderRoute: typeof AuthenticatedUsersIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/users/$uuid': {
+      id: '/_authenticated/users/$uuid'
+      path: '/users/$uuid'
+      fullPath: '/users/$uuid'
+      preLoaderRoute: typeof AuthenticatedUsersUuidRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/users/new': {
+      id: '/_authenticated/users/new'
+      path: '/users/new'
+      fullPath: '/users/new'
+      preLoaderRoute: typeof AuthenticatedUsersNewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -192,6 +249,9 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedPreferencesRoute: typeof AuthenticatedPreferencesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedUsersUuidRoute: typeof AuthenticatedUsersUuidRoute
+  AuthenticatedUsersNewRoute: typeof AuthenticatedUsersNewRoute
+  AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -199,6 +259,9 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedPreferencesRoute: AuthenticatedPreferencesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedUsersUuidRoute: AuthenticatedUsersUuidRoute,
+  AuthenticatedUsersNewRoute: AuthenticatedUsersNewRoute,
+  AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

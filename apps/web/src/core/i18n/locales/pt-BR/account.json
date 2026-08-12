@@ -1,0 +1,17 @@
+{
+  "title": "Minha conta",
+  "avatar": {
+    "sectionTitle": "Foto de perfil",
+    "selectLabel": "Selecionar imagem",
+    "submit": "Enviar foto",
+    "success": "Foto de perfil atualizada com sucesso."
+  },
+  "password": {
+    "sectionTitle": "Alterar senha",
+    "currentLabel": "Senha atual",
+    "newLabel": "Nova senha",
+    "confirmLabel": "Confirmar nova senha",
+    "submit": "Alterar senha",
+    "success": "Senha alterada com sucesso."
+  }
+}
