@@ -2,15 +2,16 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
 
 import { PaginationQueryDTO } from '@shared/dtos/pagination-query.dto';
-import { IsEmail, IsEnum, IsUUID } from '@shared/validators';
+import { IsEnum, IsString, IsUUID, MaxLength } from '@shared/validators';
 
 import { EUserStatus } from '../enums/user-status.enum';
 
 export class UserQueryDTO extends PaginationQueryDTO {
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'Filter by name or email (partial match)' })
   @IsOptional()
-  @IsEmail()
-  email?: string;
+  @IsString()
+  @MaxLength(255)
+  search?: string;
 
   @ApiPropertyOptional({ enum: EUserStatus })
   @IsOptional()

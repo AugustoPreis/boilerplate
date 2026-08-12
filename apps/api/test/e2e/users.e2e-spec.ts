@@ -168,11 +168,7 @@ describe('Users (e2e)', () => {
       expect(response.body.data.meta.total).toBeGreaterThanOrEqual(2);
     });
 
-    it('filters by email', async () => {
-      // `email` is validated with `@IsEmail()` on `UserQueryDTO`, so the
-      // filter must be a full, well-formed address (matching happens via a
-      // partial ILIKE at the repository level, but the DTO itself rejects a
-      // bare substring like "filter-target" with 400 before it gets there).
+    it('filters by search (name or email, partial match)', async () => {
       await dataSource
         .getRepository(UserEntity)
         .save(buildUser({ email: 'filter-target@example.com' }));
@@ -180,7 +176,7 @@ describe('Users (e2e)', () => {
       const response = await admin.agent
         .get('/api/v1/users')
         .set(admin.csrfHeader)
-        .query({ email: 'filter-target@example.com' })
+        .query({ search: 'filter-target' })
         .expect(200);
 
       expect(
@@ -289,7 +285,7 @@ describe('Users (e2e)', () => {
 
       const listResponse = await admin.agent
         .get('/api/v1/users')
-        .query({ email: 'delete-me@example.com' })
+        .query({ search: 'delete-me' })
         .expect(200);
 
       expect(
