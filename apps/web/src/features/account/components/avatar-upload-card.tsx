@@ -8,7 +8,7 @@ import { mapAxiosErrorToAppError } from '@core/errors/error.mapper';
 import { Avatar, AvatarFallback, AvatarImage } from '@shared/ui/avatar';
 import { Button } from '@shared/ui/button';
 import { Label } from '@shared/ui/label';
-import { HStack, Stack } from '@shared/ui/layout';
+import { Stack } from '@shared/ui/layout';
 import { Text } from '@shared/ui/typography';
 import { getInitials } from '@shared/utils/get-initials';
 
@@ -50,28 +50,27 @@ export function AvatarUploadCard(): ReactElement | null {
   }
 
   return (
-    <Stack gap={4}>
-      <HStack gap={4} align="center">
-        <Avatar className="size-16">
-          <AvatarImage src={previewUrl ?? user.avatarUrl ?? undefined} alt={user.name} />
-          <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
-        </Avatar>
-        <Stack gap={1}>
-          <Text weight="medium">{user.name}</Text>
-          <Text tone="muted" size="sm">
-            {user.email}
-          </Text>
-        </Stack>
-      </HStack>
+    <Stack gap={4} align="center" className="rounded-lg border border-border p-4 text-center">
+      <Avatar className="size-20">
+        <AvatarImage src={previewUrl ?? user.avatarUrl ?? undefined} alt={user.name} />
+        <AvatarFallback className="text-lg">{getInitials(user.name)}</AvatarFallback>
+      </Avatar>
 
-      <Stack gap={2}>
+      <Stack gap={1}>
+        <Text weight="medium">{user.name}</Text>
+        <Text size="sm" tone="muted">
+          {user.email}
+        </Text>
+      </Stack>
+
+      <Stack gap={2} className="w-full text-left">
         <Label htmlFor="avatar-file-input">{t('avatar.selectLabel')}</Label>
         <input
           id="avatar-file-input"
           type="file"
           accept="image/*"
           onChange={handleFileChange}
-          className="text-sm text-muted-foreground"
+          className="w-full text-sm text-muted-foreground"
         />
       </Stack>
 
@@ -79,7 +78,7 @@ export function AvatarUploadCard(): ReactElement | null {
         type="button"
         onClick={handleUpload}
         disabled={!selectedFile || uploadAvatarMutation.isPending}
-        className="self-start"
+        className="w-full"
       >
         {t('avatar.submit')}
       </Button>

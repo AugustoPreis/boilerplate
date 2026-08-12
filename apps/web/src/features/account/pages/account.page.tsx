@@ -1,8 +1,9 @@
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Stack } from '@shared/ui/layout';
-import { Heading } from '@shared/ui/typography';
+import { Box, Stack } from '@shared/ui/layout';
+import { SectionHeading } from '@shared/ui/section-heading';
+import { Heading, Text } from '@shared/ui/typography';
 
 import { AvatarUploadCard } from '../components/avatar-upload-card';
 import { ChangePasswordForm } from '../components/change-password-form';
@@ -11,18 +12,25 @@ export function AccountPage(): ReactElement {
   const { t } = useTranslation('account');
 
   return (
-    <Stack gap={8}>
-      <Heading level={1}>{t('title')}</Heading>
+    <Stack gap={6}>
+      <Stack gap={1}>
+        <Heading level={1}>{t('title')}</Heading>
+        <Text tone="muted">{t('subtitle')}</Text>
+      </Stack>
 
-      <Stack gap={4} className="max-w-md rounded-lg border border-border p-6">
-        <Heading level={2}>{t('avatar.sectionTitle')}</Heading>
+      <Box className="grid grid-cols-1 gap-8 lg:grid-cols-[280px_1fr]">
         <AvatarUploadCard />
-      </Stack>
 
-      <Stack gap={4} className="max-w-md rounded-lg border border-border p-6">
-        <Heading level={2}>{t('password.sectionTitle')}</Heading>
-        <ChangePasswordForm />
-      </Stack>
+        <Stack gap={8}>
+          <Stack gap={4}>
+            <SectionHeading
+              title={t('password.sectionTitle')}
+              description={t('password.sectionDescription')}
+            />
+            <ChangePasswordForm />
+          </Stack>
+        </Stack>
+      </Box>
     </Stack>
   );
 }

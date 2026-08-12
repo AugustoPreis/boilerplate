@@ -1,15 +1,17 @@
 {
   "title": "Minha conta",
+  "subtitle": "Gerencie sua foto de perfil e sua senha de acesso.",
   "avatar": {
-    "sectionTitle": "Foto de perfil",
     "selectLabel": "Selecionar imagem",
     "submit": "Enviar foto",
     "success": "Foto de perfil atualizada com sucesso."
   },
   "password": {
-    "sectionTitle": "Alterar senha",
+    "sectionTitle": "Senha de acesso",
+    "sectionDescription": "Atualize a senha usada para entrar no sistema.",
     "currentLabel": "Senha atual",
     "newLabel": "Nova senha",
+    "newHint": "Mínimo de 8 caracteres, com letras e números.",
     "confirmLabel": "Confirmar nova senha",
     "submit": "Alterar senha",
     "success": "Senha alterada com sucesso."

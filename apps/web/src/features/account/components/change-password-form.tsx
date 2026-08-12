@@ -7,8 +7,9 @@ import { toast } from 'sonner';
 import { mapAxiosErrorToAppError } from '@core/errors/error.mapper';
 import { Button } from '@shared/ui/button';
 import { FormField } from '@shared/ui/form';
-import { Input } from '@shared/ui/input';
-import { Stack } from '@shared/ui/layout';
+import { Box, Stack } from '@shared/ui/layout';
+import { PasswordInput } from '@shared/ui/password-input';
+import { Text } from '@shared/ui/typography';
 
 import { useUpdatePasswordMutation } from '../queries/account.queries';
 import {
@@ -44,22 +45,29 @@ export function ChangePasswordForm(): ReactElement {
           control={form.control}
           name="currentPassword"
           label={t('password.currentLabel')}
-          render={(field) => <Input type="password" {...field} />}
+          render={(field) => <PasswordInput {...field} />}
         />
 
-        <FormField
-          control={form.control}
-          name="newPassword"
-          label={t('password.newLabel')}
-          render={(field) => <Input type="password" {...field} />}
-        />
+        <Box className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <Stack gap={2}>
+            <FormField
+              control={form.control}
+              name="newPassword"
+              label={t('password.newLabel')}
+              render={(field) => <PasswordInput {...field} />}
+            />
+            <Text size="sm" tone="muted">
+              {t('password.newHint')}
+            </Text>
+          </Stack>
 
-        <FormField
-          control={form.control}
-          name="confirmNewPassword"
-          label={t('password.confirmLabel')}
-          render={(field) => <Input type="password" {...field} />}
-        />
+          <FormField
+            control={form.control}
+            name="confirmNewPassword"
+            label={t('password.confirmLabel')}
+            render={(field) => <PasswordInput {...field} />}
+          />
+        </Box>
 
         <Button type="submit" disabled={updatePasswordMutation.isPending} className="self-start">
           {t('password.submit')}
