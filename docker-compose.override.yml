@@ -23,6 +23,8 @@ services:
       - /app/node_modules
       - /app/apps/api/node_modules
       - /app/packages/shared/node_modules
+      - /app/packages/eslint-config/node_modules
+      - /app/packages/typescript-config/node_modules
 
   api:
     build:
@@ -34,6 +36,8 @@ services:
       - /app/node_modules
       - /app/apps/api/node_modules
       - /app/packages/shared/node_modules
+      - /app/packages/eslint-config/node_modules
+      - /app/packages/typescript-config/node_modules
     ports:
       - '${API_HOST_PORT:-3000}:${PORT:-3000}'
 
@@ -46,3 +50,6 @@ services:
       - .:/app
       - /app/node_modules
       - /app/apps/web/node_modules
+      - /app/packages/shared/node_modules
+      - /app/packages/eslint-config/node_modules
+      - /app/packages/typescript-config/node_modules
