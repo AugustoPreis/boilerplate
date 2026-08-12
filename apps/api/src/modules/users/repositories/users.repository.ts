@@ -66,21 +66,24 @@ export class UsersRepository {
   async search(
     page: number,
     perPage: number,
-    filters: { email?: string; status?: EUserStatus; roleUuid?: string },
+    filters: { search?: string; status?: EUserStatus; roleUuid?: string },
   ): Promise<IPaginatedResult<UserEntity>> {
-    const where: Record<string, unknown> = { deletedAt: IsNull() };
-
-    if (filters.email) {
-      where.email = ILike(`%${filters.email}%`);
-    }
+    const baseWhere: Record<string, unknown> = { deletedAt: IsNull() };
 
     if (filters.status) {
-      where.status = filters.status;
+      baseWhere.status = filters.status;
     }
 
     if (filters.roleUuid) {
-      where.userRoles = { role: { uuid: filters.roleUuid } };
+      baseWhere.userRoles = { role: { uuid: filters.roleUuid } };
     }
+
+    const where = filters.search
+      ? [
+          { ...baseWhere, name: ILike(`%${filters.search}%`) },
+          { ...baseWhere, email: ILike(`%${filters.search}%`) },
+        ]
+      : baseWhere;
 
     const [data, total] = await this.repo.findAndCount({
       where,

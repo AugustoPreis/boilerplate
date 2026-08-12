@@ -12,7 +12,7 @@ export class ListUsersUseCase {
 
   async execute(query: UserQueryDTO): Promise<IPaginatedResult<UserResponseDTO>> {
     const result = await this.usersRepository.search(query.page, query.perPage, {
-      email: query.email,
+      search: query.search,
       status: query.status,
       roleUuid: query.roleUuid,
     });

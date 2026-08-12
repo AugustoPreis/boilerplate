@@ -30,7 +30,7 @@ describe('ListUsersUseCase', () => {
     const query: UserQueryDTO = {
       page: 1,
       perPage: 10,
-      email: 'user@example.com',
+      search: 'user@example.com',
       status: EUserStatus.ACTIVE,
       roleUuid: 'role-uuid',
     };
@@ -38,7 +38,7 @@ describe('ListUsersUseCase', () => {
     const result = await useCase.execute(query);
 
     expect(usersRepository.search).toHaveBeenCalledWith(1, 10, {
-      email: query.email,
+      search: query.search,
       status: query.status,
       roleUuid: query.roleUuid,
     });
