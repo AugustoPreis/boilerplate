@@ -7,7 +7,9 @@
   },
   "actions": {
     "close": "Fechar",
-    "loading": "Carregando..."
+    "loading": "Carregando...",
+    "showPassword": "Mostrar senha",
+    "hidePassword": "Ocultar senha"
   },
   "nav": {
     "dashboard": "Início",

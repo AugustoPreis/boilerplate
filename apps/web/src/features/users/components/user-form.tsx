@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ArrowLeft, Check, Eye, EyeOff } from 'lucide-react';
-import { useState, type ReactElement } from 'react';
+import { ArrowLeft, Check } from 'lucide-react';
+import type { ReactElement } from 'react';
 import { useForm, useWatch, type Resolver } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -13,6 +13,8 @@ import { Button } from '@shared/ui/button';
 import { FormField } from '@shared/ui/form';
 import { Input } from '@shared/ui/input';
 import { Box, HStack, Stack } from '@shared/ui/layout';
+import { PasswordInput } from '@shared/ui/password-input';
+import { SectionHeading } from '@shared/ui/section-heading';
 import { Heading, Text } from '@shared/ui/typography';
 import { getInitials } from '@shared/utils/get-initials';
 
@@ -42,23 +44,6 @@ interface IUserFormValues {
   roleUuid?: string;
 }
 
-function SectionHeading({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-}): ReactElement {
-  return (
-    <Stack gap={1}>
-      <Text weight="semibold">{title}</Text>
-      <Text size="sm" tone="muted">
-        {description}
-      </Text>
-    </Stack>
-  );
-}
-
 export function UserForm({
   user,
   readOnly = false,
@@ -66,7 +51,6 @@ export function UserForm({
   onCancel,
 }: UserFormProps): ReactElement {
   const { t } = useTranslation('users');
-  const [showPassword, setShowPassword] = useState(false);
   const createMutation = useCreateUserMutation();
   const updateMutation = useUpdateUserMutation();
   const isSaving = createMutation.isPending || updateMutation.isPending;
@@ -269,31 +253,7 @@ export function UserForm({
                       control={form.control}
                       name="password"
                       label={t('form.passwordLabel')}
-                      render={(field) => (
-                        <Box className="relative">
-                          <Input
-                            type={showPassword ? 'text' : 'password'}
-                            className="pr-9"
-                            {...field}
-                          />
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="absolute right-0 top-0 size-9"
-                            aria-label={
-                              showPassword ? t('form.hidePassword') : t('form.showPassword')
-                            }
-                            onClick={() => setShowPassword((previous) => !previous)}
-                          >
-                            {showPassword ? (
-                              <EyeOff size={16} aria-hidden="true" />
-                            ) : (
-                              <Eye size={16} aria-hidden="true" />
-                            )}
-                          </Button>
-                        </Box>
-                      )}
+                      render={(field) => <PasswordInput {...field} />}
                     />
 
                     <Text size="sm" tone="muted">
@@ -305,9 +265,7 @@ export function UserForm({
                     control={form.control}
                     name="confirmPassword"
                     label={t('form.confirmPasswordLabel')}
-                    render={(field) => (
-                      <Input type={showPassword ? 'text' : 'password'} {...field} />
-                    )}
+                    render={(field) => <PasswordInput {...field} />}
                   />
                 </Box>
               </Stack>
@@ -328,7 +286,7 @@ export function UserForm({
                     <RoleSelect
                       value={field.value}
                       onChange={field.onChange}
-                      initialRole={user?.roles[0]}
+                      initialRoles={user?.roles}
                       disabled={readOnly}
                     />
                   )}

@@ -54,8 +54,6 @@
     "passwordLabel": "Senha",
     "passwordHint": "Mínimo de 8 caracteres, com letras e números.",
     "confirmPasswordLabel": "Confirmar senha",
-    "showPassword": "Mostrar senha",
-    "hidePassword": "Ocultar senha",
     "permissionsTitle": "Permissões",
     "permissionsDescription": "O perfil define o que o usuário pode acessar em cada tela.",
     "roleLabel": "Perfil",

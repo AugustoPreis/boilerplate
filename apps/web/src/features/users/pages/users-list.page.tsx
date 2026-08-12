@@ -23,7 +23,7 @@ import { Pagination } from '@shared/ui/pagination';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@shared/ui/select';
 import { Heading } from '@shared/ui/typography';
 
-import { RoleMultiSelect } from '../components/role-multi-select';
+import { RoleSelect } from '../components/role-select';
 import { UsersTable } from '../components/users-table';
 import {
   useDeleteUserMutation,
@@ -81,13 +81,6 @@ export function UsersListPage(): ReactElement {
       'status',
       value === STATUS_FILTER_ALL ? undefined : (value as UsersControllerFindAllV1Status),
     );
-  }
-
-  // RoleMultiSelect is built for multi-value assignment; the filter only
-  // keeps a single role, so the newest click (last entry) wins and an empty
-  // selection clears the filter.
-  function handleRoleFilterChange(nextValues: string[]): void {
-    setFilter('roleUuid', nextValues[nextValues.length - 1]);
   }
 
   function handleToggleStatus(user: UserResponseDTO): void {
@@ -157,10 +150,7 @@ export function UsersListPage(): ReactElement {
             ))}
           </SelectContent>
         </Select>
-        <RoleMultiSelect
-          value={filters.roleUuid ? [filters.roleUuid] : []}
-          onChange={handleRoleFilterChange}
-        />
+        <RoleSelect value={filters.roleUuid} onChange={(value) => setFilter('roleUuid', value)} />
       </Box>
 
       <UsersTable
