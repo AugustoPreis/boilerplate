@@ -1,6 +1,6 @@
 import type { ReactElement, ReactNode } from 'react';
 
-import { Box, Container, Stack } from '@shared/ui/layout';
+import { Box, Stack } from '@shared/ui/layout';
 
 import { AppFooter } from './app-footer';
 import { AppHeader } from './app-header';
@@ -19,8 +19,8 @@ export function AppLayout({ children }: AppLayoutProps): ReactElement {
         <Box className="flex flex-1">
           <AppSidebar />
 
-          <Box as="section" className="flex-1">
-            <Container className="py-6 sm:py-8">{children}</Container>
+          <Box as="section" className="min-w-0 flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+            {children}
           </Box>
         </Box>
 

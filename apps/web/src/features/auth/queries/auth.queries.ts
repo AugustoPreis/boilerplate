@@ -5,7 +5,6 @@ import {
   type UseMutationResult,
   type UseQueryResult,
 } from '@tanstack/react-query';
-import type { AxiosError } from 'axios';
 
 import type {
   ForgotPasswordDTO,
@@ -15,15 +14,13 @@ import type {
   ResetPasswordDTO,
 } from '@core/api/generated/boilerplateAPI.schemas';
 import { useAuthStore } from '@core/auth/auth.store';
-import type { IApiErrorResponse } from '@core/errors/error.types';
+import type { ApiError } from '@core/errors/error.types';
 
 import * as authService from '../services/auth.service';
 
 export const authQueryKeys = {
   me: ['auth', 'me'] as const,
 };
-
-type ApiError = AxiosError<IApiErrorResponse>;
 
 export function useMeQuery(enabled: boolean): UseQueryResult<MeResponseDTO> {
   return useQuery({

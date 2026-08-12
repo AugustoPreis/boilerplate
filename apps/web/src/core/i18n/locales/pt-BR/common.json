@@ -6,10 +6,12 @@
     "switchToLightMode": "Modo claro"
   },
   "actions": {
-    "close": "Fechar"
+    "close": "Fechar",
+    "loading": "Carregando..."
   },
   "nav": {
     "dashboard": "Início",
+    "users": "Usuários",
     "groups": {
       "general": "Geral",
       "administration": "Administração"
@@ -23,7 +25,10 @@
     "dashboard": "Início",
     "account": "Minha conta",
     "preferences": "Preferências",
-    "settings": "Configurações"
+    "settings": "Configurações",
+    "users": "Usuários",
+    "usersNew": "Novo usuário",
+    "usersEdit": "Editar usuário"
   },
   "header": {
     "openNavigationMenu": "Abrir menu de navegação",
@@ -35,10 +40,6 @@
     "preferences": "Preferências"
   },
   "pages": {
-    "account": {
-      "title": "Minha conta",
-      "description": "Esta página está em construção."
-    },
     "preferences": {
       "title": "Preferências",
       "description": "Esta página está em construção."
@@ -47,6 +48,11 @@
       "title": "Configurações",
       "description": "Esta página está em construção."
     }
+  },
+  "pagination": {
+    "previous": "Anterior",
+    "next": "Próxima",
+    "summary": "Página {{page}} de {{lastPage}} · {{total}} no total"
   },
   "footer": {
     "copyright": "© {{year}} {{appName}} · v{{version}}"

@@ -16,12 +16,14 @@ export const usersControllerFindAllV1QueryPageDefault = 1;
 export const usersControllerFindAllV1QueryPerPageDefault = 20;
 export const usersControllerFindAllV1QueryPerPageMax = 100;
 
+export const usersControllerFindAllV1QuerySearchMax = 255;
+
 
 
 export const UsersControllerFindAllV1QueryParams = zod.object({
   "page": zod.number().min(1).default(usersControllerFindAllV1QueryPageDefault),
   "perPage": zod.number().min(1).max(usersControllerFindAllV1QueryPerPageMax).default(usersControllerFindAllV1QueryPerPageDefault),
-  "email": zod.email().optional(),
+  "search": zod.string().max(usersControllerFindAllV1QuerySearchMax).optional().describe('Filter by name or email (partial match)'),
   "status": zod.enum(['ACTIVE', 'INACTIVE', 'PENDING']).optional(),
   "roleUuid": zod.uuid().optional().describe('Filter by an assigned role UUID')
 })
