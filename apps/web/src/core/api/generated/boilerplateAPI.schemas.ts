@@ -252,6 +252,10 @@ export type UsersControllerUploadAvatarV1Body = {
   file?: Blob;
 };
 
+export type UsersControllerUploadUserAvatarV1Body = {
+  file?: Blob;
+};
+
 export type RolesControllerFindAllV1Params = {
 /**
  * @minimum 1

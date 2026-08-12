@@ -395,4 +395,38 @@ describe('Users (e2e)', () => {
         .expect(413);
     });
   });
+
+  describe('POST /api/v1/users/:uuid/avatar', () => {
+    const PNG_BUFFER = Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
+      'base64',
+    );
+
+    it('uploads an avatar on behalf of another user', async () => {
+      const target = await dataSource
+        .getRepository(UserEntity)
+        .save(buildUser({ email: 'avatar-target@example.com' }));
+
+      const response = await admin.agent
+        .post(`/api/v1/users/${target.uuid}/avatar`)
+        .set(admin.csrfHeader)
+        .attach('file', PNG_BUFFER, { filename: 'avatar.png', contentType: 'image/png' })
+        .expect(201);
+
+      expect(response.body.data.uuid).toBe(target.uuid);
+      expect(response.body.data.avatarUrl).toBeTruthy();
+    });
+
+    it('rejects the request when the caller lacks the users:update permission', async () => {
+      const target = await dataSource
+        .getRepository(UserEntity)
+        .save(buildUser({ email: 'avatar-target-forbidden@example.com' }));
+
+      await noRole.agent
+        .post(`/api/v1/users/${target.uuid}/avatar`)
+        .set(noRole.csrfHeader)
+        .attach('file', PNG_BUFFER, { filename: 'avatar.png', contentType: 'image/png' })
+        .expect(403);
+    });
+  });
 });

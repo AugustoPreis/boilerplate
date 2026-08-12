@@ -14,7 +14,8 @@ import type {
   UserResponseDTO,
   UsersControllerFindAllV1200,
   UsersControllerFindAllV1Params,
-  UsersControllerUploadAvatarV1Body
+  UsersControllerUploadAvatarV1Body,
+  UsersControllerUploadUserAvatarV1Body
 } from '../boilerplateAPI.schemas';
 
 import { customInstance } from '../../http/mutator';
@@ -141,7 +142,25 @@ if(usersControllerUploadAvatarV1Body.file !== undefined) {
     },
       );
     }
-  return {usersControllerFindAllV1,usersControllerCreateV1,usersControllerFindOneV1,usersControllerUpdateV1,usersControllerRemoveV1,usersControllerUpdateStatusV1,usersControllerAssignRolesV1,usersControllerUpdatePasswordV1,usersControllerUploadAvatarV1}};
+  /**
+ * @summary Upload a user avatar
+ */
+const usersControllerUploadUserAvatarV1 = (
+    uuid: string,
+    usersControllerUploadUserAvatarV1Body: UsersControllerUploadUserAvatarV1Body,
+ ) => {const formData = new FormData();
+if(usersControllerUploadUserAvatarV1Body.file !== undefined) {
+ formData.append(`file`, usersControllerUploadUserAvatarV1Body.file);
+ }
+
+      return customInstance<UserResponseDTO>(
+      {url: `/api/v1/users/${uuid}/avatar`, method: 'POST',
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData
+    },
+      );
+    }
+  return {usersControllerFindAllV1,usersControllerCreateV1,usersControllerFindOneV1,usersControllerUpdateV1,usersControllerRemoveV1,usersControllerUpdateStatusV1,usersControllerAssignRolesV1,usersControllerUpdatePasswordV1,usersControllerUploadAvatarV1,usersControllerUploadUserAvatarV1}};
 export type UsersControllerFindAllV1Result = NonNullable<Awaited<ReturnType<ReturnType<typeof getUsers>['usersControllerFindAllV1']>>>
 export type UsersControllerCreateV1Result = NonNullable<Awaited<ReturnType<ReturnType<typeof getUsers>['usersControllerCreateV1']>>>
 export type UsersControllerFindOneV1Result = NonNullable<Awaited<ReturnType<ReturnType<typeof getUsers>['usersControllerFindOneV1']>>>
@@ -151,3 +170,4 @@ export type UsersControllerUpdateStatusV1Result = NonNullable<Awaited<ReturnType
 export type UsersControllerAssignRolesV1Result = NonNullable<Awaited<ReturnType<ReturnType<typeof getUsers>['usersControllerAssignRolesV1']>>>
 export type UsersControllerUpdatePasswordV1Result = NonNullable<Awaited<ReturnType<ReturnType<typeof getUsers>['usersControllerUpdatePasswordV1']>>>
 export type UsersControllerUploadAvatarV1Result = NonNullable<Awaited<ReturnType<ReturnType<typeof getUsers>['usersControllerUploadAvatarV1']>>>
+export type UsersControllerUploadUserAvatarV1Result = NonNullable<Awaited<ReturnType<ReturnType<typeof getUsers>['usersControllerUploadUserAvatarV1']>>>
