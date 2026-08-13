@@ -19,7 +19,7 @@ export const APP_NAV_ITEMS = [
   },
   {
     labelKey: 'nav.users',
-    to: ROUTES.users,
+    to: ROUTES.users.index,
     icon: Users,
     group: 'nav.groups.administration',
     permission: 'users:read',

@@ -1,4 +1,4 @@
-export const ROUTES: Record<string, string> = {
+export const ROUTES = {
   home: '/',
   login: '/login',
   forgotPassword: '/forgot-password',
@@ -6,7 +6,9 @@ export const ROUTES: Record<string, string> = {
   account: '/account',
   preferences: '/preferences',
   settings: '/settings',
-  users: '/users',
-  usersNew: '/users/new',
-  usersEdit: '/users/$uuid',
+  users: {
+    index: '/users',
+    new: '/users/new',
+    edit: '/users/$uuid',
+  },
 } as const;

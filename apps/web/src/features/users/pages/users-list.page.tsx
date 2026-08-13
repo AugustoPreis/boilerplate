@@ -16,14 +16,12 @@ import { mapAxiosErrorToAppError } from '@core/errors/error.mapper';
 import { useListQueryParams } from '@shared/hooks/use-list-query-params.hook';
 import { ROUTES } from '@shared/routes';
 import { Button } from '@shared/ui/button';
-import { ConfirmDialog } from '@shared/ui/confirm-dialog';
-import { Input } from '@shared/ui/input';
-import { Box, HStack, Stack } from '@shared/ui/layout';
+import { HStack, Stack } from '@shared/ui/layout';
 import { Pagination } from '@shared/ui/pagination';
 import { Heading } from '@shared/ui/typography';
 
-import { RoleSelect } from '../components/role-select';
-import { UserStatusSelect } from '../components/user-status-select';
+import { DeleteUserDialog } from '../components/delete-user-dialog';
+import { UsersFilterBar, type UsersFilterValues } from '../components/users-filter-bar';
 import { UsersTable } from '../components/users-table';
 import {
   useDeleteUserMutation,
@@ -31,21 +29,16 @@ import {
   useUsersQuery,
 } from '../queries/users.queries';
 
-type UsersFilters = {
-  search: string;
-  status: UsersControllerFindAllV1Status | undefined;
-  roleUuid: string | undefined;
-};
-
 export function UsersListPage(): ReactElement {
   const { t } = useTranslation('users');
   const { hasPermission } = usePermissions();
 
-  const { page, setPage, filters, setFilter, debouncedFilters } = useListQueryParams<UsersFilters>({
-    search: '',
-    status: undefined,
-    roleUuid: undefined,
-  });
+  const { page, setPage, filters, setFilter, debouncedFilters } =
+    useListQueryParams<UsersFilterValues>({
+      search: '',
+      status: undefined,
+      roleUuid: undefined,
+    });
   const [userToDelete, setUserToDelete] = useState<UserResponseDTO | null>(null);
 
   const statusMutation = useUpdateUserStatusMutation();
@@ -104,7 +97,7 @@ export function UsersListPage(): ReactElement {
         <Heading level={1}>{t('title')}</Heading>
         <Can permission="users:create">
           <Button type="button" asChild>
-            <Link to={ROUTES.usersNew}>
+            <Link to={ROUTES.users.new}>
               <Plus size={16} aria-hidden="true" />
               {t('actions.create')}
             </Link>
@@ -112,17 +105,7 @@ export function UsersListPage(): ReactElement {
         </Can>
       </HStack>
 
-      <Box className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
-        <Input
-          type="text"
-          value={filters.search}
-          onChange={(event) => setFilter('search', event.target.value)}
-          placeholder={t('filters.searchPlaceholder')}
-          aria-label={t('filters.searchPlaceholder')}
-        />
-        <UserStatusSelect value={filters.status} onChange={(value) => setFilter('status', value)} />
-        <RoleSelect value={filters.roleUuid} onChange={(value) => setFilter('roleUuid', value)} />
-      </Box>
+      <UsersFilterBar filters={filters} onFilter={setFilter} />
 
       <UsersTable
         users={users}
@@ -134,22 +117,15 @@ export function UsersListPage(): ReactElement {
 
       {meta ? <Pagination meta={meta} onPageChange={setPage} /> : null}
 
-      <ConfirmDialog
-        open={Boolean(userToDelete)}
+      <DeleteUserDialog
+        user={userToDelete}
         onOpenChange={(open) => {
           if (!open) {
             setUserToDelete(null);
           }
         }}
-        title={t('deleteDialog.title')}
-        description={
-          userToDelete ? t('deleteDialog.description', { name: userToDelete.name }) : null
-        }
-        confirmLabel={t('deleteDialog.confirm')}
-        cancelLabel={t('deleteDialog.cancel')}
         onConfirm={handleConfirmDelete}
         isConfirming={deleteMutation.isPending}
-        variant="destructive"
       />
     </Stack>
   );

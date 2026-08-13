@@ -19,6 +19,7 @@ export interface IEntityAction {
   onSelect: () => void;
   variant?: 'destructive';
   separatorBefore?: boolean;
+  disabled?: boolean;
 }
 
 export interface EntityActionsMenuProps {
@@ -45,6 +46,7 @@ export function EntityActionsMenu({ actions, triggerLabel }: EntityActionsMenuPr
               {action.separatorBefore && index > 0 ? <DropdownMenuSeparator /> : null}
               <DropdownMenuItem
                 onSelect={action.onSelect}
+                disabled={action.disabled}
                 className={cn(
                   action.variant === 'destructive' &&
                     'text-destructive focus:bg-destructive/10 focus:text-destructive',

@@ -33,7 +33,7 @@ import { RoleSelect } from './role-select';
 export interface UserFormProps {
   user?: UserResponseDTO;
   readOnly?: boolean;
-  onSuccess: () => void;
+  onSuccess: (user: UserResponseDTO) => void;
   onCancel: () => void;
 }
 
@@ -115,9 +115,9 @@ export function UserForm({
           },
         },
         {
-          onSuccess: () => {
+          onSuccess: (updatedUser) => {
             toast.success(t('form.updateSuccess'));
-            onSuccess();
+            onSuccess(updatedUser);
           },
           onError: (error) => toast.error(mapAxiosErrorToAppError(error).message),
         },
@@ -134,9 +134,9 @@ export function UserForm({
         roleUuids: values.roleUuid ? [values.roleUuid] : [],
       },
       {
-        onSuccess: () => {
+        onSuccess: (createdUser) => {
           toast.success(t('form.createSuccess'));
-          onSuccess();
+          onSuccess(createdUser);
         },
         onError: (error) => toast.error(mapAxiosErrorToAppError(error).message),
       },

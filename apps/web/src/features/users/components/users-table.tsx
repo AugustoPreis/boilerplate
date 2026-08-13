@@ -11,6 +11,7 @@ import { DataTable, type IDataTableColumn } from '@shared/ui/data-table';
 import { EntityActionsMenu } from '@shared/ui/entity-actions-menu';
 import { HStack, Stack } from '@shared/ui/layout';
 import { Text } from '@shared/ui/typography';
+import { formatDateTime } from '@shared/utils/format-date-time';
 import { getInitials } from '@shared/utils/get-initials';
 
 export type UserStatus = UserResponseDTO['status'];
@@ -20,13 +21,6 @@ const STATUS_BADGE_VARIANT: Record<UserStatus, 'success' | 'secondary' | 'warnin
   INACTIVE: 'secondary',
   PENDING: 'warning',
 };
-
-function formatCreatedAt(value: string): string {
-  return new Date(value).toLocaleString('pt-BR', {
-    dateStyle: 'short',
-    timeStyle: 'short',
-  });
-}
 
 export interface UsersTableProps {
   users: UserResponseDTO[];
@@ -92,7 +86,7 @@ export function UsersTable({
     {
       key: 'createdAt',
       header: t('table.createdAt'),
-      cell: (user) => formatCreatedAt(user.createdAt),
+      cell: (user) => formatDateTime(user.createdAt),
     },
     {
       key: 'actions',
@@ -106,22 +100,24 @@ export function UsersTable({
               label: canUpdate ? t('table.editAction') : t('table.viewAction'),
               icon: canUpdate ? Pencil : Eye,
               onSelect: () => {
-                void navigate({ to: ROUTES.usersEdit, params: { uuid: user.uuid } });
+                void navigate({ to: ROUTES.users.edit, params: { uuid: user.uuid } });
               },
             },
-            canUpdate && {
+            {
               key: 'toggle-status',
               label:
                 user.status === 'ACTIVE' ? t('table.deactivateAction') : t('table.activateAction'),
               icon: user.status === 'ACTIVE' ? Ban : CircleCheck,
+              disabled: !canUpdate,
               onSelect: () => onToggleStatus(user),
             },
-            canDelete && {
+            {
               key: 'delete',
               label: t('table.deleteAction'),
               icon: Trash2,
               variant: 'destructive',
               separatorBefore: true,
+              disabled: !canDelete,
               onSelect: () => onDelete(user),
             },
           ]}
