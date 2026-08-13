@@ -1,4 +1,5 @@
 import type { ErrorCode } from '@boilerplate/shared';
+import type { AxiosError } from 'axios';
 
 export interface IApiErrorResponse {
   success: false;
@@ -17,3 +18,5 @@ export interface IAppError {
   message: string;
   code?: ErrorCode;
 }
+
+export type ApiError = AxiosError<IApiErrorResponse>;

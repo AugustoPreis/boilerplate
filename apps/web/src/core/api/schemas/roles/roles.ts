@@ -13,7 +13,7 @@ import * as zod from 'zod';
  */
 export const rolesControllerFindAllV1QueryPageDefault = 1;
 
-export const rolesControllerFindAllV1QueryPerPageDefault = 20;
+export const rolesControllerFindAllV1QueryPerPageDefault = 5;
 export const rolesControllerFindAllV1QueryPerPageMax = 100;
 
 
@@ -26,9 +26,9 @@ export const RolesControllerFindAllV1QueryParams = zod.object({
 
 export const rolesControllerFindAllV1ResponseOneMetaOneTotalDefault = 0;
 export const rolesControllerFindAllV1ResponseOneMetaOnePageDefault = 1;
-export const rolesControllerFindAllV1ResponseOneMetaOnePerPageDefault = 20;
+export const rolesControllerFindAllV1ResponseOneMetaOnePerPageDefault = 5;
 export const rolesControllerFindAllV1ResponseOneMetaOneLastPageDefault = 1;
-export const rolesControllerFindAllV1ResponseOneMetaDefault = { "total": 0, "page": 1, "perPage": 20, "lastPage": 1 };
+export const rolesControllerFindAllV1ResponseOneMetaDefault = { "total": 0, "page": 1, "perPage": 5, "lastPage": 1 };
 
 export const RolesControllerFindAllV1Response = zod.object({
   "meta": zod.object({

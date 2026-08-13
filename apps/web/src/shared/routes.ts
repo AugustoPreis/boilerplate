@@ -6,4 +6,9 @@ export const ROUTES = {
   account: '/account',
   preferences: '/preferences',
   settings: '/settings',
+  users: {
+    index: '/users',
+    new: '/users/new',
+    edit: '/users/$uuid',
+  },
 } as const;

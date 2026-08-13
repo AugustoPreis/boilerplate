@@ -223,7 +223,11 @@ page?: number;
  * @maximum 100
  */
 perPage?: number;
-email?: string;
+/**
+ * Filter by name or email (partial match)
+ * @maxLength 255
+ */
+search?: string;
 status?: UsersControllerFindAllV1Status;
 /**
  * Filter by an assigned role UUID
@@ -245,6 +249,10 @@ export type UsersControllerFindAllV1200 = PaginatedResponseDTO & {
 };
 
 export type UsersControllerUploadAvatarV1Body = {
+  file?: Blob;
+};
+
+export type UsersControllerUploadUserAvatarV1Body = {
   file?: Blob;
 };
 

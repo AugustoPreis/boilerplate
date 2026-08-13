@@ -13,7 +13,7 @@ import * as zod from 'zod';
  */
 export const auditControllerFindAllV1QueryPageDefault = 1;
 
-export const auditControllerFindAllV1QueryPerPageDefault = 20;
+export const auditControllerFindAllV1QueryPerPageDefault = 5;
 export const auditControllerFindAllV1QueryPerPageMax = 100;
 
 
@@ -29,9 +29,9 @@ export const AuditControllerFindAllV1QueryParams = zod.object({
 
 export const auditControllerFindAllV1ResponseOneMetaOneTotalDefault = 0;
 export const auditControllerFindAllV1ResponseOneMetaOnePageDefault = 1;
-export const auditControllerFindAllV1ResponseOneMetaOnePerPageDefault = 20;
+export const auditControllerFindAllV1ResponseOneMetaOnePerPageDefault = 5;
 export const auditControllerFindAllV1ResponseOneMetaOneLastPageDefault = 1;
-export const auditControllerFindAllV1ResponseOneMetaDefault = { "total": 0, "page": 1, "perPage": 20, "lastPage": 1 };
+export const auditControllerFindAllV1ResponseOneMetaDefault = { "total": 0, "page": 1, "perPage": 5, "lastPage": 1 };
 
 export const AuditControllerFindAllV1Response = zod.object({
   "meta": zod.object({

@@ -138,4 +138,19 @@ export class UsersController {
   ): Promise<UserResponseDTO> {
     return this.uploadUserAvatarUseCase.execute(uuid, file);
   }
+
+  @Post(':uuid/avatar')
+  @RequirePermission('users', 'update')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: { type: 'object', properties: { file: { type: 'string', format: 'binary' } } },
+  })
+  @ApiOperation({ summary: 'Upload a user avatar' })
+  uploadUserAvatar(
+    @Param('uuid', ParseUuidPipe) uuid: string,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<UserResponseDTO> {
+    return this.uploadUserAvatarUseCase.execute(uuid, file);
+  }
 }

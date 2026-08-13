@@ -13,24 +13,26 @@ import * as zod from 'zod';
  */
 export const usersControllerFindAllV1QueryPageDefault = 1;
 
-export const usersControllerFindAllV1QueryPerPageDefault = 20;
+export const usersControllerFindAllV1QueryPerPageDefault = 5;
 export const usersControllerFindAllV1QueryPerPageMax = 100;
+
+export const usersControllerFindAllV1QuerySearchMax = 255;
 
 
 
 export const UsersControllerFindAllV1QueryParams = zod.object({
   "page": zod.number().min(1).default(usersControllerFindAllV1QueryPageDefault),
   "perPage": zod.number().min(1).max(usersControllerFindAllV1QueryPerPageMax).default(usersControllerFindAllV1QueryPerPageDefault),
-  "email": zod.email().optional(),
+  "search": zod.string().max(usersControllerFindAllV1QuerySearchMax).optional().describe('Filter by name or email (partial match)'),
   "status": zod.enum(['ACTIVE', 'INACTIVE', 'PENDING']).optional(),
   "roleUuid": zod.uuid().optional().describe('Filter by an assigned role UUID')
 })
 
 export const usersControllerFindAllV1ResponseOneMetaOneTotalDefault = 0;
 export const usersControllerFindAllV1ResponseOneMetaOnePageDefault = 1;
-export const usersControllerFindAllV1ResponseOneMetaOnePerPageDefault = 20;
+export const usersControllerFindAllV1ResponseOneMetaOnePerPageDefault = 5;
 export const usersControllerFindAllV1ResponseOneMetaOneLastPageDefault = 1;
-export const usersControllerFindAllV1ResponseOneMetaDefault = { "total": 0, "page": 1, "perPage": 20, "lastPage": 1 };
+export const usersControllerFindAllV1ResponseOneMetaDefault = { "total": 0, "page": 1, "perPage": 5, "lastPage": 1 };
 
 export const UsersControllerFindAllV1Response = zod.object({
   "meta": zod.object({
@@ -210,6 +212,30 @@ export const UsersControllerUploadAvatarV1Body = zod.object({
 })
 
 export const UsersControllerUploadAvatarV1Response = zod.object({
+  "uuid": zod.string(),
+  "email": zod.string(),
+  "name": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "status": zod.enum(['ACTIVE', 'INACTIVE', 'PENDING']),
+  "roles": zod.array(zod.object({
+  "uuid": zod.string(),
+  "name": zod.string()
+})),
+  "createdAt": zod.iso.datetime({"offset":true})
+})
+
+/**
+ * @summary Upload a user avatar
+ */
+export const UsersControllerUploadUserAvatarV1Params = zod.object({
+  "uuid": zod.string()
+})
+
+export const UsersControllerUploadUserAvatarV1Body = zod.object({
+  "file": zod.instanceof(File).optional()
+})
+
+export const UsersControllerUploadUserAvatarV1Response = zod.object({
   "uuid": zod.string(),
   "email": zod.string(),
   "name": zod.string(),

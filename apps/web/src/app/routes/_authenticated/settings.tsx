@@ -3,6 +3,7 @@ import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ComingSoon } from '@shared/ui/coming-soon';
+import { Container } from '@shared/ui/layout';
 
 export const Route = createFileRoute('/_authenticated/settings')({
   component: SettingsPage,
@@ -13,6 +14,8 @@ function SettingsPage(): ReactElement {
   const { t } = useTranslation();
 
   return (
-    <ComingSoon title={t('pages.settings.title')} description={t('pages.settings.description')} />
+    <Container>
+      <ComingSoon title={t('pages.settings.title')} description={t('pages.settings.description')} />
+    </Container>
   );
 }

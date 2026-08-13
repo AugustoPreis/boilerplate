@@ -1,0 +1,86 @@
+{
+  "title": "Usuários",
+  "actions": {
+    "create": "Novo usuário"
+  },
+  "filters": {
+    "searchPlaceholder": "Buscar por nome ou e-mail",
+    "statusLabel": "Filtrar por status",
+    "allStatuses": "Todos os status"
+  },
+  "status": {
+    "ACTIVE": "Ativo",
+    "INACTIVE": "Inativo",
+    "PENDING": "Pendente"
+  },
+  "table": {
+    "user": "Usuário",
+    "status": "Status",
+    "roles": "Perfis",
+    "createdAt": "Criado em",
+    "actions": "Ações",
+    "noRoles": "Sem perfis",
+    "empty": "Nenhum usuário encontrado.",
+    "openActions": "Abrir ações",
+    "editAction": "Editar usuário",
+    "viewAction": "Ver usuário",
+    "activateAction": "Ativar",
+    "deactivateAction": "Inativar",
+    "deleteAction": "Excluir usuário",
+    "statusUpdateSuccess": "Status atualizado com sucesso."
+  },
+  "form": {
+    "createTitle": "Novo usuário",
+    "createSubtitle": "Defina os dados de acesso e o perfil de permissões.",
+    "editTitle": "Editar usuário",
+    "editSubtitle": "Atualize os dados de acesso e o perfil de permissões.",
+    "viewTitle": "Detalhes do usuário",
+    "backToList": "Voltar para usuários",
+    "avatarTitle": "Foto do usuário",
+    "avatarHint": "PNG, JPEG ou WEBP.",
+    "avatarHintCreate": "Salve o usuário para poder definir uma foto.",
+    "avatarSelectLabel": "Selecionar imagem",
+    "avatarUploading": "Enviando...",
+    "avatarSuccess": "Foto atualizada com sucesso.",
+    "summaryTitle": "Resumo",
+    "summaryStatus": "Status",
+    "summaryRole": "Perfil",
+    "summaryNoRole": "Nenhum perfil selecionado",
+    "summaryCreatedAt": "Criado em",
+    "summaryCreateNote": "Novos usuários são criados como ativos.",
+    "identificationTitle": "Identificação",
+    "identificationDescription": "Como o usuário aparece no sistema e nos registros de auditoria.",
+    "emailLabel": "E-mail",
+    "emailHint": "Usado como login e para recuperação de senha.",
+    "nameLabel": "Nome completo",
+    "credentialsTitle": "Credenciais",
+    "credentialsDescription": "Senha inicial de acesso. O usuário poderá alterá-la depois.",
+    "passwordLabel": "Senha",
+    "passwordHint": "Mínimo de 8 caracteres, com letras e números.",
+    "confirmPasswordLabel": "Confirmar senha",
+    "permissionsTitle": "Permissões",
+    "permissionsDescription": "O perfil define o que o usuário pode acessar em cada tela.",
+    "roleLabel": "Perfil",
+    "rolePlaceholder": "Selecione um perfil",
+    "rolesSearchPlaceholder": "Buscar perfis...",
+    "noRolesAvailable": "Nenhum perfil encontrado.",
+    "statusLabel": "Status",
+    "statusHint": "Definido automaticamente.",
+    "cancel": "Cancelar",
+    "back": "Voltar",
+    "submit": "Salvar",
+    "createSuccess": "Usuário criado com sucesso.",
+    "updateSuccess": "Usuário atualizado com sucesso."
+  },
+  "edit": {
+    "loading": "Carregando usuário...",
+    "notFound": "Usuário não encontrado."
+  },
+  "deleteDialog": {
+    "title": "Excluir usuário",
+    "description": "Tem certeza que deseja excluir \"{{name}}\"? Esta ação não pode ser desfeita.",
+    "cancel": "Cancelar",
+    "confirm": "Excluir",
+    "success": "Usuário excluído com sucesso."
+  }
+}
