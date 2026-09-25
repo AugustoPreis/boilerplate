@@ -11,4 +11,9 @@ export const ROUTES = {
     new: '/users/new',
     edit: '/users/$uuid',
   },
+  roles: {
+    index: '/roles',
+    new: '/roles/new',
+    edit: '/roles/$uuid',
+  },
 } as const;

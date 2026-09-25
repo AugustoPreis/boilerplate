@@ -5,6 +5,7 @@ import account from './locales/pt-BR/account.json';
 import auth from './locales/pt-BR/auth.json';
 import common from './locales/pt-BR/common.json';
 import errors from './locales/pt-BR/errors.json';
+import roles from './locales/pt-BR/roles.json';
 import users from './locales/pt-BR/users.json';
 import validation from './locales/pt-BR/validation.json';
 
@@ -16,7 +17,7 @@ void i18next.use(initReactI18next).init({
   fallbackLng: I18N_LOCALE,
   defaultNS: I18N_DEFAULT_NAMESPACE,
   resources: {
-    [I18N_LOCALE]: { account, auth, common, errors, users, validation },
+    [I18N_LOCALE]: { account, auth, common, errors, roles, users, validation },
   },
   interpolation: { escapeValue: false },
   returnNull: false,

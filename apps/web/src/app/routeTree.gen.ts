@@ -17,6 +17,9 @@ import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as AuthenticatedPreferencesRouteImport } from './routes/_authenticated/preferences'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedRolesIndexRouteImport } from './routes/_authenticated/roles/index'
+import { Route as AuthenticatedRolesUuidRouteImport } from './routes/_authenticated/roles/$uuid'
+import { Route as AuthenticatedRolesNewRouteImport } from './routes/_authenticated/roles/new'
 import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authenticated/users/index'
 import { Route as AuthenticatedUsersUuidRouteImport } from './routes/_authenticated/users/$uuid'
 import { Route as AuthenticatedUsersNewRouteImport } from './routes/_authenticated/users/new'
@@ -61,6 +64,21 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedRolesIndexRoute = AuthenticatedRolesIndexRouteImport.update({
+  id: '/roles/',
+  path: '/roles/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRolesUuidRoute = AuthenticatedRolesUuidRouteImport.update({
+  id: '/roles/$uuid',
+  path: '/roles/$uuid',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRolesNewRoute = AuthenticatedRolesNewRouteImport.update({
+  id: '/roles/new',
+  path: '/roles/new',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedUsersIndexRoute = AuthenticatedUsersIndexRouteImport.update({
   id: '/users/',
   path: '/users/',
@@ -85,8 +103,11 @@ export interface FileRoutesByFullPath {
   '/account': typeof AuthenticatedAccountRoute
   '/preferences': typeof AuthenticatedPreferencesRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/roles/$uuid': typeof AuthenticatedRolesUuidRoute
+  '/roles/new': typeof AuthenticatedRolesNewRoute
   '/users/$uuid': typeof AuthenticatedUsersUuidRoute
   '/users/new': typeof AuthenticatedUsersNewRoute
+  '/roles/': typeof AuthenticatedRolesIndexRoute
   '/users/': typeof AuthenticatedUsersIndexRoute
 }
 export interface FileRoutesByTo {
@@ -97,8 +118,11 @@ export interface FileRoutesByTo {
   '/preferences': typeof AuthenticatedPreferencesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/': typeof AuthenticatedIndexRoute
+  '/roles/$uuid': typeof AuthenticatedRolesUuidRoute
+  '/roles/new': typeof AuthenticatedRolesNewRoute
   '/users/$uuid': typeof AuthenticatedUsersUuidRoute
   '/users/new': typeof AuthenticatedUsersNewRoute
+  '/roles': typeof AuthenticatedRolesIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
 }
 export interface FileRoutesById {
@@ -111,8 +135,11 @@ export interface FileRoutesById {
   '/_authenticated/preferences': typeof AuthenticatedPreferencesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/roles/$uuid': typeof AuthenticatedRolesUuidRoute
+  '/_authenticated/roles/new': typeof AuthenticatedRolesNewRoute
   '/_authenticated/users/$uuid': typeof AuthenticatedUsersUuidRoute
   '/_authenticated/users/new': typeof AuthenticatedUsersNewRoute
+  '/_authenticated/roles/': typeof AuthenticatedRolesIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
 }
 export interface FileRouteTypes {
@@ -125,8 +152,11 @@ export interface FileRouteTypes {
     | '/account'
     | '/preferences'
     | '/settings'
+    | '/roles/$uuid'
+    | '/roles/new'
     | '/users/$uuid'
     | '/users/new'
+    | '/roles/'
     | '/users/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -137,8 +167,11 @@ export interface FileRouteTypes {
     | '/preferences'
     | '/settings'
     | '/'
+    | '/roles/$uuid'
+    | '/roles/new'
     | '/users/$uuid'
     | '/users/new'
+    | '/roles'
     | '/users'
   id:
     | '__root__'
@@ -150,8 +183,11 @@ export interface FileRouteTypes {
     | '/_authenticated/preferences'
     | '/_authenticated/settings'
     | '/_authenticated/'
+    | '/_authenticated/roles/$uuid'
+    | '/_authenticated/roles/new'
     | '/_authenticated/users/$uuid'
     | '/_authenticated/users/new'
+    | '/_authenticated/roles/'
     | '/_authenticated/users/'
   fileRoutesById: FileRoutesById
 }
@@ -220,6 +256,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/roles/': {
+      id: '/_authenticated/roles/'
+      path: '/roles'
+      fullPath: '/roles/'
+      preLoaderRoute: typeof AuthenticatedRolesIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/roles/$uuid': {
+      id: '/_authenticated/roles/$uuid'
+      path: '/roles/$uuid'
+      fullPath: '/roles/$uuid'
+      preLoaderRoute: typeof AuthenticatedRolesUuidRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/roles/new': {
+      id: '/_authenticated/roles/new'
+      path: '/roles/new'
+      fullPath: '/roles/new'
+      preLoaderRoute: typeof AuthenticatedRolesNewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/users/': {
       id: '/_authenticated/users/'
       path: '/users'
@@ -249,8 +306,11 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedPreferencesRoute: typeof AuthenticatedPreferencesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedRolesUuidRoute: typeof AuthenticatedRolesUuidRoute
+  AuthenticatedRolesNewRoute: typeof AuthenticatedRolesNewRoute
   AuthenticatedUsersUuidRoute: typeof AuthenticatedUsersUuidRoute
   AuthenticatedUsersNewRoute: typeof AuthenticatedUsersNewRoute
+  AuthenticatedRolesIndexRoute: typeof AuthenticatedRolesIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
 }
 
@@ -259,8 +319,11 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedPreferencesRoute: AuthenticatedPreferencesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedRolesUuidRoute: AuthenticatedRolesUuidRoute,
+  AuthenticatedRolesNewRoute: AuthenticatedRolesNewRoute,
   AuthenticatedUsersUuidRoute: AuthenticatedUsersUuidRoute,
   AuthenticatedUsersNewRoute: AuthenticatedUsersNewRoute,
+  AuthenticatedRolesIndexRoute: AuthenticatedRolesIndexRoute,
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
 }
 
