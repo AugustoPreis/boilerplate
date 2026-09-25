@@ -1,7 +1,9 @@
 {
   "title": "Papéis",
   "actions": {
-    "create": "Novo papel"
+    "create": "Novo papel",
+    "clonePrefix": "[CLONE]",
+    "cloneSuccess": "Papel clonado com sucesso."
   },
   "filters": {
     "searchPlaceholder": "Buscar por nome ou descrição"
@@ -47,7 +49,19 @@
     "submit": "Salvar permissões",
     "updateSuccess": "Permissões atualizadas com sucesso.",
     "empty": "Nenhuma permissão cadastrada.",
-    "loading": "Carregando permissões..."
+    "loading": "Carregando permissões...",
+    "resources": {
+      "users": "Usuários",
+      "roles": "Papéis",
+      "permissions": "Permissões",
+      "audit": "Auditoria"
+    },
+    "actions": {
+      "create": "Criar",
+      "read": "Visualizar",
+      "update": "Atualizar",
+      "delete": "Deletar"
+    }
   },
   "edit": {
     "loading": "Carregando papel...",
@@ -59,14 +73,5 @@
     "cancel": "Cancelar",
     "confirm": "Excluir",
     "success": "Papel excluído com sucesso."
-  },
-  "cloneDialog": {
-    "title": "Clonar papel",
-    "description": "Cria um novo papel com as mesmas permissões de \"{{name}}\".",
-    "nameLabel": "Nome do novo papel",
-    "descriptionLabel": "Descrição",
-    "cancel": "Cancelar",
-    "confirm": "Clonar",
-    "success": "Papel clonado com sucesso."
   }
 }

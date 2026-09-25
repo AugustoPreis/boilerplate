@@ -11,8 +11,9 @@ import { Button } from '@shared/ui/button';
 import { FormField } from '@shared/ui/form';
 import { FormPageHeader } from '@shared/ui/form-page-header';
 import { Input } from '@shared/ui/input';
-import { Box, Stack } from '@shared/ui/layout';
+import { Stack } from '@shared/ui/layout';
 import { SectionHeading } from '@shared/ui/section-heading';
+import { Textarea } from '@shared/ui/textarea';
 
 import { useCreateRoleMutation, useUpdateRoleMutation } from '../queries/roles.queries';
 import { createRoleSchema, type CreateRoleFormValues } from '../schemas/create-role.schema';
@@ -102,21 +103,19 @@ export function RoleForm({
             description={t('form.identificationDescription')}
           />
 
-          <Box className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="name"
-              label={t('form.nameLabel')}
-              render={(field) => <Input type="text" disabled={readOnly} {...field} />}
-            />
+          <FormField
+            control={form.control}
+            name="name"
+            label={t('form.nameLabel')}
+            render={(field) => <Input type="text" maxLength={100} disabled={readOnly} {...field} />}
+          />
 
-            <FormField
-              control={form.control}
-              name="description"
-              label={t('form.descriptionLabel')}
-              render={(field) => <Input type="text" disabled={readOnly} {...field} />}
-            />
-          </Box>
+          <FormField
+            control={form.control}
+            name="description"
+            label={t('form.descriptionLabel')}
+            render={(field) => <Textarea disabled={readOnly} {...field} />}
+          />
         </Stack>
       </Stack>
     </form>

@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import { Check } from 'lucide-react';
 import { useMemo, useState, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +25,14 @@ export interface RolePermissionsMatrixProps {
 
 function permissionKey(resource: string, action: string): string {
   return `${resource}:${action}`;
+}
+
+function translateResource(t: TFunction, resource: string): string {
+  return t(`permissionsMatrix.resources.${resource}`, { defaultValue: resource });
+}
+
+function translateAction(t: TFunction, action: string): string {
+  return t(`permissionsMatrix.actions.${action}`, { defaultValue: action });
 }
 
 function groupByResource(
@@ -146,7 +155,7 @@ export function RolePermissionsMatrix({
             return (
               <Stack key={resource} gap={3} className="rounded-lg border border-border p-4">
                 <HStack justify="between" align="center" wrap gap={2}>
-                  <Text weight="medium">{resource}</Text>
+                  <Text weight="medium">{translateResource(t, resource)}</Text>
                   {readOnly ? null : (
                     <HStack gap={2} align="center">
                       <Checkbox
@@ -176,7 +185,7 @@ export function RolePermissionsMatrix({
                           onCheckedChange={() => toggle(resource, permission.action)}
                         />
                         <label htmlFor={`permission-${permission.uuid}`}>
-                          <Text size="sm">{permission.action}</Text>
+                          <Text size="sm">{translateAction(t, permission.action)}</Text>
                         </label>
                       </HStack>
                     );

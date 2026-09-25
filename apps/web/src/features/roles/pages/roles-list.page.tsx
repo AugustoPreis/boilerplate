@@ -1,5 +1,5 @@
 import { DEFAULT_PAGE_SIZE } from '@boilerplate/shared';
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { Plus } from 'lucide-react';
 import { useMemo, useState, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,23 +20,27 @@ import { Box, HStack, Stack } from '@shared/ui/layout';
 import { Pagination } from '@shared/ui/pagination';
 import { Heading } from '@shared/ui/typography';
 
-import { CloneRoleDialog } from '../components/clone-role-dialog';
 import { DeleteRoleDialog } from '../components/delete-role-dialog';
 import { RolesTable } from '../components/roles-table';
-import { useDeleteRoleMutation, useRolesQuery } from '../queries/roles.queries';
+import {
+  useCloneRoleMutation,
+  useDeleteRoleMutation,
+  useRolesQuery,
+} from '../queries/roles.queries';
 
 export type RolesFilterValues = { search: string };
 
 export function RolesListPage(): ReactElement {
   const { t } = useTranslation('roles');
   const { hasPermission } = usePermissions();
+  const navigate = useNavigate();
 
   const { page, setPage, filters, setFilter, debouncedFilters } =
     useListQueryParams<RolesFilterValues>({ search: '' });
   const [roleToDelete, setRoleToDelete] = useState<RoleResponseDTO | null>(null);
-  const [roleToClone, setRoleToClone] = useState<RoleResponseDTO | null>(null);
 
   const deleteMutation = useDeleteRoleMutation();
+  const cloneMutation = useCloneRoleMutation();
 
   const canUpdate = hasPermission('roles:update');
   const canDelete = hasPermission('roles:delete');
@@ -54,6 +58,25 @@ export function RolesListPage(): ReactElement {
   const rolesQuery = useRolesQuery(params);
   const roles = rolesQuery.data?.data ?? [];
   const meta = rolesQuery.data?.meta;
+
+  function handleClone(role: RoleResponseDTO): void {
+    cloneMutation.mutate(
+      {
+        uuid: role.uuid,
+        dto: {
+          name: `${t('actions.clonePrefix')} ${role.name}`,
+          description: role.description ?? undefined,
+        },
+      },
+      {
+        onSuccess: (clonedRole) => {
+          toast.success(t('actions.cloneSuccess'));
+          void navigate({ to: ROUTES.roles.edit, params: { uuid: clonedRole.uuid } });
+        },
+        onError: (error) => toast.error(mapAxiosErrorToAppError(error).message),
+      },
+    );
+  }
 
   function handleConfirmDelete(): void {
     if (!roleToDelete) {
@@ -101,7 +124,7 @@ export function RolesListPage(): ReactElement {
         canDelete={canDelete}
         canClone={canClone}
         onDelete={setRoleToDelete}
-        onClone={setRoleToClone}
+        onClone={handleClone}
       />
 
       {meta ? <Pagination meta={meta} onPageChange={setPage} /> : null}
@@ -115,16 +138,6 @@ export function RolesListPage(): ReactElement {
         }}
         onConfirm={handleConfirmDelete}
         isConfirming={deleteMutation.isPending}
-      />
-
-      <CloneRoleDialog
-        role={roleToClone}
-        onOpenChange={(open) => {
-          if (!open) {
-            setRoleToClone(null);
-          }
-        }}
-        onSuccess={() => setRoleToClone(null)}
       />
     </Stack>
   );
