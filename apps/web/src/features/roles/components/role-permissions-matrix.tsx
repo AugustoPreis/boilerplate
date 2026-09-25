@@ -1,30 +1,22 @@
 import type { TFunction } from 'i18next';
-import { Check } from 'lucide-react';
-import { useMemo, useState, type ReactElement } from 'react';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
 
-import type {
-  PermissionResponseDTO,
-  RoleResponseDTO,
-} from '@core/api/generated/boilerplateAPI.schemas';
-import { mapAxiosErrorToAppError } from '@core/errors/error.mapper';
-import { Button } from '@shared/ui/button';
+import type { PermissionResponseDTO } from '@core/api/generated/boilerplateAPI.schemas';
 import { Checkbox } from '@shared/ui/checkbox';
 import { HStack, Stack } from '@shared/ui/layout';
 import { LoadingState } from '@shared/ui/loading-state';
 import { SectionHeading } from '@shared/ui/section-heading';
 import { Text } from '@shared/ui/typography';
 
-import { usePermissionsQuery, useUpdateRolePermissionsMutation } from '../queries/roles.queries';
+import { usePermissionsQuery } from '../queries/roles.queries';
+import { permissionKey } from '../utils/permission-key.util';
 
 export interface RolePermissionsMatrixProps {
-  role: RoleResponseDTO;
+  selectedKeys: Set<string>;
+  onToggle: (resource: string, action: string) => void;
+  onToggleResource: (resource: string, permissions: PermissionResponseDTO[]) => void;
   readOnly?: boolean;
-}
-
-function permissionKey(resource: string, action: string): string {
-  return `${resource}:${action}`;
 }
 
 function translateResource(t: TFunction, resource: string): string {
@@ -51,74 +43,16 @@ function groupByResource(
 }
 
 export function RolePermissionsMatrix({
-  role,
+  selectedKeys,
+  onToggle,
+  onToggleResource,
   readOnly = false,
 }: RolePermissionsMatrixProps): ReactElement {
   const { t } = useTranslation('roles');
   const permissionsQuery = usePermissionsQuery();
-  const updatePermissionsMutation = useUpdateRolePermissionsMutation();
 
-  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(
-    () =>
-      new Set(
-        role.permissions.map((permission) => permissionKey(permission.resource, permission.action)),
-      ),
-  );
-
-  const permissionsData = permissionsQuery.data?.data;
-  const allPermissions = useMemo(() => permissionsData ?? [], [permissionsData]);
-  const groupedPermissions = useMemo(() => groupByResource(allPermissions), [allPermissions]);
-
-  function toggle(resource: string, action: string): void {
-    const key = permissionKey(resource, action);
-
-    setSelectedKeys((previous) => {
-      const next = new Set(previous);
-
-      if (next.has(key)) {
-        next.delete(key);
-      } else {
-        next.add(key);
-      }
-
-      return next;
-    });
-  }
-
-  function toggleResource(resource: string, permissions: PermissionResponseDTO[]): void {
-    const keys = permissions.map((permission) => permissionKey(resource, permission.action));
-    const allSelected = keys.every((key) => selectedKeys.has(key));
-
-    setSelectedKeys((previous) => {
-      const next = new Set(previous);
-
-      for (const key of keys) {
-        if (allSelected) {
-          next.delete(key);
-        } else {
-          next.add(key);
-        }
-      }
-
-      return next;
-    });
-  }
-
-  function handleSave(): void {
-    const permissions = allPermissions
-      .filter((permission) =>
-        selectedKeys.has(permissionKey(permission.resource, permission.action)),
-      )
-      .map((permission) => ({ resource: permission.resource, action: permission.action }));
-
-    updatePermissionsMutation.mutate(
-      { uuid: role.uuid, dto: { permissions } },
-      {
-        onSuccess: () => toast.success(t('permissionsMatrix.updateSuccess')),
-        onError: (error) => toast.error(mapAxiosErrorToAppError(error).message),
-      },
-    );
-  }
+  const allPermissions = permissionsQuery.data?.data ?? [];
+  const groupedPermissions = groupByResource(allPermissions);
 
   if (permissionsQuery.isLoading) {
     return <LoadingState message={t('permissionsMatrix.loading')} />;
@@ -126,19 +60,10 @@ export function RolePermissionsMatrix({
 
   return (
     <Stack gap={4}>
-      <HStack justify="between" align="start" wrap gap={4}>
-        <SectionHeading
-          title={t('permissionsMatrix.title')}
-          description={t('permissionsMatrix.description')}
-        />
-
-        {readOnly ? null : (
-          <Button type="button" onClick={handleSave} disabled={updatePermissionsMutation.isPending}>
-            <Check size={16} aria-hidden="true" />
-            {t('permissionsMatrix.submit')}
-          </Button>
-        )}
-      </HStack>
+      <SectionHeading
+        title={t('permissionsMatrix.title')}
+        description={t('permissionsMatrix.description')}
+      />
 
       {groupedPermissions.size === 0 ? (
         <Text tone="muted" size="sm">
@@ -161,7 +86,7 @@ export function RolePermissionsMatrix({
                       <Checkbox
                         id={`resource-${resource}`}
                         checked={allSelected}
-                        onCheckedChange={() => toggleResource(resource, permissions)}
+                        onCheckedChange={() => onToggleResource(resource, permissions)}
                       />
                       <label htmlFor={`resource-${resource}`}>
                         <Text size="sm" tone="muted">
@@ -182,7 +107,7 @@ export function RolePermissionsMatrix({
                           id={`permission-${permission.uuid}`}
                           checked={selectedKeys.has(key)}
                           disabled={readOnly}
-                          onCheckedChange={() => toggle(resource, permission.action)}
+                          onCheckedChange={() => onToggle(resource, permission.action)}
                         />
                         <label htmlFor={`permission-${permission.uuid}`}>
                           <Text size="sm">{translateAction(t, permission.action)}</Text>

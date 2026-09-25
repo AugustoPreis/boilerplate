@@ -4,7 +4,7 @@ import type { ReactElement } from 'react';
 import type { RoleResponseDTO } from '@core/api/generated/boilerplateAPI.schemas';
 import { ROUTES } from '@shared/routes';
 
-import { RoleForm } from '../components/role-form';
+import { RoleEditor } from '../components/role-editor';
 
 export function RoleNewPage(): ReactElement {
   const navigate = useNavigate();
@@ -17,5 +17,5 @@ export function RoleNewPage(): ReactElement {
     void navigate({ to: ROUTES.roles.edit, params: { uuid: role.uuid } });
   }
 
-  return <RoleForm onSuccess={goToCreatedRole} onCancel={goToList} />;
+  return <RoleEditor onSaved={goToCreatedRole} onCancel={goToList} />;
 }

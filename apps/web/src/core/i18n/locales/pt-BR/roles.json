@@ -40,7 +40,8 @@
     "back": "Voltar",
     "submit": "Salvar",
     "createSuccess": "Papel criado com sucesso.",
-    "updateSuccess": "Papel atualizado com sucesso."
+    "updateSuccess": "Papel atualizado com sucesso.",
+    "savedButPermissionsFailed": "Papel salvo, mas as permissões não foram atualizadas: {{reason}}"
   },
   "permissionsMatrix": {
     "title": "Permissões",

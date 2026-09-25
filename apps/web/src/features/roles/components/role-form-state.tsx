@@ -4,12 +4,10 @@ import { useTranslation } from 'react-i18next';
 
 import type { RoleResponseDTO } from '@core/api/generated/boilerplateAPI.schemas';
 import type { ApiError } from '@core/errors/error.types';
-import { Stack } from '@shared/ui/layout';
 import { LoadingState } from '@shared/ui/loading-state';
 import { NotFoundState } from '@shared/ui/not-found-state';
 
-import { RoleForm } from './role-form';
-import { RolePermissionsMatrix } from './role-permissions-matrix';
+import { RoleEditor } from './role-editor';
 
 export interface RoleFormStateProps {
   roleQuery: UseQueryResult<RoleResponseDTO, ApiError>;
@@ -35,14 +33,6 @@ export function RoleFormState({
   }
 
   return (
-    <Stack gap={8}>
-      <RoleForm
-        role={roleQuery.data}
-        readOnly={readOnly}
-        onSuccess={onSuccess}
-        onCancel={onCancel}
-      />
-      <RolePermissionsMatrix role={roleQuery.data} readOnly={readOnly} />
-    </Stack>
+    <RoleEditor role={roleQuery.data} readOnly={readOnly} onSaved={onSuccess} onCancel={onCancel} />
   );
 }
