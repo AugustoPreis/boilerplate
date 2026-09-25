@@ -89,6 +89,22 @@ describe('RolesRepository (integration)', () => {
       expect(result.data[0].name).toBe('Administrator');
     });
 
+    it('filters by search (partial, case-insensitive match on description)', async () => {
+      await rolesRepository.create(
+        buildRole({ name: 'role-a', description: 'Handles billing operations' }),
+      );
+      await rolesRepository.create(buildRole({ name: 'role-b', description: 'Support agent' }));
+
+      const result = await rolesRepository.findAll({
+        page: 1,
+        perPage: 20,
+        search: 'billing',
+      });
+
+      expect(result.data).toHaveLength(1);
+      expect(result.data[0].name).toBe('role-a');
+    });
+
     it('does not filter anything when search is empty/undefined', async () => {
       await rolesRepository.create(buildRole({ name: 'role-undefined-search-1' }));
       await rolesRepository.create(buildRole({ name: 'role-undefined-search-2' }));

@@ -1,4 +1,4 @@
-import { LayoutDashboard, Users, type LucideIcon } from 'lucide-react';
+import { LayoutDashboard, ShieldCheck, Users, type LucideIcon } from 'lucide-react';
 
 import { ROUTES } from '@shared/routes';
 
@@ -23,5 +23,12 @@ export const APP_NAV_ITEMS = [
     icon: Users,
     group: 'nav.groups.administration',
     permission: 'users:read',
+  },
+  {
+    labelKey: 'nav.roles',
+    to: ROUTES.roles.index,
+    icon: ShieldCheck,
+    group: 'nav.groups.administration',
+    permission: 'roles:read',
   },
 ] as const satisfies IAppNavItem[];
