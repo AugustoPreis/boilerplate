@@ -1,3 +1,4 @@
+export { RoleAuditLogsPage } from './pages/role-audit-logs.page';
 export { RoleEditPage } from './pages/role-edit.page';
 export { RoleNewPage } from './pages/role-new.page';
 export { RolesListPage } from './pages/roles-list.page';

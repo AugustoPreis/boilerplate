@@ -1,5 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
-import { Ban, CircleCheck, Eye, Pencil, Trash2 } from 'lucide-react';
+import { Ban, CircleCheck, Eye, History, Pencil, Trash2 } from 'lucide-react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -26,6 +26,7 @@ export interface UsersTableProps {
   users: UserResponseDTO[];
   canUpdate: boolean;
   canDelete: boolean;
+  canViewAudit: boolean;
   onDelete: (user: UserResponseDTO) => void;
   onToggleStatus: (user: UserResponseDTO) => void;
 }
@@ -34,6 +35,7 @@ export function UsersTable({
   users,
   canUpdate,
   canDelete,
+  canViewAudit,
   onDelete,
   onToggleStatus,
 }: UsersTableProps): ReactElement {
@@ -110,6 +112,14 @@ export function UsersTable({
               icon: user.status === 'ACTIVE' ? Ban : CircleCheck,
               disabled: !canUpdate,
               onSelect: () => onToggleStatus(user),
+            },
+            canViewAudit && {
+              key: 'audit',
+              label: t('table.auditAction'),
+              icon: History,
+              onSelect: () => {
+                void navigate({ to: ROUTES.users.auditLogs, params: { uuid: user.uuid } });
+              },
             },
             {
               key: 'delete',

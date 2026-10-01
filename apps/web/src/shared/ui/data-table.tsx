@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from 'react';
+import { Fragment, type ReactElement, type ReactNode } from 'react';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@shared/ui/table';
 
@@ -14,6 +14,9 @@ export interface DataTableProps<TRow> {
   data: TRow[];
   getRowKey: (row: TRow) => string;
   emptyMessage: ReactNode;
+  /** Content rendered in an extra full-width row right below a row, when `isRowExpanded(row)` is true. */
+  renderExpandedRow?: (row: TRow) => ReactNode;
+  isRowExpanded?: (row: TRow) => boolean;
 }
 
 export function DataTable<TRow>({
@@ -21,6 +24,8 @@ export function DataTable<TRow>({
   data,
   getRowKey,
   emptyMessage,
+  renderExpandedRow,
+  isRowExpanded,
 }: DataTableProps<TRow>): ReactElement {
   return (
     <Table>
@@ -39,15 +44,26 @@ export function DataTable<TRow>({
             <TableCell colSpan={columns.length}>{emptyMessage}</TableCell>
           </TableRow>
         ) : (
-          data.map((row) => (
-            <TableRow key={getRowKey(row)}>
-              {columns.map((column) => (
-                <TableCell key={column.key} className={column.className}>
-                  {column.cell(row)}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))
+          data.map((row) => {
+            const expanded = Boolean(renderExpandedRow && isRowExpanded?.(row));
+
+            return (
+              <Fragment key={getRowKey(row)}>
+                <TableRow>
+                  {columns.map((column) => (
+                    <TableCell key={column.key} className={column.className}>
+                      {column.cell(row)}
+                    </TableCell>
+                  ))}
+                </TableRow>
+                {expanded ? (
+                  <TableRow>
+                    <TableCell colSpan={columns.length}>{renderExpandedRow?.(row)}</TableCell>
+                  </TableRow>
+                ) : null}
+              </Fragment>
+            );
+          })
         )}
       </TableBody>
     </Table>

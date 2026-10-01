@@ -45,6 +45,7 @@ export function RolesListPage(): ReactElement {
   const canUpdate = hasPermission('roles:update');
   const canDelete = hasPermission('roles:delete');
   const canClone = hasPermission('roles:create');
+  const canViewAudit = hasPermission('audit:read');
 
   const params = useMemo<RolesControllerFindAllV1Params>(
     () => ({
@@ -123,6 +124,7 @@ export function RolesListPage(): ReactElement {
         canUpdate={canUpdate}
         canDelete={canDelete}
         canClone={canClone}
+        canViewAudit={canViewAudit}
         onDelete={setRoleToDelete}
         onClone={handleClone}
       />

@@ -2,7 +2,10 @@ import { Column, Entity, OneToMany } from 'typeorm';
 
 import { Audit, AuditEntity } from '@shared/audit/decorators';
 import { EnumFormatter } from '@shared/audit/formatters/enum.formatter';
+import { ArrayNormalizer } from '@shared/audit/normalizers/array.normalizer';
 import { BaseEntity } from '@shared/entities/base.entity';
+
+import { RolesRelationResolver } from '@modules/roles/relation-resolvers/roles.relation-resolver';
 
 import { EUserStatus } from '../enums/user-status.enum';
 
@@ -32,11 +35,12 @@ export class UserEntity extends BaseEntity {
   @Column({ type: 'enum', enum: EUserStatus, enumName: 'user_status', default: EUserStatus.ACTIVE })
   status!: EUserStatus;
 
-  // Never audited: role assignment writes directly to the `user_roles` join
-  // table via `UsersRepository.setRoles`, which never calls
-  // `UserEntity.repo.save()`, so this relation is structurally unobservable by
-  // the TypeORM subscriber that drives the audit trail.
-  @Audit({ ignore: true })
+  // Role assignment writes directly to the `user_roles` join table via
+  // `UsersRepository.setRoles`, which never calls `UserEntity.repo.save()`,
+  // so this relation is structurally unobservable by the TypeORM subscriber
+  // that drives the audit trail. `AssignRolesUseCase` records the change
+  // explicitly instead of relying on it.
+  @Audit({ relationResolver: RolesRelationResolver, normalizer: ArrayNormalizer })
   @OneToMany(() => UserRoleEntity, (ur) => ur.user, { eager: true })
   userRoles!: UserRoleEntity[];
 }

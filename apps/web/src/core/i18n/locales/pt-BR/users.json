@@ -27,7 +27,11 @@
     "activateAction": "Ativar",
     "deactivateAction": "Inativar",
     "deleteAction": "Excluir usuário",
-    "statusUpdateSuccess": "Status atualizado com sucesso."
+    "statusUpdateSuccess": "Status atualizado com sucesso.",
+    "auditAction": "Auditoria"
+  },
+  "auditLogsPage": {
+    "title": "Auditoria do usuário"
   },
   "form": {
     "createTitle": "Novo usuário",

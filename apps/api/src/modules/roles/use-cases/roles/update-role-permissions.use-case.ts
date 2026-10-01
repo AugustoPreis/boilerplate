@@ -1,6 +1,10 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 
+import { RequestContextService } from '@shared/context/request-context.service';
 import { AppException } from '@shared/exceptions';
+
+import { EAuditAction } from '@modules/audit/enums/audit-action.enum';
+import { RecordAuditLogUseCase } from '@modules/audit/use-cases/record-audit-log.use-case';
 
 import { RoleResponseDTO } from '../../dtos/role-response.dto';
 import { UpdateRolePermissionsDTO } from '../../dtos/update-role-permissions.dto';
@@ -12,6 +16,8 @@ export class UpdateRolePermissionsUseCase {
   constructor(
     private readonly rolesRepository: RolesRepository,
     private readonly permissionsRepository: PermissionsRepository,
+    private readonly recordAuditLogUseCase: RecordAuditLogUseCase,
+    private readonly requestContextService: RequestContextService,
   ) {}
 
   async execute(roleUuid: string, dto: UpdateRolePermissionsDTO): Promise<RoleResponseDTO> {
@@ -34,10 +40,25 @@ export class UpdateRolePermissionsUseCase {
       });
     }
 
+    const previousPermissionIds = role.permissions.map((permission) => permission.id);
+
     await this.rolesRepository.setPermissions(
       role.id,
       permissions.map((p) => p.id),
     );
+
+    // `setPermissions` only writes to the `role_permissions` join table, so
+    // the TypeORM subscriber driving the audit trail never observes it (it
+    // only fires on `RoleEntity.repo.save()` calls that also change a scalar
+    // column). Record the change explicitly instead of relying on it.
+    await this.recordAuditLogUseCase.execute({
+      entityName: 'role',
+      entityUuid: role.uuid,
+      actorUuid: this.requestContextService.getActorUuid(),
+      action: EAuditAction.UPDATED,
+      before: { permissions: previousPermissionIds },
+      after: { permissions: permissions.map((p) => p.id) },
+    });
 
     const updated = await this.rolesRepository.findByUuid(roleUuid);
 

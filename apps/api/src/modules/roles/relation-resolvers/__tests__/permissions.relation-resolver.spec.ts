@@ -1,36 +1,68 @@
 import { mockDeep } from 'jest-mock-extended';
 
+import { I18nAuditTranslator } from '@shared/audit/translators/i18n-audit.translator';
+
 import { PermissionEntity } from '../../entities/permission.entity';
 import { PermissionsRepository } from '../../repositories/permissions.repository';
 import { PermissionsRelationResolver } from '../permissions.relation-resolver';
 
 describe('PermissionsRelationResolver', () => {
   const permissionsRepository = mockDeep<PermissionsRepository>();
-  const resolver = new PermissionsRelationResolver(permissionsRepository);
+  const translator = mockDeep<I18nAuditTranslator>();
+  const resolver = new PermissionsRelationResolver(permissionsRepository, translator);
+  const locale = 'pt-BR';
 
   beforeEach(() => {
     jest.clearAllMocks();
+    translator.translateEnum.mockImplementation((_module, _entity, _field, value) => value);
   });
 
-  it('returns the raw value untouched when the id list is empty', async () => {
-    const result = await resolver.resolve([]);
+  it('resolves to an empty string when the id list is empty, since that is a valid "no permissions" state', async () => {
+    const result = await resolver.resolve([], locale);
 
-    expect(result).toEqual([]);
+    expect(result).toBe('');
     expect(permissionsRepository.findByIds).not.toHaveBeenCalled();
   });
 
-  it('resolves numeric ids into a joined "resource:action" label', async () => {
+  it('groups permissions by resource, with actions in a fixed order, one line per resource', async () => {
     const permissions = [
-      { id: 1, resource: 'users', action: 'read' } as PermissionEntity,
-      { id: 2, resource: 'users', action: 'write' } as PermissionEntity,
+      { id: 1, resource: 'users', action: 'delete' } as PermissionEntity,
+      { id: 2, resource: 'users', action: 'read' } as PermissionEntity,
     ];
 
     permissionsRepository.findByIds.mockResolvedValue(permissions);
 
-    const result = await resolver.resolve([1, 2]);
+    const result = await resolver.resolve([1, 2], locale);
 
     expect(permissionsRepository.findByIds).toHaveBeenCalledWith([1, 2]);
-    expect(result).toBe('users:read, users:write');
+    expect(result).toBe('users: read, delete');
+    expect(translator.translateEnum).toHaveBeenCalledWith(
+      'roles',
+      'permission',
+      'resource',
+      'users',
+      locale,
+    );
+    expect(translator.translateEnum).toHaveBeenCalledWith(
+      'roles',
+      'permission',
+      'action',
+      'read',
+      locale,
+    );
+  });
+
+  it('sorts resource groups and joins them with a newline, one group per line', async () => {
+    const permissions = [
+      { id: 1, resource: 'users', action: 'read' } as PermissionEntity,
+      { id: 2, resource: 'audit', action: 'read' } as PermissionEntity,
+    ];
+
+    permissionsRepository.findByIds.mockResolvedValue(permissions);
+
+    const result = await resolver.resolve([1, 2], locale);
+
+    expect(result).toBe('audit: read\nusers: read');
   });
 
   it('wraps a single non-array value into a one-element id list', async () => {
@@ -38,10 +70,10 @@ describe('PermissionsRelationResolver', () => {
 
     permissionsRepository.findByIds.mockResolvedValue([permission]);
 
-    const result = await resolver.resolve(3);
+    const result = await resolver.resolve(3, locale);
 
     expect(permissionsRepository.findByIds).toHaveBeenCalledWith([3]);
-    expect(result).toBe('roles:delete');
+    expect(result).toBe('roles: delete');
   });
 
   it('filters out non-finite values before querying the repository', async () => {
@@ -49,7 +81,7 @@ describe('PermissionsRelationResolver', () => {
       { id: 1, resource: 'users', action: 'read' } as PermissionEntity,
     ]);
 
-    await resolver.resolve(['1', 'not-a-number', undefined]);
+    await resolver.resolve(['1', 'not-a-number', undefined], locale);
 
     expect(permissionsRepository.findByIds).toHaveBeenCalledWith([1]);
   });
@@ -58,7 +90,7 @@ describe('PermissionsRelationResolver', () => {
     permissionsRepository.findByIds.mockResolvedValue([]);
 
     const value = [999];
-    const result = await resolver.resolve(value);
+    const result = await resolver.resolve(value, locale);
 
     expect(result).toBe(value);
   });

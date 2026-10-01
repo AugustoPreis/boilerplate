@@ -1,0 +1,44 @@
+{
+  "title": "Auditoria",
+  "filters": {
+    "entityLabel": "Entidade",
+    "allEntities": "Todas as entidades",
+    "actionLabel": "Ação",
+    "allActions": "Todas as ações",
+    "actorPlaceholder": "Filtrar por ator",
+    "entityRecordPlaceholder": "Filtrar por registro",
+    "userSearchPlaceholder": "Buscar por nome ou e-mail",
+    "roleSearchPlaceholder": "Buscar por nome",
+    "noUsersFound": "Nenhum usuário encontrado.",
+    "noRolesFound": "Nenhum papel encontrado."
+  },
+  "entities": {
+    "user": "Usuário",
+    "role": "Papel",
+    "permission": "Permissão"
+  },
+  "actionLabels": {
+    "CREATED": "Criado",
+    "UPDATED": "Atualizado",
+    "DELETED": "Excluído"
+  },
+  "table": {
+    "entity": "Entidade",
+    "action": "Ação",
+    "entityUuid": "UUID da entidade",
+    "actor": "Ator",
+    "actorSystem": "Sistema",
+    "createdAt": "Data",
+    "expandRow": "Expandir mudanças",
+    "collapseRow": "Recolher mudanças",
+    "empty": "Nenhum registro de auditoria encontrado."
+  },
+  "changes": {
+    "field": "Campo",
+    "oldValue": "Valor antigo",
+    "newValue": "Valor novo",
+    "emptyPlaceholder": "<vazio>",
+    "deletedPlaceholder": "Registro excluído",
+    "empty": "Nenhuma mudança registrada."
+  }
+}

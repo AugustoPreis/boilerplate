@@ -17,12 +17,15 @@ import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as AuthenticatedPreferencesRouteImport } from './routes/_authenticated/preferences'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedAuditLogsIndexRouteImport } from './routes/_authenticated/audit-logs/index'
 import { Route as AuthenticatedRolesIndexRouteImport } from './routes/_authenticated/roles/index'
 import { Route as AuthenticatedRolesUuidRouteImport } from './routes/_authenticated/roles/$uuid'
 import { Route as AuthenticatedRolesNewRouteImport } from './routes/_authenticated/roles/new'
 import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authenticated/users/index'
 import { Route as AuthenticatedUsersUuidRouteImport } from './routes/_authenticated/users/$uuid'
 import { Route as AuthenticatedUsersNewRouteImport } from './routes/_authenticated/users/new'
+import { Route as AuthenticatedRolesUuidAuditLogsRouteImport } from './routes/_authenticated/roles/$uuid_.audit-logs'
+import { Route as AuthenticatedUsersUuidAuditLogsRouteImport } from './routes/_authenticated/users/$uuid_.audit-logs'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
@@ -64,6 +67,12 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAuditLogsIndexRoute =
+  AuthenticatedAuditLogsIndexRouteImport.update({
+    id: '/audit-logs/',
+    path: '/audit-logs/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedRolesIndexRoute = AuthenticatedRolesIndexRouteImport.update({
   id: '/roles/',
   path: '/roles/',
@@ -94,6 +103,18 @@ const AuthenticatedUsersNewRoute = AuthenticatedUsersNewRouteImport.update({
   path: '/users/new',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedRolesUuidAuditLogsRoute =
+  AuthenticatedRolesUuidAuditLogsRouteImport.update({
+    id: '/roles/$uuid_/audit-logs',
+    path: '/roles/$uuid/audit-logs',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedUsersUuidAuditLogsRoute =
+  AuthenticatedUsersUuidAuditLogsRouteImport.update({
+    id: '/users/$uuid_/audit-logs',
+    path: '/users/$uuid/audit-logs',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
@@ -107,8 +128,11 @@ export interface FileRoutesByFullPath {
   '/roles/new': typeof AuthenticatedRolesNewRoute
   '/users/$uuid': typeof AuthenticatedUsersUuidRoute
   '/users/new': typeof AuthenticatedUsersNewRoute
+  '/audit-logs/': typeof AuthenticatedAuditLogsIndexRoute
   '/roles/': typeof AuthenticatedRolesIndexRoute
   '/users/': typeof AuthenticatedUsersIndexRoute
+  '/roles/$uuid/audit-logs': typeof AuthenticatedRolesUuidAuditLogsRoute
+  '/users/$uuid/audit-logs': typeof AuthenticatedUsersUuidAuditLogsRoute
 }
 export interface FileRoutesByTo {
   '/forgot-password': typeof AuthForgotPasswordRoute
@@ -122,8 +146,11 @@ export interface FileRoutesByTo {
   '/roles/new': typeof AuthenticatedRolesNewRoute
   '/users/$uuid': typeof AuthenticatedUsersUuidRoute
   '/users/new': typeof AuthenticatedUsersNewRoute
+  '/audit-logs': typeof AuthenticatedAuditLogsIndexRoute
   '/roles': typeof AuthenticatedRolesIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
+  '/roles/$uuid/audit-logs': typeof AuthenticatedRolesUuidAuditLogsRoute
+  '/users/$uuid/audit-logs': typeof AuthenticatedUsersUuidAuditLogsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -139,8 +166,11 @@ export interface FileRoutesById {
   '/_authenticated/roles/new': typeof AuthenticatedRolesNewRoute
   '/_authenticated/users/$uuid': typeof AuthenticatedUsersUuidRoute
   '/_authenticated/users/new': typeof AuthenticatedUsersNewRoute
+  '/_authenticated/audit-logs/': typeof AuthenticatedAuditLogsIndexRoute
   '/_authenticated/roles/': typeof AuthenticatedRolesIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
+  '/_authenticated/roles/$uuid_/audit-logs': typeof AuthenticatedRolesUuidAuditLogsRoute
+  '/_authenticated/users/$uuid_/audit-logs': typeof AuthenticatedUsersUuidAuditLogsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -156,8 +186,11 @@ export interface FileRouteTypes {
     | '/roles/new'
     | '/users/$uuid'
     | '/users/new'
+    | '/audit-logs/'
     | '/roles/'
     | '/users/'
+    | '/roles/$uuid/audit-logs'
+    | '/users/$uuid/audit-logs'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/forgot-password'
@@ -171,8 +204,11 @@ export interface FileRouteTypes {
     | '/roles/new'
     | '/users/$uuid'
     | '/users/new'
+    | '/audit-logs'
     | '/roles'
     | '/users'
+    | '/roles/$uuid/audit-logs'
+    | '/users/$uuid/audit-logs'
   id:
     | '__root__'
     | '/_authenticated'
@@ -187,8 +223,11 @@ export interface FileRouteTypes {
     | '/_authenticated/roles/new'
     | '/_authenticated/users/$uuid'
     | '/_authenticated/users/new'
+    | '/_authenticated/audit-logs/'
     | '/_authenticated/roles/'
     | '/_authenticated/users/'
+    | '/_authenticated/roles/$uuid_/audit-logs'
+    | '/_authenticated/users/$uuid_/audit-logs'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -256,6 +295,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/audit-logs/': {
+      id: '/_authenticated/audit-logs/'
+      path: '/audit-logs'
+      fullPath: '/audit-logs/'
+      preLoaderRoute: typeof AuthenticatedAuditLogsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/roles/': {
       id: '/_authenticated/roles/'
       path: '/roles'
@@ -298,6 +344,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUsersNewRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/roles/$uuid_/audit-logs': {
+      id: '/_authenticated/roles/$uuid_/audit-logs'
+      path: '/roles/$uuid/audit-logs'
+      fullPath: '/roles/$uuid/audit-logs'
+      preLoaderRoute: typeof AuthenticatedRolesUuidAuditLogsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/users/$uuid_/audit-logs': {
+      id: '/_authenticated/users/$uuid_/audit-logs'
+      path: '/users/$uuid/audit-logs'
+      fullPath: '/users/$uuid/audit-logs'
+      preLoaderRoute: typeof AuthenticatedUsersUuidAuditLogsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -310,8 +370,11 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedRolesNewRoute: typeof AuthenticatedRolesNewRoute
   AuthenticatedUsersUuidRoute: typeof AuthenticatedUsersUuidRoute
   AuthenticatedUsersNewRoute: typeof AuthenticatedUsersNewRoute
+  AuthenticatedAuditLogsIndexRoute: typeof AuthenticatedAuditLogsIndexRoute
   AuthenticatedRolesIndexRoute: typeof AuthenticatedRolesIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
+  AuthenticatedRolesUuidAuditLogsRoute: typeof AuthenticatedRolesUuidAuditLogsRoute
+  AuthenticatedUsersUuidAuditLogsRoute: typeof AuthenticatedUsersUuidAuditLogsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -323,8 +386,11 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedRolesNewRoute: AuthenticatedRolesNewRoute,
   AuthenticatedUsersUuidRoute: AuthenticatedUsersUuidRoute,
   AuthenticatedUsersNewRoute: AuthenticatedUsersNewRoute,
+  AuthenticatedAuditLogsIndexRoute: AuthenticatedAuditLogsIndexRoute,
   AuthenticatedRolesIndexRoute: AuthenticatedRolesIndexRoute,
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
+  AuthenticatedRolesUuidAuditLogsRoute: AuthenticatedRolesUuidAuditLogsRoute,
+  AuthenticatedUsersUuidAuditLogsRoute: AuthenticatedUsersUuidAuditLogsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

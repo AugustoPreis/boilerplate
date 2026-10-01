@@ -2,6 +2,7 @@ import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 import account from './locales/pt-BR/account.json';
+import auditLogs from './locales/pt-BR/audit-logs.json';
 import auth from './locales/pt-BR/auth.json';
 import common from './locales/pt-BR/common.json';
 import errors from './locales/pt-BR/errors.json';
@@ -17,7 +18,7 @@ void i18next.use(initReactI18next).init({
   fallbackLng: I18N_LOCALE,
   defaultNS: I18N_DEFAULT_NAMESPACE,
   resources: {
-    [I18N_LOCALE]: { account, auth, common, errors, roles, users, validation },
+    [I18N_LOCALE]: { account, auditLogs, auth, common, errors, roles, users, validation },
   },
   interpolation: { escapeValue: false },
   returnNull: false,

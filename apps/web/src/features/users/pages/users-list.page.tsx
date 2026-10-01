@@ -46,6 +46,7 @@ export function UsersListPage(): ReactElement {
 
   const canUpdate = hasPermission('users:update');
   const canDelete = hasPermission('users:delete');
+  const canViewAudit = hasPermission('audit:read');
 
   const params = useMemo<UsersControllerFindAllV1Params>(
     () => ({
@@ -111,6 +112,7 @@ export function UsersListPage(): ReactElement {
         users={users}
         canUpdate={canUpdate}
         canDelete={canDelete}
+        canViewAudit={canViewAudit}
         onDelete={setUserToDelete}
         onToggleStatus={handleToggleStatus}
       />

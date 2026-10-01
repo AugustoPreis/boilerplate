@@ -1,4 +1,4 @@
-import { LayoutDashboard, ShieldCheck, Users, type LucideIcon } from 'lucide-react';
+import { History, LayoutDashboard, ShieldCheck, Users, type LucideIcon } from 'lucide-react';
 
 import { ROUTES } from '@shared/routes';
 
@@ -30,5 +30,12 @@ export const APP_NAV_ITEMS = [
     icon: ShieldCheck,
     group: 'nav.groups.administration',
     permission: 'roles:read',
+  },
+  {
+    labelKey: 'nav.auditLogs',
+    to: ROUTES.auditLogs.index,
+    icon: History,
+    group: 'nav.groups.administration',
+    permission: 'audit:read',
   },
 ] as const satisfies IAppNavItem[];
