@@ -12,6 +12,13 @@ import { IAuditNormalizer } from '../interfaces';
  * no `uuid`), while the "after" snapshot assigned in memory before `save()`
  * carries full entities (with both `id` and `uuid`). Preferring `id`, when
  * present on either side, keeps both snapshots comparable by the same key.
+ *
+ * `roleId` covers join-row entities with a composite primary key and no
+ * own `id`/`uuid` (e.g. `UserRoleEntity`) — without it, two independently
+ * loaded snapshots of the same unchanged membership fall back to
+ * `JSON.stringify`, which rarely matches byte-for-byte (nested eager
+ * relations, key order) and produces false-positive diffs with a raw JSON
+ * blob instead of a resolvable id.
  */
 @Injectable()
 export class ArrayNormalizer implements IAuditNormalizer<unknown> {
@@ -39,6 +46,10 @@ export class ArrayNormalizer implements IAuditNormalizer<unknown> {
 
       if ('uuid' in record) {
         return record.uuid;
+      }
+
+      if ('roleId' in record) {
+        return record.roleId;
       }
 
       return JSON.stringify(record);
