@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 
 import type { UserResponseDTO } from '@core/api/generated/boilerplateAPI.schemas';
 import { ApiSelect } from '@shared/ui/api-select';
+import { Stack } from '@shared/ui/layout';
+import { Text } from '@shared/ui/typography';
 
 import { useUserOptions } from '../hooks/use-user-options.hook';
 
@@ -10,6 +12,17 @@ export interface UserRecordSelectProps {
   value: string | undefined;
   onChange: (value: string | undefined) => void;
   placeholder: string;
+}
+
+function UserOptionLabel({ user }: { user: UserResponseDTO }): ReactElement {
+  return (
+    <Stack gap={0}>
+      <Text size="sm">{user.name}</Text>
+      <Text size="sm" tone="muted">
+        {user.email}
+      </Text>
+    </Stack>
+  );
 }
 
 export function UserRecordSelect({
@@ -32,9 +45,11 @@ export function UserRecordSelect({
   }, [knownUsers, options]);
 
   const selectedUser = value ? knownUsersByUuid.get(value) : undefined;
+  // The dropdown list shows name + email stacked (room for both); the
+  // collapsed trigger only has one line, so it shows just the name.
   const userOptions = options.map((user) => ({
     value: user.uuid,
-    label: `${user.name} (${user.email})`,
+    label: <UserOptionLabel user={user} />,
   }));
 
   return (
@@ -46,9 +61,7 @@ export function UserRecordSelect({
       }}
       options={userOptions}
       selectedOption={
-        selectedUser
-          ? { value: selectedUser.uuid, label: `${selectedUser.name} (${selectedUser.email})` }
-          : undefined
+        selectedUser ? { value: selectedUser.uuid, label: selectedUser.name } : undefined
       }
       onSearch={setSearch}
       isLoading={isLoading}
