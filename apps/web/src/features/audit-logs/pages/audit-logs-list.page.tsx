@@ -8,20 +8,21 @@ import type {
   AuditLogResponseDTO,
 } from '@core/api/generated/boilerplateAPI.schemas';
 import { useListQueryParams } from '@shared/hooks/use-list-query-params.hook';
-import { Input } from '@shared/ui/input';
 import { Box, Stack } from '@shared/ui/layout';
 import { Pagination } from '@shared/ui/pagination';
 import { Heading } from '@shared/ui/typography';
 
 import { AuditActionSelect } from '../components/audit-action-select';
+import { AuditEntityRecordSelect } from '../components/audit-entity-record-select';
 import { AuditEntitySelect } from '../components/audit-entity-select';
 import { AuditLogsTable } from '../components/audit-logs-table';
+import { UserRecordSelect } from '../components/user-record-select';
 import { useAuditLogsQuery } from '../queries/audit-logs.queries';
 
 export type AuditLogsFilterValues = {
   entityName: string | undefined;
-  entityUuid: string;
-  actorUuid: string;
+  entityUuid: string | undefined;
+  actorUuid: string | undefined;
   action: AuditControllerFindAllV1Action | undefined;
 };
 
@@ -31,8 +32,8 @@ export function AuditLogsListPage(): ReactElement {
   const { page, setPage, filters, setFilter, debouncedFilters } =
     useListQueryParams<AuditLogsFilterValues>({
       entityName: undefined,
-      entityUuid: '',
-      actorUuid: '',
+      entityUuid: undefined,
+      actorUuid: undefined,
       action: undefined,
     });
   const [expandedUuids, setExpandedUuids] = useState<Set<string>>(new Set());
@@ -42,8 +43,8 @@ export function AuditLogsListPage(): ReactElement {
       page,
       perPage: DEFAULT_PAGE_SIZE,
       entityName: debouncedFilters.entityName,
-      entityUuid: debouncedFilters.entityUuid.trim() || undefined,
-      actorUuid: debouncedFilters.actorUuid.trim() || undefined,
+      entityUuid: debouncedFilters.entityUuid,
+      actorUuid: debouncedFilters.actorUuid,
       action: debouncedFilters.action,
     }),
     [page, debouncedFilters],
@@ -52,6 +53,14 @@ export function AuditLogsListPage(): ReactElement {
   const auditLogsQuery = useAuditLogsQuery(params);
   const logs = auditLogsQuery.data?.data ?? [];
   const meta = auditLogsQuery.data?.meta;
+
+  function handleEntityNameChange(entityName: string | undefined): void {
+    // The entity record picker depends on the entity type (user vs role
+    // search a different list) — a previously picked record no longer
+    // applies once the type changes.
+    setFilter('entityName', entityName);
+    setFilter('entityUuid', undefined);
+  }
 
   function toggleRow(log: AuditLogResponseDTO): void {
     setExpandedUuids((previous) => {
@@ -72,27 +81,20 @@ export function AuditLogsListPage(): ReactElement {
       <Heading level={1}>{t('title')}</Heading>
 
       <Box className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
-        <AuditEntitySelect
-          value={filters.entityName}
-          onChange={(value) => setFilter('entityName', value)}
-        />
+        <AuditEntitySelect value={filters.entityName} onChange={handleEntityNameChange} />
         <AuditActionSelect
           value={filters.action}
           onChange={(value) => setFilter('action', value)}
         />
-        <Input
-          type="text"
+        <AuditEntityRecordSelect
+          entityName={filters.entityName}
           value={filters.entityUuid}
-          onChange={(event) => setFilter('entityUuid', event.target.value)}
-          placeholder={t('filters.entityUuidPlaceholder')}
-          aria-label={t('filters.entityUuidPlaceholder')}
+          onChange={(value) => setFilter('entityUuid', value)}
         />
-        <Input
-          type="text"
+        <UserRecordSelect
           value={filters.actorUuid}
-          onChange={(event) => setFilter('actorUuid', event.target.value)}
-          placeholder={t('filters.actorUuidPlaceholder')}
-          aria-label={t('filters.actorUuidPlaceholder')}
+          onChange={(value) => setFilter('actorUuid', value)}
+          placeholder={t('filters.actorPlaceholder')}
         />
       </Box>
 

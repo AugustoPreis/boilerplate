@@ -1,5 +1,5 @@
 import { Check, ChevronsUpDown, Loader2 } from 'lucide-react';
-import { useState, type ReactElement, type ReactNode } from 'react';
+import { useEffect, useState, type ReactElement, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@shared/ui/button';
@@ -47,6 +47,18 @@ export function ApiSelect({
 }: ApiSelectProps): ReactElement {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+
+  // `CommandInput` is uncontrolled and remounts empty every time the popover
+  // reopens (Radix unmounts the content on close), but the caller's search
+  // state doesn't reset on its own — without this, reopening after a
+  // selection silently keeps querying with the last typed search even
+  // though the input visibly shows empty.
+  useEffect(() => {
+    if (open) {
+      onSearch?.('');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only re-sync when the popover opens, not on every onSearch identity change
+  }, [open]);
 
   function handleSelect(optionValue: string): void {
     onChange(optionValue === value ? undefined : optionValue);

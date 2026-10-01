@@ -5,8 +5,12 @@
     "allEntities": "Todas as entidades",
     "actionLabel": "Ação",
     "allActions": "Todas as ações",
-    "entityUuidPlaceholder": "UUID da entidade",
-    "actorUuidPlaceholder": "UUID do ator"
+    "actorPlaceholder": "Filtrar por ator",
+    "entityRecordPlaceholder": "Filtrar por registro",
+    "userSearchPlaceholder": "Buscar por nome ou e-mail",
+    "roleSearchPlaceholder": "Buscar por nome",
+    "noUsersFound": "Nenhum usuário encontrado.",
+    "noRolesFound": "Nenhum papel encontrado."
   },
   "entities": {
     "user": "Usuário",
