@@ -3,7 +3,7 @@ import { useState } from 'react';
 import type { RoleResponseDTO } from '@core/api/generated/boilerplateAPI.schemas';
 import { useDebounce } from '@shared/hooks/use-debounce.hook';
 
-import { useRolesOptionsQuery } from '../queries/users.queries';
+import { useRoleOptionsQuery } from '@features/roles';
 
 export interface IUseRoleOptions {
   options: RoleResponseDTO[];
@@ -16,7 +16,7 @@ export function useRoleOptions(): IUseRoleOptions {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 400);
 
-  const rolesQuery = useRolesOptionsQuery(debouncedSearch || undefined);
+  const rolesQuery = useRoleOptionsQuery(debouncedSearch || undefined);
 
   return {
     options: rolesQuery.data?.data ?? [],

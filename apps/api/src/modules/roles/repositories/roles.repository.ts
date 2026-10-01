@@ -32,10 +32,15 @@ export class RolesRepository {
   }
 
   async findAll(query: ListRoleDTO): Promise<IPaginatedResult<RoleEntity>> {
+    const search = query.search?.trim();
+    const where = search
+      ? [{ name: ILike(`%${search}%`) }, { description: ILike(`%${search}%`) }]
+      : {};
+
     const [data, total] = await this.repo.findAndCount({
       skip: buildSkip(query.page, query.perPage),
       take: query.perPage,
-      where: { name: ILike(`%${query.search?.trim() ?? ''}%`) },
+      where,
       order: { name: 'ASC' },
     });
 

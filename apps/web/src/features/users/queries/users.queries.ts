@@ -10,7 +10,6 @@ import {
 import type {
   AssignRolesDTO,
   CreateUserDTO,
-  RolesControllerFindAllV1200,
   UpdateUserStatusDTO,
   UserResponseDTO,
   UsersControllerFindAllV1200,
@@ -18,7 +17,6 @@ import type {
 } from '@core/api/generated/boilerplateAPI.schemas';
 import type { ApiError } from '@core/errors/error.types';
 
-import * as rolesLookupService from '../services/roles-lookup.service';
 import * as usersService from '../services/users.service';
 import type { UpdateUserPayload } from '../services/users.service';
 
@@ -27,10 +25,6 @@ export const usersQueryKeys = {
   list: (params: UsersControllerFindAllV1Params) =>
     [...usersQueryKeys.all, 'list', params] as const,
   detail: (uuid: string) => [...usersQueryKeys.all, 'detail', uuid] as const,
-};
-
-export const roleOptionsQueryKeys = {
-  all: ['role-options'] as const,
 };
 
 export interface IUpdateUserVariables {
@@ -67,16 +61,6 @@ export function useUserQuery(uuid: string): UseQueryResult<UserResponseDTO, ApiE
   return useQuery({
     queryKey: usersQueryKeys.detail(uuid),
     queryFn: () => usersService.findUser(uuid),
-  });
-}
-
-export function useRolesOptionsQuery(
-  search?: string,
-): UseQueryResult<RolesControllerFindAllV1200, ApiError> {
-  return useQuery({
-    queryKey: [...roleOptionsQueryKeys.all, search],
-    queryFn: () => rolesLookupService.listRoleOptions(search),
-    placeholderData: keepPreviousData,
   });
 }
 
