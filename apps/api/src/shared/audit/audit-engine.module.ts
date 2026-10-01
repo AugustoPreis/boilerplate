@@ -64,6 +64,6 @@ import { I18nAuditTranslator } from './translators/i18n-audit.translator';
     // Orchestrator
     AuditPipelineService,
   ],
-  exports: [AuditPipelineService],
+  exports: [AuditPipelineService, I18nAuditTranslator],
 })
 export class AuditEngineModule {}

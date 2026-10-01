@@ -21,7 +21,8 @@
           "status": "Status",
           "currentPassword": "Senha atual",
           "newPassword": "Nova senha",
-          "confirmNewPassword": "Confirmar nova senha"
+          "confirmNewPassword": "Confirmar nova senha",
+          "userRoles": "Papéis"
         },
         "enums": {
           "status": {

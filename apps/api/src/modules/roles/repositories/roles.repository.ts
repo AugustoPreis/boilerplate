@@ -85,4 +85,14 @@ export class RolesRepository {
 
     await this.repo.save(role);
   }
+
+  /**
+   * Used by `RolesRelationResolver` to resolve the audit engine's normalized
+   * `userRoles` array (numeric role `id`s) into full entities.
+   */
+  findByIds(ids: number[]): Promise<RoleEntity[]> {
+    if (!ids.length) return Promise.resolve([]);
+
+    return this.repo.findBy({ id: In(ids) });
+  }
 }

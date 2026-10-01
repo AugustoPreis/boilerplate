@@ -25,6 +25,20 @@
           "resource": "Recurso",
           "action": "Ação",
           "description": "Descrição"
+        },
+        "enums": {
+          "resource": {
+            "users": "Usuários",
+            "roles": "Papéis",
+            "permissions": "Permissões",
+            "audit": "Auditoria"
+          },
+          "action": {
+            "create": "Criar",
+            "read": "Visualizar",
+            "update": "Atualizar",
+            "delete": "Deletar"
+          }
         }
       }
     }

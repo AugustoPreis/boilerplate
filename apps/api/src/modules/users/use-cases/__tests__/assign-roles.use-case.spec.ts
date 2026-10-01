@@ -1,6 +1,9 @@
 import { HttpStatus } from '@nestjs/common';
 import { mockDeep } from 'jest-mock-extended';
 
+import { RequestContextService } from '@shared/context/request-context.service';
+
+import { RecordAuditLogUseCase } from '@modules/audit/use-cases/record-audit-log.use-case';
 import { RoleEntity } from '@modules/roles/entities/role.entity';
 
 import { createMockRepository } from '../../../../../test/support/mock-repository';
@@ -12,14 +15,22 @@ import { AssignRolesUseCase } from '../assign-roles.use-case';
 describe('AssignRolesUseCase', () => {
   const usersRepository = mockDeep<UsersRepository>();
   const roleRepo = createMockRepository<RoleEntity>();
+  const recordAuditLogUseCase = mockDeep<RecordAuditLogUseCase>();
+  const requestContextService = mockDeep<RequestContextService>();
 
-  const useCase = new AssignRolesUseCase(usersRepository, roleRepo);
+  const useCase = new AssignRolesUseCase(
+    usersRepository,
+    roleRepo,
+    recordAuditLogUseCase,
+    requestContextService,
+  );
 
   const user = { id: 1, uuid: 'user-uuid', userRoles: [] } as unknown as UserEntity;
   const role = { id: 10, uuid: 'role-uuid' } as RoleEntity;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    requestContextService.getActorUuid.mockReturnValue('actor-uuid');
   });
 
   it('throws when the user does not exist', async () => {
@@ -55,5 +66,28 @@ describe('AssignRolesUseCase', () => {
 
     expect(usersRepository.setRoles).toHaveBeenCalledWith(user.id, [role.id]);
     expect(result.uuid).toBe(updated.uuid);
+  });
+
+  it('records the role change explicitly, since the subscriber never observes it', async () => {
+    const existingRole = { id: 5, uuid: 'existing-role-uuid' } as RoleEntity;
+    const userWithRole = {
+      ...user,
+      userRoles: [{ roleId: existingRole.id }],
+    } as unknown as UserEntity;
+    const updated = { ...user, userRoles: [{ role }] } as unknown as UserEntity;
+
+    usersRepository.findByUuid.mockResolvedValueOnce(userWithRole).mockResolvedValueOnce(updated);
+    roleRepo.findOne.mockResolvedValue(role);
+
+    await useCase.execute(user.uuid, { roleUuids: [role.uuid] });
+
+    expect(recordAuditLogUseCase.execute).toHaveBeenCalledWith({
+      entityName: 'user',
+      entityUuid: user.uuid,
+      actorUuid: 'actor-uuid',
+      action: 'UPDATED',
+      before: { userRoles: [existingRole.id] },
+      after: { userRoles: [role.id] },
+    });
   });
 });

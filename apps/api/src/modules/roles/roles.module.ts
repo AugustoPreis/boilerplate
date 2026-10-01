@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { AuditEngineModule } from '@shared/audit/audit-engine.module';
 import { SharedModule } from '@shared/shared.module';
 
 import { PermissionsController } from './controllers/permissions.controller';
@@ -8,6 +9,7 @@ import { RolesController } from './controllers/roles.controller';
 import { PermissionEntity } from './entities/permission.entity';
 import { RoleEntity } from './entities/role.entity';
 import { PermissionsRelationResolver } from './relation-resolvers/permissions.relation-resolver';
+import { RolesRelationResolver } from './relation-resolvers/roles.relation-resolver';
 import { PermissionsRepository } from './repositories/permissions.repository';
 import { RolesRepository } from './repositories/roles.repository';
 import { CreatePermissionUseCase } from './use-cases/permissions/create-permission.use-case';
@@ -24,7 +26,11 @@ import { UpdateRolePermissionsUseCase } from './use-cases/roles/update-role-perm
 import { UpdateRoleUseCase } from './use-cases/roles/update-role.use-case';
 
 @Module({
-  imports: [SharedModule, TypeOrmModule.forFeature([RoleEntity, PermissionEntity])],
+  imports: [
+    SharedModule,
+    AuditEngineModule,
+    TypeOrmModule.forFeature([RoleEntity, PermissionEntity]),
+  ],
   controllers: [RolesController, PermissionsController],
   providers: [
     RolesRepository,
@@ -42,6 +48,7 @@ import { UpdateRoleUseCase } from './use-cases/roles/update-role.use-case';
     UpdatePermissionUseCase,
     DeletePermissionUseCase,
     PermissionsRelationResolver,
+    RolesRelationResolver,
   ],
   exports: [RolesRepository, PermissionsRepository],
 })

@@ -33,8 +33,16 @@ export class ResolveRelationsStage {
       };
 
       if (meta.relationResolver) {
-        item.resolvedOld = await this.resolveSafely(meta.relationResolver, change.old);
-        item.resolvedNew = await this.resolveSafely(meta.relationResolver, change.new);
+        item.resolvedOld = await this.resolveSafely(
+          meta.relationResolver,
+          change.old,
+          context.locale,
+        );
+        item.resolvedNew = await this.resolveSafely(
+          meta.relationResolver,
+          change.new,
+          context.locale,
+        );
       }
 
       items.push(item);
@@ -46,6 +54,7 @@ export class ResolveRelationsStage {
   private async resolveSafely(
     resolverType: Type<IAuditRelationResolver>,
     value: unknown,
+    locale: string,
   ): Promise<unknown> {
     if (value === null || value === undefined) {
       return value;
@@ -58,7 +67,7 @@ export class ResolveRelationsStage {
         return value;
       }
 
-      return await resolver.resolve(value);
+      return await resolver.resolve(value, locale);
     } catch {
       return value;
     }
