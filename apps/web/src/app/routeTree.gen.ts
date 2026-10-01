@@ -24,8 +24,8 @@ import { Route as AuthenticatedRolesNewRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authenticated/users/index'
 import { Route as AuthenticatedUsersUuidRouteImport } from './routes/_authenticated/users/$uuid'
 import { Route as AuthenticatedUsersNewRouteImport } from './routes/_authenticated/users/new'
-import { Route as AuthenticatedRolesUuidAuditLogsRouteImport } from './routes/_authenticated/roles/$uuid.audit-logs'
-import { Route as AuthenticatedUsersUuidAuditLogsRouteImport } from './routes/_authenticated/users/$uuid.audit-logs'
+import { Route as AuthenticatedRolesUuidAuditLogsRouteImport } from './routes/_authenticated/roles/$uuid_.audit-logs'
+import { Route as AuthenticatedUsersUuidAuditLogsRouteImport } from './routes/_authenticated/users/$uuid_.audit-logs'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
@@ -105,15 +105,15 @@ const AuthenticatedUsersNewRoute = AuthenticatedUsersNewRouteImport.update({
 } as any)
 const AuthenticatedRolesUuidAuditLogsRoute =
   AuthenticatedRolesUuidAuditLogsRouteImport.update({
-    id: '/audit-logs',
-    path: '/audit-logs',
-    getParentRoute: () => AuthenticatedRolesUuidRoute,
+    id: '/roles/$uuid_/audit-logs',
+    path: '/roles/$uuid/audit-logs',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedUsersUuidAuditLogsRoute =
   AuthenticatedUsersUuidAuditLogsRouteImport.update({
-    id: '/audit-logs',
-    path: '/audit-logs',
-    getParentRoute: () => AuthenticatedUsersUuidRoute,
+    id: '/users/$uuid_/audit-logs',
+    path: '/users/$uuid/audit-logs',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -124,9 +124,9 @@ export interface FileRoutesByFullPath {
   '/account': typeof AuthenticatedAccountRoute
   '/preferences': typeof AuthenticatedPreferencesRoute
   '/settings': typeof AuthenticatedSettingsRoute
-  '/roles/$uuid': typeof AuthenticatedRolesUuidRouteWithChildren
+  '/roles/$uuid': typeof AuthenticatedRolesUuidRoute
   '/roles/new': typeof AuthenticatedRolesNewRoute
-  '/users/$uuid': typeof AuthenticatedUsersUuidRouteWithChildren
+  '/users/$uuid': typeof AuthenticatedUsersUuidRoute
   '/users/new': typeof AuthenticatedUsersNewRoute
   '/audit-logs/': typeof AuthenticatedAuditLogsIndexRoute
   '/roles/': typeof AuthenticatedRolesIndexRoute
@@ -142,9 +142,9 @@ export interface FileRoutesByTo {
   '/preferences': typeof AuthenticatedPreferencesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/': typeof AuthenticatedIndexRoute
-  '/roles/$uuid': typeof AuthenticatedRolesUuidRouteWithChildren
+  '/roles/$uuid': typeof AuthenticatedRolesUuidRoute
   '/roles/new': typeof AuthenticatedRolesNewRoute
-  '/users/$uuid': typeof AuthenticatedUsersUuidRouteWithChildren
+  '/users/$uuid': typeof AuthenticatedUsersUuidRoute
   '/users/new': typeof AuthenticatedUsersNewRoute
   '/audit-logs': typeof AuthenticatedAuditLogsIndexRoute
   '/roles': typeof AuthenticatedRolesIndexRoute
@@ -162,15 +162,15 @@ export interface FileRoutesById {
   '/_authenticated/preferences': typeof AuthenticatedPreferencesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
-  '/_authenticated/roles/$uuid': typeof AuthenticatedRolesUuidRouteWithChildren
+  '/_authenticated/roles/$uuid': typeof AuthenticatedRolesUuidRoute
   '/_authenticated/roles/new': typeof AuthenticatedRolesNewRoute
-  '/_authenticated/users/$uuid': typeof AuthenticatedUsersUuidRouteWithChildren
+  '/_authenticated/users/$uuid': typeof AuthenticatedUsersUuidRoute
   '/_authenticated/users/new': typeof AuthenticatedUsersNewRoute
   '/_authenticated/audit-logs/': typeof AuthenticatedAuditLogsIndexRoute
   '/_authenticated/roles/': typeof AuthenticatedRolesIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
-  '/_authenticated/roles/$uuid/audit-logs': typeof AuthenticatedRolesUuidAuditLogsRoute
-  '/_authenticated/users/$uuid/audit-logs': typeof AuthenticatedUsersUuidAuditLogsRoute
+  '/_authenticated/roles/$uuid_/audit-logs': typeof AuthenticatedRolesUuidAuditLogsRoute
+  '/_authenticated/users/$uuid_/audit-logs': typeof AuthenticatedUsersUuidAuditLogsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -226,8 +226,8 @@ export interface FileRouteTypes {
     | '/_authenticated/audit-logs/'
     | '/_authenticated/roles/'
     | '/_authenticated/users/'
-    | '/_authenticated/roles/$uuid/audit-logs'
-    | '/_authenticated/users/$uuid/audit-logs'
+    | '/_authenticated/roles/$uuid_/audit-logs'
+    | '/_authenticated/users/$uuid_/audit-logs'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -344,63 +344,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUsersNewRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/roles/$uuid/audit-logs': {
-      id: '/_authenticated/roles/$uuid/audit-logs'
-      path: '/audit-logs'
+    '/_authenticated/roles/$uuid_/audit-logs': {
+      id: '/_authenticated/roles/$uuid_/audit-logs'
+      path: '/roles/$uuid/audit-logs'
       fullPath: '/roles/$uuid/audit-logs'
       preLoaderRoute: typeof AuthenticatedRolesUuidAuditLogsRouteImport
-      parentRoute: typeof AuthenticatedRolesUuidRoute
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/users/$uuid/audit-logs': {
-      id: '/_authenticated/users/$uuid/audit-logs'
-      path: '/audit-logs'
+    '/_authenticated/users/$uuid_/audit-logs': {
+      id: '/_authenticated/users/$uuid_/audit-logs'
+      path: '/users/$uuid/audit-logs'
       fullPath: '/users/$uuid/audit-logs'
       preLoaderRoute: typeof AuthenticatedUsersUuidAuditLogsRouteImport
-      parentRoute: typeof AuthenticatedUsersUuidRoute
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
-
-interface AuthenticatedRolesUuidRouteChildren {
-  AuthenticatedRolesUuidAuditLogsRoute: typeof AuthenticatedRolesUuidAuditLogsRoute
-}
-
-const AuthenticatedRolesUuidRouteChildren: AuthenticatedRolesUuidRouteChildren =
-  {
-    AuthenticatedRolesUuidAuditLogsRoute: AuthenticatedRolesUuidAuditLogsRoute,
-  }
-
-const AuthenticatedRolesUuidRouteWithChildren =
-  AuthenticatedRolesUuidRoute._addFileChildren(
-    AuthenticatedRolesUuidRouteChildren,
-  )
-
-interface AuthenticatedUsersUuidRouteChildren {
-  AuthenticatedUsersUuidAuditLogsRoute: typeof AuthenticatedUsersUuidAuditLogsRoute
-}
-
-const AuthenticatedUsersUuidRouteChildren: AuthenticatedUsersUuidRouteChildren =
-  {
-    AuthenticatedUsersUuidAuditLogsRoute: AuthenticatedUsersUuidAuditLogsRoute,
-  }
-
-const AuthenticatedUsersUuidRouteWithChildren =
-  AuthenticatedUsersUuidRoute._addFileChildren(
-    AuthenticatedUsersUuidRouteChildren,
-  )
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountRoute: typeof AuthenticatedAccountRoute
   AuthenticatedPreferencesRoute: typeof AuthenticatedPreferencesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
-  AuthenticatedRolesUuidRoute: typeof AuthenticatedRolesUuidRouteWithChildren
+  AuthenticatedRolesUuidRoute: typeof AuthenticatedRolesUuidRoute
   AuthenticatedRolesNewRoute: typeof AuthenticatedRolesNewRoute
-  AuthenticatedUsersUuidRoute: typeof AuthenticatedUsersUuidRouteWithChildren
+  AuthenticatedUsersUuidRoute: typeof AuthenticatedUsersUuidRoute
   AuthenticatedUsersNewRoute: typeof AuthenticatedUsersNewRoute
   AuthenticatedAuditLogsIndexRoute: typeof AuthenticatedAuditLogsIndexRoute
   AuthenticatedRolesIndexRoute: typeof AuthenticatedRolesIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
+  AuthenticatedRolesUuidAuditLogsRoute: typeof AuthenticatedRolesUuidAuditLogsRoute
+  AuthenticatedUsersUuidAuditLogsRoute: typeof AuthenticatedUsersUuidAuditLogsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -408,13 +382,15 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedPreferencesRoute: AuthenticatedPreferencesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
-  AuthenticatedRolesUuidRoute: AuthenticatedRolesUuidRouteWithChildren,
+  AuthenticatedRolesUuidRoute: AuthenticatedRolesUuidRoute,
   AuthenticatedRolesNewRoute: AuthenticatedRolesNewRoute,
-  AuthenticatedUsersUuidRoute: AuthenticatedUsersUuidRouteWithChildren,
+  AuthenticatedUsersUuidRoute: AuthenticatedUsersUuidRoute,
   AuthenticatedUsersNewRoute: AuthenticatedUsersNewRoute,
   AuthenticatedAuditLogsIndexRoute: AuthenticatedAuditLogsIndexRoute,
   AuthenticatedRolesIndexRoute: AuthenticatedRolesIndexRoute,
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
+  AuthenticatedRolesUuidAuditLogsRoute: AuthenticatedRolesUuidAuditLogsRoute,
+  AuthenticatedUsersUuidAuditLogsRoute: AuthenticatedUsersUuidAuditLogsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

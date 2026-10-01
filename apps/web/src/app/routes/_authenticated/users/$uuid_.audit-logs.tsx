@@ -5,7 +5,7 @@ import { requirePermission } from '@core/auth/route-guards';
 
 import { UserAuditLogsPage } from '@features/users';
 
-export const Route = createFileRoute('/_authenticated/users/$uuid/audit-logs')({
+export const Route = createFileRoute('/_authenticated/users/$uuid_/audit-logs')({
   beforeLoad: requirePermission('audit', 'read'),
   component: UserAuditLogsRoute,
   staticData: { breadcrumb: 'breadcrumbs.usersAuditLogs' },
