@@ -142,12 +142,7 @@ describe('Roles (e2e)', () => {
       expect(response.body.data.data[0].name).toBe('search-target-role-e2e');
     });
 
-    // NOTE: the ListRoleDTO/`search` field is documented ("Search by role name
-    // or description") as matching both name and description, but
-    // `RolesRepository.findAll` only applies `ILike` to `name` - a role that
-    // matches solely on description is not found. This test pins down the
-    // actual (narrower) behavior; see the final report for the discrepancy.
-    it('does not match on description alone (documented behavior differs from implementation)', async () => {
+    it('matches on description alone', async () => {
       await admin.agent
         .post('/api/v1/roles')
         .set(admin.csrfHeader)
@@ -162,7 +157,8 @@ describe('Roles (e2e)', () => {
         .query({ search: 'unique-description-marker-e2e' })
         .expect(200);
 
-      expect(response.body.data.data).toHaveLength(0);
+      expect(response.body.data.data).toHaveLength(1);
+      expect(response.body.data.data[0].name).toBe('description-only-role-e2e');
     });
   });
 
