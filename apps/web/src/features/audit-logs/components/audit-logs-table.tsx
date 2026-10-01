@@ -15,12 +15,15 @@ export interface AuditLogsTableProps {
   logs: AuditLogResponseDTO[];
   expandedUuids: Set<string>;
   onToggle: (log: AuditLogResponseDTO) => void;
+  /** Hide the entity/entity-UUID columns — every row is for the same known record. */
+  showEntityColumns?: boolean;
 }
 
 export function AuditLogsTable({
   logs,
   expandedUuids,
   onToggle,
+  showEntityColumns = true,
 }: AuditLogsTableProps): ReactElement {
   const { t } = useTranslation('auditLogs');
 
@@ -50,25 +53,33 @@ export function AuditLogsTable({
         );
       },
     },
-    {
-      key: 'entity',
-      header: t('table.entity'),
-      cell: (log) => <Text weight="medium">{log.entityLabel}</Text>,
-    },
+    ...(showEntityColumns
+      ? [
+          {
+            key: 'entity',
+            header: t('table.entity'),
+            cell: (log: AuditLogResponseDTO) => <Text weight="medium">{log.entityLabel}</Text>,
+          },
+        ]
+      : []),
     {
       key: 'action',
       header: t('table.action'),
       cell: (log) => <AuditActionBadge action={log.action} />,
     },
-    {
-      key: 'entityUuid',
-      header: t('table.entityUuid'),
-      cell: (log) => (
-        <Text size="sm" tone="muted" className="font-mono">
-          {log.entityUuid}
-        </Text>
-      ),
-    },
+    ...(showEntityColumns
+      ? [
+          {
+            key: 'entityUuid',
+            header: t('table.entityUuid'),
+            cell: (log: AuditLogResponseDTO) => (
+              <Text size="sm" tone="muted" className="font-mono">
+                {log.entityUuid}
+              </Text>
+            ),
+          },
+        ]
+      : []),
     {
       key: 'actor',
       header: t('table.actor'),

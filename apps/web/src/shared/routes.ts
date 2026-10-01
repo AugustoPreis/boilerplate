@@ -10,11 +10,13 @@ export const ROUTES = {
     index: '/users',
     new: '/users/new',
     edit: '/users/$uuid',
+    auditLogs: '/users/$uuid/audit-logs',
   },
   roles: {
     index: '/roles',
     new: '/roles/new',
     edit: '/roles/$uuid',
+    auditLogs: '/roles/$uuid/audit-logs',
   },
   auditLogs: {
     index: '/audit-logs',

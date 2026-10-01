@@ -23,7 +23,11 @@
     "viewAction": "Ver papel",
     "cloneAction": "Clonar papel",
     "deleteAction": "Excluir papel",
-    "deleteDisabledReserved": "Papéis reservados não podem ser excluídos."
+    "deleteDisabledReserved": "Papéis reservados não podem ser excluídos.",
+    "auditAction": "Auditoria"
+  },
+  "auditLogsPage": {
+    "title": "Auditoria do papel"
   },
   "form": {
     "createTitle": "Novo papel",

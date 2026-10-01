@@ -33,9 +33,11 @@
     "users": "Usuários",
     "usersNew": "Novo usuário",
     "usersEdit": "Editar usuário",
+    "usersAuditLogs": "Auditoria",
     "roles": "Papéis",
     "rolesNew": "Novo papel",
     "rolesEdit": "Editar papel",
+    "rolesAuditLogs": "Auditoria",
     "auditLogs": "Auditoria"
   },
   "header": {

@@ -1,5 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
-import { Copy, Eye, Pencil, Trash2 } from 'lucide-react';
+import { Copy, Eye, History, Pencil, Trash2 } from 'lucide-react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -16,6 +16,7 @@ export interface RolesTableProps {
   canUpdate: boolean;
   canDelete: boolean;
   canClone: boolean;
+  canViewAudit: boolean;
   onDelete: (role: RoleResponseDTO) => void;
   onClone: (role: RoleResponseDTO) => void;
 }
@@ -25,6 +26,7 @@ export function RolesTable({
   canUpdate,
   canDelete,
   canClone,
+  canViewAudit,
   onDelete,
   onClone,
 }: RolesTableProps): ReactElement {
@@ -76,6 +78,14 @@ export function RolesTable({
               label: t('table.cloneAction'),
               icon: Copy,
               onSelect: () => onClone(role),
+            },
+            canViewAudit && {
+              key: 'audit',
+              label: t('table.auditAction'),
+              icon: History,
+              onSelect: () => {
+                void navigate({ to: ROUTES.roles.auditLogs, params: { uuid: role.uuid } });
+              },
             },
             {
               key: 'delete',
