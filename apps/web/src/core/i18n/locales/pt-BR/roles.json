@@ -1,0 +1,78 @@
+{
+  "title": "Papéis",
+  "actions": {
+    "create": "Novo papel",
+    "clonePrefix": "[CLONE]",
+    "cloneSuccess": "Papel clonado com sucesso."
+  },
+  "filters": {
+    "searchPlaceholder": "Buscar por nome ou descrição"
+  },
+  "table": {
+    "name": "Nome",
+    "description": "Descrição",
+    "permissions": "Permissões",
+    "actions": "Ações",
+    "noDescription": "Sem descrição",
+    "permissionsCount_one": "{{count}} permissão",
+    "permissionsCount_other": "{{count}} permissões",
+    "reserved": "Reservado",
+    "empty": "Nenhum papel encontrado.",
+    "openActions": "Abrir ações",
+    "editAction": "Editar papel",
+    "viewAction": "Ver papel",
+    "cloneAction": "Clonar papel",
+    "deleteAction": "Excluir papel",
+    "deleteDisabledReserved": "Papéis reservados não podem ser excluídos."
+  },
+  "form": {
+    "createTitle": "Novo papel",
+    "createSubtitle": "Defina o nome e a descrição do papel.",
+    "editTitle": "Editar papel",
+    "editSubtitle": "Atualize os dados e as permissões do papel.",
+    "viewTitle": "Detalhes do papel",
+    "backToList": "Voltar para papéis",
+    "nameLabel": "Nome",
+    "descriptionLabel": "Descrição",
+    "identificationTitle": "Identificação",
+    "identificationDescription": "Como o papel aparece na listagem e nos registros de auditoria.",
+    "cancel": "Cancelar",
+    "back": "Voltar",
+    "submit": "Salvar",
+    "createSuccess": "Papel criado com sucesso.",
+    "updateSuccess": "Papel atualizado com sucesso.",
+    "savedButPermissionsFailed": "Papel salvo, mas as permissões não foram atualizadas: {{reason}}"
+  },
+  "permissionsMatrix": {
+    "title": "Permissões",
+    "description": "Selecione as ações permitidas em cada recurso para este papel.",
+    "selectAllInResource": "Selecionar tudo",
+    "submit": "Salvar permissões",
+    "updateSuccess": "Permissões atualizadas com sucesso.",
+    "empty": "Nenhuma permissão cadastrada.",
+    "loading": "Carregando permissões...",
+    "resources": {
+      "users": "Usuários",
+      "roles": "Papéis",
+      "permissions": "Permissões",
+      "audit": "Auditoria"
+    },
+    "actions": {
+      "create": "Criar",
+      "read": "Visualizar",
+      "update": "Atualizar",
+      "delete": "Deletar"
+    }
+  },
+  "edit": {
+    "loading": "Carregando papel...",
+    "notFound": "Papel não encontrado."
+  },
+  "deleteDialog": {
+    "title": "Excluir papel",
+    "description": "Tem certeza que deseja excluir \"{{name}}\"? Esta ação não pode ser desfeita.",
+    "cancel": "Cancelar",
+    "confirm": "Excluir",
+    "success": "Papel excluído com sucesso."
+  }
+}
