@@ -15,6 +15,7 @@
     "dashboard": "Início",
     "users": "Usuários",
     "roles": "Papéis",
+    "auditLogs": "Auditoria",
     "groups": {
       "general": "Geral",
       "administration": "Administração"
@@ -34,7 +35,8 @@
     "usersEdit": "Editar usuário",
     "roles": "Papéis",
     "rolesNew": "Novo papel",
-    "rolesEdit": "Editar papel"
+    "rolesEdit": "Editar papel",
+    "auditLogs": "Auditoria"
   },
   "header": {
     "openNavigationMenu": "Abrir menu de navegação",

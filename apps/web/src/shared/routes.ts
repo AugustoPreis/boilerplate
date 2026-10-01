@@ -16,4 +16,7 @@ export const ROUTES = {
     new: '/roles/new',
     edit: '/roles/$uuid',
   },
+  auditLogs: {
+    index: '/audit-logs',
+  },
 } as const;
