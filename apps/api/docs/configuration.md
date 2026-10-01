@@ -46,7 +46,7 @@ configuration, follow the `registerAs` pattern above, not Redis's.
 
 Dependabot handles npm dependencies, GitHub Actions, and `apps/api/Dockerfile`'s base image (see
 `.github/dependabot.yml`), but it doesn't read `docker-compose.yml`. The development
-infrastructure images (`postgres`, `redis:7-alpine`, `minio/minio`) fall outside that automation
+infrastructure images (`postgres`, `redis:7-alpine`, `cgr.dev/chainguard/minio`) fall outside that automation
 and need an occasional manual bump, checking the pinned tag on each service against the latest
 stable release.
 
